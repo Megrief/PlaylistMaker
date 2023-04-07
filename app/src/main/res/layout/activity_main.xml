@@ -3,74 +3,83 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical"
-    android:padding="@dimen/basic_pad"
-    android:background="@color/background">
+    android:paddingLeft="@dimen/medium_padding"
+    android:paddingTop="14dp"
+    android:paddingRight="@dimen/medium_padding"
+    android:paddingBottom="12dp">
 
-
+    <!-- Title -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="@dimen/margin_big"
         android:text="@string/title"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size" />
+        android:textColor="@color/custom_white"
+        android:textSize="@dimen/medium_text_size" />
 
-    <Button
+    <!-- Search -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/medium_padding"
         android:layout_weight="1"
-        android:layout_marginBottom="@dimen/basic_pad"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/custom_white"
+        android:foreground="?attr/selectableItemBackground"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:text="@string/search"
         android:textAllCaps="false"
         android:textColor="@color/custom_black"
-        android:textSize="@dimen/text_size"
-        app:cornerRadius="@dimen/basic_pad"
+        android:textSize="@dimen/medium_text_size"
+        app:cornerRadius="@dimen/medium_padding"
         app:icon="@drawable/search"
         app:iconGravity="textStart"
-        app:iconTint="@color/custom_black"
         app:iconPadding="@dimen/icon_pad"
-        android:foreground="?attr/selectableItemBackground"
-        />
+        app:iconTint="@color/custom_black" />
 
-    <Button
+    <!-- Media -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/media"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/medium_padding"
         android:layout_weight="1"
-        android:layout_marginBottom="@dimen/basic_pad"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/custom_white"
+        android:foreground="?attr/selectableItemBackground"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:text="@string/media"
         android:textAllCaps="false"
         android:textColor="@color/custom_black"
-        android:textSize="@dimen/text_size"
-        app:cornerRadius="@dimen/basic_pad"
+        android:textSize="@dimen/medium_text_size"
+        app:cornerRadius="@dimen/medium_padding"
         app:icon="@drawable/media"
         app:iconGravity="textStart"
-        app:iconTint="@color/custom_black"
         app:iconPadding="@dimen/icon_pad"
-        android:foreground="?attr/selectableItemBackground"
-        />
+        app:iconTint="@color/custom_black" />
 
-    <Button
+    <!-- Settings -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/settings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_medium"
         android:layout_weight="1"
-        android:layout_marginBottom="28dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="@color/custom_white"
+        android:foreground="?attr/selectableItemBackground"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
         android:text="@string/settings"
         android:textAllCaps="false"
         android:textColor="@color/custom_black"
-        android:textSize="@dimen/text_size"
-        app:cornerRadius="@dimen/basic_pad"
+        android:textSize="@dimen/medium_text_size"
+        app:cornerRadius="@dimen/medium_padding"
         app:icon="@drawable/settings"
         app:iconGravity="textStart"
-        app:iconTint="@color/custom_black"
         app:iconPadding="@dimen/icon_pad"
-        android:foreground="?attr/selectableItemBackground"
-        />
+        app:iconTint="@color/custom_black" />
 
 </LinearLayout>
