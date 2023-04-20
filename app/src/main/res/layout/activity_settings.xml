@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/custom_white"
+    android:paddingLeft="@dimen/medium_size"
+    android:paddingRight="@dimen/medium_size"
     android:orientation="vertical">
 
     <!-- Head -->
@@ -18,91 +19,61 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="4dp"
             android:layout_marginEnd="@dimen/margin_medium"
-            android:backgroundTint="@color/custom_white"
+            android:backgroundTint="?android:background"
             android:contentDescription="@string/arrow_back"
             android:minHeight="48dp"
             android:src="@drawable/back_arrow"
-            app:tint="@color/custom_black" />
+            app:tint="?attr/colorOnSecondary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/settings"
-            android:textColor="@color/custom_black"
-            android:textSize="@dimen/medium_text_size" />
+            android:fontFamily="@font/ys_display_medium"
+            android:textFontWeight="500"
+            android:textSize="@dimen/head_text_size" />
 
     </LinearLayout>
 
     <!-- Dark theme -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/menu_bottom_height"
-        android:gravity="center"
-        android:paddingStart="@dimen/medium_padding"
-        android:paddingEnd="@dimen/medium_padding">
+        android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/MenuTextStyle"
+            android:layout_height="@dimen/menu_button_height"
             android:layout_weight="1"
-            android:text="@string/dark_theme"
-            android:textColor="@color/custom_black"
-            android:textSize="@dimen/menu_text_size"
-
-            />
+            android:text="@string/dark_theme" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:drawableTint="@color/icons_gray"
-            android:gravity="center"
-
-            />
-
+            android:drawableTint="?attr/color"
+            android:gravity="center" />
 
     </LinearLayout>
 
     <!-- Share -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menu_bottom_height"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/medium_padding"
-        android:paddingEnd="@dimen/medium_padding"
+        style="@style/MenuTextStyle.WithIcon"
         android:text="@string/share"
-        android:textColor="@color/custom_black"
-        android:textSize="@dimen/menu_text_size"
-        app:drawableEndCompat="@drawable/share"
-        app:drawableTint="@color/icons_gray" />
+        app:drawableEndCompat="@drawable/share" />
 
     <!-- Support -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menu_bottom_height"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/medium_padding"
-        android:paddingEnd="@dimen/medium_padding"
+        style="@style/MenuTextStyle.WithIcon"
         android:text="@string/support"
-        android:textColor="@color/custom_black"
-        android:textSize="@dimen/menu_text_size"
-        app:drawableEndCompat="@drawable/supp"
-        app:drawableTint="@color/icons_gray" />
+        app:drawableEndCompat="@drawable/supp" />
 
     <!-- User agreement -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/menu_bottom_height"
-        android:gravity="center_vertical"
-        android:paddingStart="@dimen/medium_padding"
-        android:paddingEnd="@dimen/medium_padding"
+        style="@style/MenuTextStyle.WithIcon"
         android:text="@string/user_agreement"
-        android:textColor="@color/custom_black"
-        android:textSize="@dimen/menu_text_size"
-        app:drawableEndCompat="@drawable/arrow"
-        app:drawableTint="@color/icons_gray" />
+        app:drawableEndCompat="@drawable/arrow" />
 
 </LinearLayout>

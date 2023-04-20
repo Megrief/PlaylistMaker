@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="medium_padding">16dp</dimen>
-    <dimen name="medium_text_size">22sp</dimen>
-    <dimen name="menu_text_size">16sp</dimen>
+    <dimen name="medium_size">16dp</dimen>
+    <dimen name="head_text_size">22sp</dimen>
+    <dimen name="medium_text_size">16sp</dimen>
     <dimen name="icon_pad">10dp</dimen>
     <dimen name="zero">0dp</dimen>
-    <dimen name="menu_bottom_height">61dp</dimen>
+    <dimen name="menu_button_height">61dp</dimen>
     <dimen name="margin_big">40dp</dimen>
     <dimen name="margin_medium">28dp</dimen>
 </resources>
