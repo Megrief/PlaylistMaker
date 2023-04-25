@@ -8,4 +8,5 @@
     <dimen name="menu_button_height">61dp</dimen>
     <dimen name="margin_big">40dp</dimen>
     <dimen name="margin_medium">28dp</dimen>
+    <dimen name="padding_top">14dp</dimen>
 </resources>

@@ -9,4 +9,5 @@
     <string name="support">Написать в поддержку</string>
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="arrow_back">Arrow back</string>
+    <string name="clear">Очистить поисковый запрос</string>
 </resources>
