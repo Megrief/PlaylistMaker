@@ -23,7 +23,7 @@
         android:layout_marginEnd="@dimen/medium_size"
         android:background="@drawable/edit_text_with_rounded_corners"
         android:paddingStart="@dimen/medium_size"
-        tools:ignore="RtlSymmetry">
+        tools:ignore="RtlSymmetry" >
 
         <EditText
             android:id="@+id/search_bar"
@@ -42,7 +42,7 @@
             android:textColor="@color/custom_black"
             android:textColorHint="?attr/colorSecondaryVariant"
             android:textFontWeight="400"
-            android:textSize="@dimen/medium_text_size"/>
+            android:textSize="@dimen/medium_text_size" />
 
         <!-- Clear button -->
         <ImageButton
