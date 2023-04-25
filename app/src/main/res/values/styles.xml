@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="ButtonWithTextOnMain" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginBottom">@dimen/medium_size</item>
+        <item name="android:layout_weight">1</item>
+        <item name="backgroundTint">@color/custom_white</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:insetTop">@dimen/zero</item>
+        <item name="android:insetBottom">@dimen/zero</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textColor">@color/custom_black</item>
+        <item name="android:textSize">@dimen/head_text_size</item>
+        <item name="cornerRadius">@dimen/medium_size</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconTint">@color/custom_black</item>
+        <item name="iconPadding">@dimen/icon_pad</item>
+        <item name="android:shadowRadius">0</item>
+    </style>
+    
+    <style name="MenuTextStyle" parent="Widget.MaterialComponents.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/menu_button_height</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">@dimen/medium_text_size</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="MenuTextStyle.WithIcon">
+        <item name="drawableTint">?attr/color</item>
+    </style>
+
+    <style name="HeadTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textSize">@dimen/head_text_size</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">500</item>
+    </style>
+
+    <style name="ButtonWithTextOnSearch" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">@dimen/zero</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="cornerRadius">@dimen/zero</item>
+        <item name="android:insetTop">@dimen/zero</item>
+        <item name="android:insetBottom">@dimen/zero</item>
+        <item name="android:insetLeft">@dimen/zero</item>
+        <item name="android:insetRight">@dimen/zero</item>
+        <item name="backgroundTint">?attr/colorOnPrimary</item>
+        <item name="textAllCaps">false</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="iconTint">?attr/colorOnSecondary</item>
+        <item name="iconGravity">textTop</item>
+        <item name="android:shadowRadius">0</item>
+    </style>
+
+</resources>
