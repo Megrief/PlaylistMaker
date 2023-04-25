@@ -6,39 +6,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="@dimen/padding_top"
-    tools:context=".SearchActivity" >
+    tools:context=".SearchActivity">
 
     <!-- Head text -->
     <TextView
         style="@style/HeadTextStyle"
         android:layout_marginStart="@dimen/medium_size"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="@dimen/small_size"
         android:text="@string/search" />
 
     <!-- Search bar -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="36dp"
-        android:paddingStart="@dimen/medium_size"
         android:layout_marginStart="@dimen/medium_size"
         android:layout_marginEnd="@dimen/medium_size"
         android:background="@drawable/edit_text_with_rounded_corners"
-        tools:ignore="RtlSymmetry" >
+        android:paddingStart="@dimen/medium_size"
+        tools:ignore="RtlSymmetry">
 
         <EditText
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/edit_text_with_rounded_corners"
-            android:hint="@string/search"
             android:drawableStart="@drawable/search_small"
             android:drawablePadding="6dp"
             android:drawableTint="@color/icons_gray"
             android:fontFamily="@font/ys_display_regular"
+            android:hint="@string/search"
             android:inputType="text"
             android:maxLength="40"
             android:maxLines="1"
-            android:textColorHint="@color/icons_gray"
+            android:textColor="@color/custom_black"
+            android:textColorHint="?attr/colorPrimaryVariant"
             android:textFontWeight="400"
             android:textSize="@dimen/medium_text_size" />
 
@@ -48,10 +49,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignEnd="@id/search_bar"
-            android:contentDescription="@string/clear"
-            android:visibility="gone"
-            android:src="@drawable/clear"
             android:backgroundTint="@color/light_gray"
+            android:contentDescription="@string/clear"
+            android:src="@drawable/clear"
+            android:visibility="gone"
             app:tint="@color/icons_gray" />
     </RelativeLayout>
 

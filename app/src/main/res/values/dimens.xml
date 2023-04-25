@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="small_size">8dp</dimen>
+    <dimen name="padding_menu">12dp</dimen>
     <dimen name="medium_size">16dp</dimen>
     <dimen name="head_text_size">22sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>

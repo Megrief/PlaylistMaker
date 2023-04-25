@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/medium_size"
     android:paddingTop="@dimen/padding_top"
     android:paddingRight="@dimen/medium_size"
-    android:paddingBottom="12dp" >
+    android:paddingBottom="@dimen/padding_menu" >
 
     <!-- Title -->
     <TextView
