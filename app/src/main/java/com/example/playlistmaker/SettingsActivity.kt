@@ -26,7 +26,7 @@ class SettingsActivity : AppCompatActivity() {
         shareButton.setOnClickListener {
             startActivity(Intent(Intent.ACTION_SEND).apply {
                 this.type = "text/plain"
-                this.putExtra(Intent.EXTRA_TEXT, "https://practicum.yandex.ru/profile/android-developer/")
+                this.putExtra(Intent.EXTRA_TEXT, getString(R.string.android_developer))
             })
         }
 
@@ -34,15 +34,15 @@ class SettingsActivity : AppCompatActivity() {
         supportButton.setOnClickListener {
             startActivity(Intent(Intent.ACTION_SENDTO).apply {
                 this.data = Uri.parse("mailto:")
-                this.putExtra(Intent.EXTRA_EMAIL, "eu.pim@mail.ru")
-                this.putExtra(Intent.EXTRA_SUBJECT, "Сообщение разработчикам и разработчицам приложения Playlist Maker")
-                this.putExtra(Intent.EXTRA_TEXT, "Спасибо разработчикам и разработчицам за крутое приложение!")
+                this.putExtra(Intent.EXTRA_EMAIL, getString(R.string.supp_message_address))
+                this.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.supp_message_theme))
+                this.putExtra(Intent.EXTRA_TEXT, getString(R.string.supp_message_content))
             })
         }
 
         val userAgreementButton = findViewById<TextView>(R.id.user_agreement)
         userAgreementButton.setOnClickListener {
-            val url = Uri.parse("https://yandex.ru/legal/practicum_offer/")
+            val url = Uri.parse(getString(R.string.practicum_offer))
             startActivity(Intent(Intent.ACTION_VIEW, url))
         }
 
