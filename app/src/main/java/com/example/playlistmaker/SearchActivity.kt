@@ -1,12 +1,15 @@
 package com.example.playlistmaker
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import com.google.android.material.appbar.MaterialToolbar
 
 class SearchActivity : AppCompatActivity() {
     private var savedValue: String = ""
@@ -18,6 +21,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         val searchBar = findViewById<EditText>(R.id.search_bar)
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
         val clearButton = findViewById<ImageButton>(R.id.clear_button)
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -34,14 +38,19 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        if (savedInstanceState != null) {
-            searchBar.setText(savedInstanceState.getString(SEARCH_BAR_STATE))
-        }
+        searchBar.setText(savedValue)
+
 
         searchBar.addTextChangedListener(textWatcher)
 
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
         clearButton.setOnClickListener {
             searchBar.setText("")
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
         }
     }
 
@@ -50,6 +59,10 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_BAR_STATE, savedValue)
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
+    }
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
     }
