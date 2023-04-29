@@ -10,4 +10,9 @@
     <string name="user_agreement">Пользовательское соглашение</string>
     <string name="arrow_back">Arrow back</string>
     <string name="clear">Очистить поисковый запрос</string>
+    <string name="supp_message_theme">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="supp_message_content">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="android_developer">https://practicum.yandex.ru/profile/android-developer/</string>
+    <string name="supp_message_address">eu.pim@mail.ru</string>
 </resources>

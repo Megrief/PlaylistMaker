@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="ButtonWithTextOnMain" parent="Widget.MaterialComponents.Button">
+    <style name="ButtonWithTextOnMain" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/medium_size</item>
+        <item name="android:layout_marginRight">@dimen/medium_size</item>
         <item name="android:layout_marginBottom">@dimen/medium_size</item>
         <item name="android:layout_weight">1</item>
-        <item name="backgroundTint">@color/custom_white</item>
+        <item name="backgroundTint">@color/white</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:insetTop">@dimen/zero</item>
         <item name="android:insetBottom">@dimen/zero</item>
@@ -29,9 +31,8 @@
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">@dimen/medium_text_size</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
-    </style>
-
-    <style name="MenuTextStyle.WithIcon">
+        <item name="android:paddingStart">@dimen/medium_size</item>
+        <item name="android:paddingEnd">@dimen/padding_menu</item>
         <item name="drawableTint">?attr/color</item>
     </style>
 
@@ -64,4 +65,26 @@
         <item name="android:shadowRadius">0</item>
     </style>
 
+    <style name="ImageButtonInHead">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:backgroundTint">?android:background</item>
+        <item name="android:contentDescription">@string/arrow_back</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:src">@drawable/back_arrow</item>
+        <item name="tint">?attr/colorOnSecondary</item>
+    </style>
+    <style name="ToolbarAppearance">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_marginBottom">@dimen/small_size</item>
+        <item name="titleTextAppearance">@style/HeadTextStyle</item>
+    </style>
+    <style name="ToolbarAppearance.WithIcon">
+        <item name="navigationIcon">@drawable/back_arrow</item>
+        <item name="navigationIconTint">?attr/colorOnSecondary</item>
+    </style>
 </resources>
