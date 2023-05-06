@@ -19,14 +19,4 @@ class TrackViewHolder(private val parentView: View) : RecyclerView.ViewHolder(pa
         trackTime.text = track.trackTime
         Glide.with(parentView).load(track.artworkUrl100).placeholder(R.drawable.media).into(poster)
     }
-
-//    fun checkLength(text: String): String {
-//        var res = text
-//        val maxWidth = trackName.measuredWidth.toFloat()
-//        if (trackName.paint.measureText(res) < maxWidth) return res
-//        while (trackName.paint.measureText("$res...") >= maxWidth) {
-//            res = res.dropLast(1)
-//        }
-//        return "$res..."
-//    }
 }

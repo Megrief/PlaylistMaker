@@ -51,12 +51,6 @@ class SearchActivity : AppCompatActivity() {
                 "Guns N' Roses",
                 "5:03",
                 "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                "Super cool long name for my song. Okay a little longer",
-                "Boysband that will crash all the girls' hearts. Three minutes is OKAY.",
-                "3:0",
-                "https://avatars.steamstatic.com/ec35599152c32aff7c9a3ac41d071305ad7c8879_medium.jpg"
             )
         )
     }

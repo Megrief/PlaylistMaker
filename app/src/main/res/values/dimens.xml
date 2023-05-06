@@ -11,5 +11,6 @@
     <dimen name="margin_big">40dp</dimen>
     <dimen name="margin_medium">28dp</dimen>
     <dimen name="padding_top">14dp</dimen>
+    <dimen name="padding_bottom">20dp</dimen>
     <dimen name="track_image_size">45dp</dimen>
 </resources>
