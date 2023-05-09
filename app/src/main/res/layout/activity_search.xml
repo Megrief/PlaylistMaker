@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".SearchActivity" >
+    tools:context=".activities.SearchActivity" >
 
     <!-- Head -->
         <com.google.android.material.appbar.MaterialToolbar
@@ -19,6 +19,7 @@
         android:layout_height="36dp"
         android:layout_marginStart="@dimen/medium_size"
         android:layout_marginEnd="@dimen/medium_size"
+        android:layout_marginBottom="24dp"
         android:background="@drawable/edit_text_with_rounded_corners"
         android:paddingStart="@dimen/medium_size"
         tools:ignore="RtlSymmetry" >
@@ -55,5 +56,12 @@
             android:visibility="gone"
             app:tint="?attr/colorSecondaryVariant" />
     </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/track_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
     
 </androidx.appcompat.widget.LinearLayoutCompat>

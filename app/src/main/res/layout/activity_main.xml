@@ -11,7 +11,7 @@
         style="@style/ToolbarAppearance"
         app:title="@string/title"
         app:titleTextColor="@color/white"
-        android:layout_marginBottom="20dp" />
+        android:layout_marginBottom="@dimen/padding_bottom" />
 
     <!-- Search -->
     <Button
