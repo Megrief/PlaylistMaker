@@ -1,96 +1,108 @@
 package com.example.playlistmaker.activities
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.itunes.ITunesResponse
+import com.example.playlistmaker.itunes.ITunesSearch
 import com.example.playlistmaker.trackRecyclerView.Track
 import com.example.playlistmaker.trackRecyclerView.TrackAdapter
 import com.google.android.material.appbar.MaterialToolbar
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
+    private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
+    private val adapter = TrackAdapter()
+    private val trackList = mutableListOf<Track>()
+    private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
+    private val searchBarWatcher by lazy { object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            //empty
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
+            if (!s.isNullOrEmpty()) savedValue = s.toString()
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            //empty
+        }
+    } }
+    private val clearButton by lazy { findViewById<ImageButton>(R.id.clear_button) }
+    private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
+    private val somethingWrong by lazy { findViewById<LinearLayoutCompat>(R.id.something_wrong) }
+    private val somethingWrongImage by lazy { findViewById<ImageView>(R.id.something_wrong_image) }
+    private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
+    private val refreshButton by lazy { findViewById<TextView>(R.id.refresh) }
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+    private val service = retrofit.create<ITunesSearch>()
 
     companion object {
+        const val BASE_URL: String = "https://itunes.apple.com"
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
         private var savedValue: String = ""
-
-        private val mockTrackList = arrayListOf (
-            Track(
-            "Smells Like Teen Spirit",
-            "Nirvana",
-            "5:01",
-            "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                "Billie Jean",
-                "Michael Jackson",
-                "4:35",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-            ),
-            Track(
-                "Stayin' Alive",
-                "Bee Gees",
-                "4:10",
-                "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                "Whole Lotta Love",
-                "Led Zeppelin",
-                "5:33",
-                "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-            ),
-            Track(
-                "Sweet Child O'Mine",
-                "Guns N' Roses",
-                "5:03",
-                "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg"
-            )
-        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val searchBar = findViewById<EditText>(R.id.search_bar)
-        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
-        val clearButton = findViewById<ImageButton>(R.id.clear_button)
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-                if (!s.isNullOrEmpty()) savedValue = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                //empty
-            }
-        }
-        val trackListView = findViewById<RecyclerView>(R.id.track_list)
-
-        trackListView.adapter = TrackAdapter(mockTrackList)
-
         searchBar.setText(savedValue)
-        searchBar.addTextChangedListener(textWatcher)
+        searchBar.addTextChangedListener(searchBarWatcher)
 
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        adapter.trackList = trackList
+        trackListView.adapter = adapter
+
+        toolbar.setNavigationOnClickListener { finish() }
 
         clearButton.setOnClickListener {
             searchBar.setText("")
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            trackListView.makeInvisible()
+            somethingWrong.makeInvisible()
+        }
+
+        searchBar.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                trackListView.makeInvisible()
+                somethingWrong.makeInvisible()
+                if (savedValue.isNotEmpty()) getResults()
+            }
+            false
+        }
+
+        refreshButton.setOnClickListener {
+            somethingWrong.makeInvisible()
+            refreshButton.makeInvisible()
+            getResults()
         }
     }
 
@@ -98,12 +110,44 @@ class SearchActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_BAR_STATE, savedValue)
     }
-
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
     }
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+
+
+    private fun getResults() {
+        service.search(savedValue).enqueue(object : Callback<ITunesResponse> {
+            override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
+                trackList.clear()
+                if (response.isSuccessful) {
+                    if (response.body()?.resultCount == 0) {
+                        somethingWrongImage.setImageResource(R.drawable.nothing_found)
+                        somethingWrongMessage.setText(R.string.nothing_found)
+                        somethingWrong.makeVisible()
+                    } else {
+                        trackList.addAll(response.body()?.results!!)
+                        adapter.notifyDataSetChanged()
+                        trackListView.makeVisible()
+                    }
+                } else getError()
+            }
+
+            override fun onFailure(call: Call<ITunesResponse>, t: Throwable) {
+                getError()
+            }
+        })
+    }
+    private fun View.makeInvisible() {
+        if (this.isVisible) this.visibility = GONE
+    }
+    private fun View.makeVisible() {
+        if (this.isGone) this.visibility = VISIBLE
+    }
+    private fun getError() {
+        somethingWrongImage.setImageResource(R.drawable.no_internet)
+        somethingWrongMessage.setText(R.string.no_internet)
+        refreshButton.makeVisible()
+        somethingWrong.makeVisible()
     }
 }
