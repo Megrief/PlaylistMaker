@@ -11,10 +11,10 @@
         android:layout_width="@dimen/track_image_size"
         android:layout_height="@dimen/track_image_size"
         android:layout_marginStart="13dp"
-        android:layout_marginEnd="@dimen/small_size"
+        android:layout_marginEnd="@dimen/small"
         android:layout_gravity="center_vertical"
         app:shapeAppearance="@style/ImageWithRoundedCorners"
-        android:src="@drawable/media"
+        android:src="@drawable/placeholder"
         android:scaleType="centerCrop" />
 
     <!-- Track Info -->
@@ -30,7 +30,7 @@
             style="@style/TrackCardTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_top"
+            android:layout_marginTop="@dimen/almost_medium"
             android:ellipsize="end"
             android:text="" />
 
@@ -52,9 +52,9 @@
                 android:id="@+id/point"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/track_card_point_pad"
+                android:paddingEnd="@dimen/track_card_point_pad"
                 android:layout_weight="0"
-                android:paddingStart="5dp"
-                android:paddingEnd="5dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/point"
                 app:tint="?attr/colorSecondary" />
@@ -64,6 +64,7 @@
                 style="@style/TrackCardTextStyle.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_weight="0"
                 android:text="" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -74,8 +75,9 @@
         android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/medium_size"
+        android:layout_marginStart="@dimen/medium"
         android:layout_marginEnd="@dimen/padding_bottom"
         android:src="@drawable/small_arrow"
         app:tint="?attr/colorSecondary" />
 </androidx.appcompat.widget.LinearLayoutCompat>
+

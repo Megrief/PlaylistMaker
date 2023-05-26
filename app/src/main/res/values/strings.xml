@@ -15,4 +15,7 @@
     <string name="practicum_offer">https://yandex.ru/legal/practicum_offer/</string>
     <string name="android_developer">https://practicum.yandex.ru/profile/android-developer/</string>
     <string name="supp_message_address">eu.pim@mail.ru</string>
+    <string name="no_internet">Проблемы со связью\n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="refresh">Обновить</string>
 </resources>

@@ -3,9 +3,9 @@
     <style name="ButtonWithTextOnMain" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginLeft">@dimen/medium_size</item>
-        <item name="android:layout_marginRight">@dimen/medium_size</item>
-        <item name="android:layout_marginBottom">@dimen/medium_size</item>
+        <item name="android:layout_marginLeft">@dimen/medium</item>
+        <item name="android:layout_marginRight">@dimen/medium</item>
+        <item name="android:layout_marginBottom">@dimen/medium</item>
         <item name="android:layout_weight">1</item>
         <item name="backgroundTint">@color/white</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
@@ -16,7 +16,7 @@
         <item name="android:fontWeight">500</item>
         <item name="android:textColor">@color/custom_black</item>
         <item name="android:textSize">@dimen/head_text_size</item>
-        <item name="cornerRadius">@dimen/medium_size</item>
+        <item name="cornerRadius">@dimen/medium</item>
         <item name="iconGravity">textStart</item>
         <item name="iconTint">@color/custom_black</item>
         <item name="iconPadding">@dimen/icon_pad</item>
@@ -31,9 +31,19 @@
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">@dimen/medium_text_size</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
-        <item name="android:paddingStart">@dimen/medium_size</item>
-        <item name="android:paddingEnd">@dimen/padding_menu</item>
+        <item name="android:paddingStart">@dimen/medium</item>
+        <item name="android:paddingEnd">@dimen/sub_medium</item>
         <item name="drawableTint">?attr/color</item>
+    </style>
+
+    <style name="SearchMessageTextStyle">
+        <item name="android:textSize">19sp</item>
+        <item name="android:layout_marginStart">@dimen/average</item>
+        <item name="android:layout_marginEnd">@dimen/average</item>
+        <item name="fontFamily">@font/ys_display_medium</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="HeadTextStyle">
@@ -80,7 +90,7 @@
     <style name="ToolbarAppearance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">56dp</item>
-        <item name="android:layout_marginBottom">@dimen/small_size</item>
+        <item name="android:layout_marginBottom">@dimen/small</item>
         <item name="titleTextAppearance">@style/HeadTextStyle</item>
     </style>
     <style name="ToolbarAppearance.WithIcon">
