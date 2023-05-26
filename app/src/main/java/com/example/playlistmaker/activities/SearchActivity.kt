@@ -24,6 +24,7 @@ import com.example.playlistmaker.itunes.ITunesSearch
 import com.example.playlistmaker.trackRecyclerView.Track
 import com.example.playlistmaker.trackRecyclerView.TrackAdapter
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,7 +35,6 @@ import retrofit2.create
 class SearchActivity : AppCompatActivity() {
     private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
     private val adapter = TrackAdapter()
-    private val trackList = mutableListOf<Track>()
     private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
     private val searchBarWatcher by lazy { object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -62,60 +62,32 @@ class SearchActivity : AppCompatActivity() {
         .build()
     private val service = retrofit.create<ITunesSearch>()
 
-    companion object {
-        const val BASE_URL: String = "https://itunes.apple.com"
-        const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
-        private var savedValue: String = ""
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        searchBar.setText(savedValue)
-        searchBar.addTextChangedListener(searchBarWatcher)
-
-        adapter.trackList = trackList
-        trackListView.adapter = adapter
-
         toolbar.setNavigationOnClickListener { finish() }
 
-        clearButton.setOnClickListener {
-            searchBar.setText("")
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
-            trackList.clear()
-            adapter.notifyDataSetChanged()
-            trackListView.makeInvisible()
-            somethingWrong.makeInvisible()
-        }
-
-        searchBar.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                trackListView.makeInvisible()
-                somethingWrong.makeInvisible()
-                if (savedValue.isNotEmpty()) getResults()
-            }
-            false
-        }
-
-        refreshButton.setOnClickListener {
-            somethingWrong.makeInvisible()
-            refreshButton.makeInvisible()
-            getResults()
-        }
+        configureSearchBar()
+        configureTrackListView()
+        configureClearButton()
+        configureRefreshButton()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_BAR_STATE, savedValue)
+        if (trackList.isNotEmpty()) {
+            val listToJson = Gson().toJson(ITunesResponse(trackList.size, trackList), ITunesResponse::class.java)
+            outState.putString(TRACK_LIST_STATE, listToJson)
+        }
     }
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
+        val savedList = savedInstanceState.getString(TRACK_LIST_STATE)
+        if (savedList != null) trackList.addAll(Gson().fromJson(savedList, ITunesResponse::class.java).results)
     }
-
-
     private fun getResults() {
         service.search(savedValue).enqueue(object : Callback<ITunesResponse> {
             override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
@@ -149,5 +121,46 @@ class SearchActivity : AppCompatActivity() {
         somethingWrongMessage.setText(R.string.no_internet)
         refreshButton.makeVisible()
         somethingWrong.makeVisible()
+    }
+    private fun configureSearchBar() {
+        searchBar.setText(savedValue)
+        searchBar.addTextChangedListener(searchBarWatcher)
+        searchBar.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                trackListView.makeInvisible()
+                somethingWrong.makeInvisible()
+                if (savedValue.isNotEmpty()) getResults()
+            }
+            false
+        }
+    }
+    private fun configureTrackListView() {
+        adapter.trackList = trackList
+        trackListView.adapter = adapter
+    }
+    private fun configureClearButton() {
+        clearButton.setOnClickListener {
+            searchBar.setText("")
+            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
+            trackList.clear()
+            adapter.notifyDataSetChanged()
+            trackListView.makeInvisible()
+            somethingWrong.makeInvisible()
+        }
+    }
+    private fun configureRefreshButton() {
+        refreshButton.setOnClickListener {
+            somethingWrong.makeInvisible()
+            refreshButton.makeInvisible()
+            getResults()
+        }
+    }
+    companion object {
+        const val BASE_URL: String = "https://itunes.apple.com"
+        const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
+        const val TRACK_LIST_STATE = "TRACK_LIST_STATE"
+        private var savedValue: String = ""
+        private val trackList = mutableListOf<Track>()
     }
 }
