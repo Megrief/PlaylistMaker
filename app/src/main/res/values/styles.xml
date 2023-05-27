@@ -33,7 +33,7 @@
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:paddingStart">@dimen/medium</item>
         <item name="android:paddingEnd">@dimen/sub_medium</item>
-        <item name="drawableTint">?attr/color</item>
+        <item name="drawableTint">?attr/colorSecondary</item>
     </style>
 
     <style name="SearchMessageTextStyle">
