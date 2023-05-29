@@ -86,7 +86,11 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
         val savedList = savedInstanceState.getString(TRACK_LIST_STATE)
-        if (savedList != null) trackList.addAll(Gson().fromJson(savedList, ITunesResponse::class.java).results)
+        if (savedList != null) {
+            trackList.addAll(Gson().fromJson(savedList, ITunesResponse::class.java).results)
+            adapter.notifyDataSetChanged()
+            trackListView.makeVisible()
+        }
     }
     private fun getResults() {
         service.search(savedValue).enqueue(object : Callback<ITunesResponse> {
