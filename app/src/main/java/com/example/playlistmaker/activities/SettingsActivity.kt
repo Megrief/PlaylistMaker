@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.App
 import com.example.playlistmaker.R
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -15,7 +16,6 @@ class SettingsActivity : AppCompatActivity() {
     private val shareButton by lazy { findViewById<TextView>(R.id.share) }
     private val supportButton by lazy { findViewById<TextView>(R.id.support) }
     private val userAgreementButton by lazy { findViewById<TextView>(R.id.user_agreement) }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -52,8 +52,10 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
     private fun configureThemeSwitcher() {
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            TODO()
+        val app = application as App
+        themeSwitcher.isChecked = app.themeCode == 2
+        themeSwitcher.setOnCheckedChangeListener { _, checked ->
+            app.switchTheme(checked)
         }
     }
 }

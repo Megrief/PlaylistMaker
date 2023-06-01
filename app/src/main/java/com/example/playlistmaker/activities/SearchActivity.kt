@@ -58,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
     private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
     private val refreshButton by lazy { findViewById<TextView>(R.id.refresh) }
     private val history by lazy { findViewById<LinearLayoutCompat>(R.id.history) }
-    private val sharedPreferences by lazy { getSharedPreferences(Constants.SEARCH_HISTORY.key, Context.MODE_PRIVATE) }
+    private val sharedPreferences by lazy { getSharedPreferences(Constants.PLAYLIST_MAKER.key, Context.MODE_PRIVATE) }
     private val searchHistory by lazy { SearchHistory(sharedPreferences, history) }
     private val retrofit = Retrofit.Builder()
         .baseUrl(Constants.BASE_URL.key)

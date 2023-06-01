@@ -11,9 +11,9 @@ class MainActivity : AppCompatActivity() {
     private val mediaButton by lazy { findViewById<Button>(R.id.media) }
     private val searchButton by lazy { findViewById<Button>(R.id.search) }
     override fun onCreate(savedInstanceState: Bundle?) {
+        this.theme.changingConfigurations
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         searchButton.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
