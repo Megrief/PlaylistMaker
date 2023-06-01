@@ -23,6 +23,8 @@ import com.example.playlistmaker.itunes.ITunesResponse
 import com.example.playlistmaker.itunes.ITunesSearch
 import com.example.playlistmaker.trackRecyclerView.Track
 import com.example.playlistmaker.trackRecyclerView.TrackAdapter
+import com.example.playlistmaker.utils.Constants
+import com.example.playlistmaker.utils.SearchHistory
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.gson.Gson
 import retrofit2.Call
@@ -34,21 +36,20 @@ import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
     private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
-    private val adapter = TrackAdapter()
+    private val trackList = mutableListOf<Track>()
+    private val adapter = TrackAdapter { searchHistory.addToHistory(it) }
     private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
+    private var savedValue: String = ""
     private val searchBarWatcher by lazy { object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            //empty
-        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
             if (!s.isNullOrEmpty()) savedValue = s.toString()
+            showHistory(s.toString(), searchBar.hasFocus())
         }
 
-        override fun afterTextChanged(s: Editable?) {
-            //empty
-        }
+        override fun afterTextChanged(s: Editable?) { }
     } }
     private val clearButton by lazy { findViewById<ImageButton>(R.id.clear_button) }
     private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
@@ -56,8 +57,11 @@ class SearchActivity : AppCompatActivity() {
     private val somethingWrongImage by lazy { findViewById<ImageView>(R.id.something_wrong_image) }
     private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
     private val refreshButton by lazy { findViewById<TextView>(R.id.refresh) }
+    private val history by lazy { findViewById<LinearLayoutCompat>(R.id.history) }
+    private val sharedPreferences by lazy { getSharedPreferences(Constants.SEARCH_HISTORY.key, Context.MODE_PRIVATE) }
+    private val searchHistory by lazy { SearchHistory(sharedPreferences, history) }
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(Constants.BASE_URL.key)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val service = retrofit.create<ITunesSearch>()
@@ -66,8 +70,8 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        searchHistory.refresh()
         toolbar.setNavigationOnClickListener { finish() }
-
         configureSearchBar()
         configureTrackListView()
         configureClearButton()
@@ -76,16 +80,16 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_BAR_STATE, savedValue)
+        outState.putString(Constants.SEARCH_BAR_STATE.key, savedValue)
         if (trackList.isNotEmpty()) {
             val listToJson = Gson().toJson(ITunesResponse(trackList.size, trackList), ITunesResponse::class.java)
-            outState.putString(TRACK_LIST_STATE, listToJson)
+            outState.putString(Constants.TRACK_LIST_STATE.key, listToJson)
         }
     }
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
-        val savedList = savedInstanceState.getString(TRACK_LIST_STATE)
+        savedValue = savedInstanceState.getString(Constants.SEARCH_BAR_STATE.key) ?: ""
+        val savedList = savedInstanceState.getString(Constants.TRACK_LIST_STATE.key)
         if (savedList != null) {
             trackList.addAll(Gson().fromJson(savedList, ITunesResponse::class.java).results)
             adapter.notifyDataSetChanged()
@@ -123,17 +127,22 @@ class SearchActivity : AppCompatActivity() {
     private fun getError() {
         somethingWrongImage.setImageResource(R.drawable.no_internet)
         somethingWrongMessage.setText(R.string.no_internet)
+        if (history.isVisible) history.makeInvisible()
         refreshButton.makeVisible()
         somethingWrong.makeVisible()
     }
     private fun configureSearchBar() {
         searchBar.setText(savedValue)
         searchBar.addTextChangedListener(searchBarWatcher)
+        searchBar.setOnFocusChangeListener { _, hasFocus ->
+            showHistory("", hasFocus)
+        }
+        // Apply button on the keyboard. Will be removed later
         searchBar.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 trackListView.makeInvisible()
                 somethingWrong.makeInvisible()
-                if (savedValue.isNotEmpty()) getResults()
+                if (savedValue.isNotBlank()) getResults()
             }
             false
         }
@@ -160,11 +169,12 @@ class SearchActivity : AppCompatActivity() {
             getResults()
         }
     }
-    companion object {
-        const val BASE_URL: String = "https://itunes.apple.com"
-        const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
-        const val TRACK_LIST_STATE = "TRACK_LIST_STATE"
-        private var savedValue: String = ""
-        private val trackList = mutableListOf<Track>()
+    private fun showHistory(s: String, hasFocus: Boolean) {
+        history.visibility = if (
+            s.isBlank()
+            && hasFocus
+            && sharedPreferences.contains(Constants.HISTORY_KEY.key)
+        ) VISIBLE else GONE
     }
+
 }

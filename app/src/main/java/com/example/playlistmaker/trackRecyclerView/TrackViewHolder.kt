@@ -21,4 +21,5 @@ class TrackViewHolder(private val parentView: View) : RecyclerView.ViewHolder(pa
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
         Glide.with(parentView).load(track.artworkUrl100).placeholder(R.drawable.placeholder).into(poster)
     }
+
 }
