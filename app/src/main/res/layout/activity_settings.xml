@@ -13,7 +13,7 @@
         app:title="@string/settings" />
 
     <!-- Dark theme -->
-    <androidx.appcompat.widget.SwitchCompat
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/dark_theme"
         style="@style/MenuTextStyle"
         android:layout_width="match_parent"

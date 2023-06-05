@@ -33,7 +33,7 @@
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:paddingStart">@dimen/medium</item>
         <item name="android:paddingEnd">@dimen/sub_medium</item>
-        <item name="drawableTint">?attr/color</item>
+        <item name="drawableTint">?attr/colorSecondary</item>
     </style>
 
     <style name="SearchMessageTextStyle">
@@ -111,5 +111,19 @@
     <style name="ImageWithRoundedCorners">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">2dp</item>
+    </style>
+    <style name="TextButtonOnSearch">
+        <item name="android:background">@drawable/refresh_button_background</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/average</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:paddingStart">@dimen/almost_medium</item>
+        <item name="android:paddingEnd">@dimen/almost_medium</item>
+        <item name="android:paddingBottom">@dimen/icon_pad</item>
+        <item name="android:paddingTop">@dimen/icon_pad</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:fontWeight">500</item>
+        <item name="android:textSize">@dimen/almost_medium_text_size</item>
     </style>
 </resources>
