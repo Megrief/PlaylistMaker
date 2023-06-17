@@ -16,11 +16,12 @@ class SettingsActivity : AppCompatActivity() {
     private val shareButton by lazy { findViewById<TextView>(R.id.share) }
     private val supportButton by lazy { findViewById<TextView>(R.id.support) }
     private val userAgreementButton by lazy { findViewById<TextView>(R.id.user_agreement) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         configureShareButton()
         configureUserAgreementButton()
         configureSupportButton()
@@ -37,6 +38,7 @@ class SettingsActivity : AppCompatActivity() {
             })
         }
     }
+
     private fun configureShareButton() {
         shareButton.setOnClickListener {
             startActivity(Intent(Intent.ACTION_SEND).apply {
@@ -45,12 +47,14 @@ class SettingsActivity : AppCompatActivity() {
             })
         }
     }
+
     private fun configureUserAgreementButton() {
         userAgreementButton.setOnClickListener {
             val url = Uri.parse(getString(R.string.practicum_offer))
             startActivity(Intent(Intent.ACTION_VIEW, url))
         }
     }
+
     private fun configureThemeSwitcher() {
         val app = application as App
         themeSwitcher.isChecked = app.themeCode == 2

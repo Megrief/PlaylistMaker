@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
         this.theme.changingConfigurations
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         searchButton.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }

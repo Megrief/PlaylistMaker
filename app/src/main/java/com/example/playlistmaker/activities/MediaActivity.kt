@@ -1,7 +1,7 @@
 package com.example.playlistmaker.activities
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
 
 class MediaActivity : AppCompatActivity() {
@@ -9,4 +9,5 @@ class MediaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_media)
     }
+
 }
