@@ -46,19 +46,7 @@ class SearchActivity : AppCompatActivity() {
     }
     private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
     private var savedValue: String = ""
-    private val searchBarWatcher by lazy { object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
-            if (!s.isNullOrEmpty()) savedValue = s.toString()
-            showHistory(s.toString(), searchBar.hasFocus())
-        }
-
-        override fun afterTextChanged(s: Editable?) { }
-    } }
     private val clearButton by lazy { findViewById<ImageButton>(R.id.clear_button) }
-    private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
     private val somethingWrong by lazy { findViewById<LinearLayoutCompat>(R.id.something_wrong) }
     private val somethingWrongImage by lazy { findViewById<ImageView>(R.id.something_wrong_image) }
     private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
@@ -67,17 +55,18 @@ class SearchActivity : AppCompatActivity() {
     private val sharedPreferences by lazy { getSharedPreferences(Constants.PLAYLIST_MAKER.key, Context.MODE_PRIVATE) }
     private val searchHistory by lazy { SearchHistory(this, sharedPreferences, history) }
     private val retrofit = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL.key)
+        .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
-    private val service = retrofit.create<ITunesSearch>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         searchHistory.refresh()
-        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        findViewById<MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
         configureSearchBar()
         configureTrackListView()
         configureClearButton()
@@ -86,17 +75,17 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(Constants.SEARCH_BAR_STATE.key, savedValue)
+        outState.putString(SEARCH_BAR_STATE, savedValue)
         if (trackList.isNotEmpty()) {
             val listToJson = Gson().toJson(ITunesResponse(trackList.size, trackList), ITunesResponse::class.java)
-            outState.putString(Constants.TRACK_LIST_STATE.key, listToJson)
+            outState.putString(TRACK_LIST_STATE, listToJson)
         }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedValue = savedInstanceState.getString(Constants.SEARCH_BAR_STATE.key) ?: ""
-        val savedList = savedInstanceState.getString(Constants.TRACK_LIST_STATE.key)
+        savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
+        val savedList = savedInstanceState.getString(TRACK_LIST_STATE)
         if (savedList != null) {
             trackList.addAll(Gson().fromJson(savedList, ITunesResponse::class.java).results)
             adapter.notifyDataSetChanged()
@@ -105,7 +94,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun getResults() {
-        service.search(savedValue).enqueue(object : Callback<ITunesResponse> {
+        retrofit.create<ITunesSearch>().search(savedValue).enqueue(object : Callback<ITunesResponse> {
             override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
                 trackList.clear()
                 if (response.isSuccessful) {
@@ -121,9 +110,7 @@ class SearchActivity : AppCompatActivity() {
                 } else getError()
             }
 
-            override fun onFailure(call: Call<ITunesResponse>, t: Throwable) {
-                getError()
-            }
+            override fun onFailure(call: Call<ITunesResponse>, t: Throwable) { getError() }
         })
     }
 
@@ -145,7 +132,17 @@ class SearchActivity : AppCompatActivity() {
 
     private fun configureSearchBar() {
         searchBar.setText(savedValue)
-        searchBar.addTextChangedListener(searchBarWatcher)
+        searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
+                if (!s.isNullOrEmpty()) savedValue = s.toString()
+                showHistory(s.toString(), searchBar.hasFocus())
+            }
+
+            override fun afterTextChanged(s: Editable?) { }
+        })
         searchBar.setOnFocusChangeListener { _, hasFocus ->
             showHistory("", hasFocus)
         }
@@ -191,6 +188,13 @@ class SearchActivity : AppCompatActivity() {
             && hasFocus
             && sharedPreferences.contains(Constants.HISTORY_KEY.key)
         ) VISIBLE else GONE
+    }
+
+    companion object {
+        const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
+        const val BASE_URL = "https://itunes.apple.com"
+        const val TRACK_LIST_STATE = "TRACK_LIST_STATE"
+
     }
 
 }

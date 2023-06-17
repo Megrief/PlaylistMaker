@@ -1,6 +1,9 @@
 package com.example.playlistmaker.trackRecyclerView
 
+import android.icu.text.SimpleDateFormat
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
+import java.util.Locale
 
 data class Track(
     @SerializedName("trackId")
@@ -21,4 +24,8 @@ data class Track(
     val releaseDate: String,
     @SerializedName("primaryGenreName")
     val primaryGenreName: String
-)
+) {
+    fun getYear() = LocalDateTime.parse(releaseDate.dropLast(1)).year.toString()
+    fun getLength(): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTime)
+    fun getPoster512(): String = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+}

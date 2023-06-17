@@ -1,13 +1,11 @@
 package com.example.playlistmaker.trackRecyclerView
 
-import android.icu.text.SimpleDateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import java.util.Locale
 
 class TrackViewHolder(private val parentView: View) : RecyclerView.ViewHolder(parentView) {
     private val trackName: TextView = parentView.findViewById(R.id.track_name) as TextView
@@ -18,7 +16,7 @@ class TrackViewHolder(private val parentView: View) : RecyclerView.ViewHolder(pa
     fun bind(track: Track) {
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTime)
+        trackTime.text = track.getLength()
         Glide.with(parentView).load(track.artworkUrl100).placeholder(R.drawable.placeholder).into(poster)
     }
 

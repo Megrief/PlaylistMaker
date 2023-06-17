@@ -55,12 +55,9 @@ class SearchHistory(context: Context, private val sharedPreferences: SharedPrefe
     }
 
     private fun getHistoryFromSharedPreferences(): List<Track> {
-        return sharedPreferences.getString(Constants.HISTORY_KEY.key, null).let {
-            val jString = it ?: ""
-            if (jString.isNotEmpty()) {
-                Gson().fromJson(it, ITunesResponse::class.java).results
-            } else emptyList()
-        }
+        return sharedPreferences.getString(Constants.HISTORY_KEY.key, null)?.let {
+            Gson().fromJson(it, ITunesResponse::class.java).results
+        } ?: emptyList()
     }
 
     fun refresh() {

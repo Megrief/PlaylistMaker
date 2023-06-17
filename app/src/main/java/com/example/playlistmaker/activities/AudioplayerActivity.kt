@@ -1,6 +1,5 @@
 package com.example.playlistmaker.activities
 
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -15,8 +14,6 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.trackRecyclerView.Track
 import com.example.playlistmaker.utils.Constants
 import com.google.gson.Gson
-import java.time.LocalDateTime
-import java.util.Locale
 
 class AudioplayerActivity : AppCompatActivity() {
     private val backButton by lazy { findViewById<ImageButton>(R.id.back) }
@@ -39,19 +36,19 @@ class AudioplayerActivity : AppCompatActivity() {
     }
 
     private fun bind(track: Track) {
-        bindPoster(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
-        bindText(findViewById(R.id.track_name), track.trackName, findViewById(R.id.track_name))
-        bindText(findViewById(R.id.artist_name), track.artistName, findViewById(R.id.artist_name))
-        bindTrackLength(track.trackTime)
-        bindText(findViewById(R.id.collection_value), track.collectionName, findViewById(R.id.collection_group))
-        bindReleaseYear(track.releaseDate)
-        bindText(findViewById(R.id.genre_value), track.primaryGenreName, findViewById(R.id.genre_group))
-        bindText(findViewById(R.id.country_value), track.country, findViewById(R.id.country_group))
+        bindImagePoster(track.getPoster512())
+        bindItemText(findViewById(R.id.track_name), track.trackName, findViewById(R.id.track_name))
+        bindItemText(findViewById(R.id.artist_name), track.artistName, findViewById(R.id.artist_name))
+        bindItemText(findViewById(R.id.track_length_value), track.getLength(), findViewById(R.id.track_length_group))
+        bindItemText(findViewById(R.id.collection_value), track.collectionName, findViewById(R.id.collection_group))
+        bindItemText(findViewById(R.id.release_year_value), track.getYear(), findViewById(R.id.release_year_group))
+        bindItemText(findViewById(R.id.genre_value), track.primaryGenreName, findViewById(R.id.genre_group))
+        bindItemText(findViewById(R.id.country_value), track.country, findViewById(R.id.country_group))
     }
 
-    private fun bindPoster(url: String) {
+    private fun bindImagePoster(url: String) {
         val poster = findViewById<ImageView>(R.id.poster)
-        val cornerSizeInPx = this.resources.getDimensionPixelSize(R.dimen.small)
+        val cornerSizeInPx = resources.getDimensionPixelSize(R.dimen.small)
         Glide.with(this)
             .load(url)
             .placeholder(R.drawable.placeholder)
@@ -59,20 +56,7 @@ class AudioplayerActivity : AppCompatActivity() {
             .into(poster)
     }
 
-    private fun bindTrackLength(timeInMillis: Long) {
-        val length: String = SimpleDateFormat("mm:ss", Locale.getDefault())
-            .format(timeInMillis)
-        findViewById<TextView>(R.id.track_length_value).text = length
-    }
-
-    private fun bindReleaseYear(releaseDateString: String) {
-        if (isNotEmpty(releaseDateString, findViewById(R.id.release_year_group))) {
-            val year = LocalDateTime.parse(releaseDateString.dropLast(1)).year.toString()
-            findViewById<TextView>(R.id.release_year_value).text = year
-        }
-    }
-
-    private fun bindText(view: TextView, text: String, group: View) {
+    private fun bindItemText(view: TextView, text: String, group: View) {
         if (isNotEmpty(text, group)) view.text = text
     }
 
