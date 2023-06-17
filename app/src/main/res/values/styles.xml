@@ -47,8 +47,6 @@
     </style>
 
     <style name="HeadTextStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">@dimen/head_text_size</item>
         <item name="fontFamily">@font/ys_display_medium</item>
@@ -125,5 +123,33 @@
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:fontWeight">500</item>
         <item name="android:textSize">@dimen/almost_medium_text_size</item>
+    </style>
+
+    <style name="TextOnAudioplayer">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+    </style>
+
+    <style name="SmallTextOnAudioplayer">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="GroupOnAudioplayer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:visibility">visible</item>
+    </style>
+    
+    <style name="SmallTextViewOnAudioplayer">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="layout_constraintHorizontal_chainStyle">spread_inside</item>
+        <item name="android:textAppearance">@style/SmallTextOnAudioplayer</item>
+        <item name="android:layout_marginTop">@dimen/medium</item>
+        <item name="layout_goneMarginTop">@dimen/medium</item>
     </style>
 </resources>

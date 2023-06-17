@@ -12,4 +12,6 @@
     <color name="icons_gray">#AEAFB4</color>
     <color name="custom_white">#F5F5F5</color>
     <color name="light_gray">#E6E8EB</color>
+    <color name="transparent">#00000000</color>
+    <color name="button_audioplayer">#401A1B22</color>
 </resources>

@@ -20,4 +20,10 @@
     <string name="refresh">Обновить</string>
     <string name="history">Вы искали</string>
     <string name="clear_history">Очистить поиск</string>
+    <string name="track_length">Длительность</string>
+    <string name="release_year">Год</string>
+    <string name="album">Альбом</string>
+    <string name="genre">Жанр</string>
+    <string name="country">Страна</string>
+    <string name="half_minute">0:30</string>
 </resources>

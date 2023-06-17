@@ -1,6 +1,7 @@
 package com.example.playlistmaker.activities
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -37,7 +38,12 @@ import retrofit2.create
 class SearchActivity : AppCompatActivity() {
     private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
     private val trackList = mutableListOf<Track>()
-    private val adapter = TrackAdapter { searchHistory.addToHistory(it) }
+    private val adapter = TrackAdapter {
+        searchHistory.addToHistory(it)
+        val jTrack = Gson().toJson(it, Track::class.java)
+        sharedPreferences.edit().putString(Constants.K_TRACK.key, jTrack).apply()
+        startActivity(Intent(this, AudioplayerActivity::class.java))
+    }
     private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
     private var savedValue: String = ""
     private val searchBarWatcher by lazy { object : TextWatcher {
@@ -59,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
     private val refreshButton by lazy { findViewById<TextView>(R.id.refresh) }
     private val history by lazy { findViewById<LinearLayoutCompat>(R.id.history) }
     private val sharedPreferences by lazy { getSharedPreferences(Constants.PLAYLIST_MAKER.key, Context.MODE_PRIVATE) }
-    private val searchHistory by lazy { SearchHistory(sharedPreferences, history) }
+    private val searchHistory by lazy { SearchHistory(this, sharedPreferences, history) }
     private val retrofit = Retrofit.Builder()
         .baseUrl(Constants.BASE_URL.key)
         .addConverterFactory(GsonConverterFactory.create())
@@ -71,7 +77,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         searchHistory.refresh()
-        toolbar.setNavigationOnClickListener { finish() }
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         configureSearchBar()
         configureTrackListView()
         configureClearButton()
@@ -86,6 +92,7 @@ class SearchActivity : AppCompatActivity() {
             outState.putString(Constants.TRACK_LIST_STATE.key, listToJson)
         }
     }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedValue = savedInstanceState.getString(Constants.SEARCH_BAR_STATE.key) ?: ""
@@ -96,6 +103,7 @@ class SearchActivity : AppCompatActivity() {
             trackListView.makeVisible()
         }
     }
+
     private fun getResults() {
         service.search(savedValue).enqueue(object : Callback<ITunesResponse> {
             override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
@@ -118,12 +126,15 @@ class SearchActivity : AppCompatActivity() {
             }
         })
     }
+
     private fun View.makeInvisible() {
         if (this.isVisible) this.visibility = GONE
     }
+
     private fun View.makeVisible() {
         if (this.isGone) this.visibility = VISIBLE
     }
+
     private fun getError() {
         somethingWrongImage.setImageResource(R.drawable.no_internet)
         somethingWrongMessage.setText(R.string.no_internet)
@@ -131,6 +142,7 @@ class SearchActivity : AppCompatActivity() {
         refreshButton.makeVisible()
         somethingWrong.makeVisible()
     }
+
     private fun configureSearchBar() {
         searchBar.setText(savedValue)
         searchBar.addTextChangedListener(searchBarWatcher)
@@ -147,10 +159,12 @@ class SearchActivity : AppCompatActivity() {
             false
         }
     }
+
     private fun configureTrackListView() {
         adapter.trackList = trackList
         trackListView.adapter = adapter
     }
+
     private fun configureClearButton() {
         clearButton.setOnClickListener {
             searchBar.setText("")
@@ -162,6 +176,7 @@ class SearchActivity : AppCompatActivity() {
             somethingWrong.makeInvisible()
         }
     }
+
     private fun configureRefreshButton() {
         refreshButton.setOnClickListener {
             somethingWrong.makeInvisible()
@@ -169,6 +184,7 @@ class SearchActivity : AppCompatActivity() {
             getResults()
         }
     }
+
     private fun showHistory(s: String, hasFocus: Boolean) {
         history.visibility = if (
             s.isBlank()
