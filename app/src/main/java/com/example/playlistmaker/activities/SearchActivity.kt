@@ -41,8 +41,10 @@ class SearchActivity : AppCompatActivity() {
     private val adapter = TrackAdapter {
         searchHistory.addToHistory(it)
         val jTrack = Gson().toJson(it, Track::class.java)
-        sharedPreferences.edit().putString(Constants.K_TRACK.key, jTrack).apply()
-        startActivity(Intent(this, AudioplayerActivity::class.java))
+        startActivity(
+            Intent(this, AudioplayerActivity::class.java)
+                .putExtra(Constants.K_TRACK.key, jTrack)
+        )
     }
     private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
     private var savedValue: String = ""

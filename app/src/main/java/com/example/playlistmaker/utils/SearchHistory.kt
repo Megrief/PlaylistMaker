@@ -20,8 +20,10 @@ class SearchHistory(context: Context, private val sharedPreferences: SharedPrefe
     private val adapter = TrackAdapter {
         addToHistory(it)
         val jTrack = Gson().toJson(it, Track::class.java)
-        sharedPreferences.edit().putString(Constants.K_TRACK.key, jTrack).apply()
-        context.startActivity(Intent(context, AudioplayerActivity::class.java))
+        context.startActivity(
+            Intent(context, AudioplayerActivity::class.java)
+                .putExtra(Constants.K_TRACK.key, jTrack)
+        )
     }
 
     init {

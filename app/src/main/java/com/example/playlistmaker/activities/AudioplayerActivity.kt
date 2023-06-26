@@ -21,15 +21,14 @@ class AudioplayerActivity : AppCompatActivity() {
     private val playButton by lazy { findViewById<ImageButton>(R.id.play_button) }
     private val likeButton by lazy { findViewById<ImageButton>(R.id.like) }
     private val playingTime by lazy { findViewById<TextView>(R.id.playing_time) }
-    private val preferences by lazy { getSharedPreferences(Constants.PLAYLIST_MAKER.key, MODE_PRIVATE) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audioplayer)
-        preferences.getString(Constants.K_TRACK.key, null)?.let {
+        intent.getStringExtra(Constants.K_TRACK.key)?.let {
             val track = Gson().fromJson(it, Track::class.java)
             bind(track)
-        }
+        } ?: onBackPressedDispatcher.onBackPressed()
         backButton.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
