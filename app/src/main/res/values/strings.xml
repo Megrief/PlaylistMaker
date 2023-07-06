@@ -26,4 +26,5 @@
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
     <string name="half_minute">0:30</string>
+    <string name="track_lost">Трек потераялся по пути.</string>
 </resources>

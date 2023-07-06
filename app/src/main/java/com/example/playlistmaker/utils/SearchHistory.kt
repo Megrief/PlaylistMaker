@@ -1,30 +1,22 @@
 package com.example.playlistmaker.utils
 
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.activities.AudioplayerActivity
 import com.example.playlistmaker.itunes.ITunesResponse
 import com.example.playlistmaker.trackRecyclerView.Track
 import com.example.playlistmaker.trackRecyclerView.TrackAdapter
 import com.google.gson.Gson
 
-class SearchHistory(context: Context, private val sharedPreferences: SharedPreferences, private val parentView: ViewGroup) {
+class SearchHistory(private val sharedPreferences: SharedPreferences,
+                    private val parentView: ViewGroup,
+                    onTrackClicked: (Track) -> Unit) {
     private val historyListView: RecyclerView = parentView.findViewById(R.id.history_list)
     private val clearButton: TextView = parentView.findViewById(R.id.clear_history)
-    private val adapter = TrackAdapter {
-        addToHistory(it)
-        val jTrack = Gson().toJson(it, Track::class.java)
-        context.startActivity(
-            Intent(context, AudioplayerActivity::class.java)
-                .putExtra(Constants.K_TRACK.key, jTrack)
-        )
-    }
+    private val adapter = TrackAdapter(onTrackClicked)
 
     init {
         historyListView.adapter = adapter
@@ -46,18 +38,18 @@ class SearchHistory(context: Context, private val sharedPreferences: SharedPrefe
         adapter.trackList = list
         adapter.notifyDataSetChanged()
         val jString = Gson().toJson(ITunesResponse(list.size, list), ITunesResponse::class.java)
-        sharedPreferences.edit().putString(Constants.HISTORY_KEY.key, jString).apply()
+        sharedPreferences.edit().putString(HISTORY_KEY, jString).apply()
     }
 
     private fun clearHistory() {
-        sharedPreferences.edit().remove(Constants.HISTORY_KEY.key).apply()
+        sharedPreferences.edit().remove(HISTORY_KEY).apply()
         adapter.trackList.clear()
         parentView.visibility = GONE
         adapter.notifyDataSetChanged()
     }
 
     private fun getHistoryFromSharedPreferences(): List<Track> {
-        return sharedPreferences.getString(Constants.HISTORY_KEY.key, null)?.let {
+        return sharedPreferences.getString(HISTORY_KEY, null)?.let {
             Gson().fromJson(it, ITunesResponse::class.java).results
         } ?: emptyList()
     }
@@ -65,5 +57,9 @@ class SearchHistory(context: Context, private val sharedPreferences: SharedPrefe
     fun refresh() {
         parentView.visibility = GONE
         adapter.notifyDataSetChanged()
+    }
+
+    companion object {
+        const val HISTORY_KEY = "HISTORY_KEY"
     }
 }
