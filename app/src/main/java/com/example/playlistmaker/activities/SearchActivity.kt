@@ -45,6 +45,7 @@ class SearchActivity : AppCompatActivity() {
     private val somethingWrong by lazy { findViewById<LinearLayoutCompat>(R.id.something_wrong) }
     private val somethingWrongImage by lazy { findViewById<ImageView>(R.id.something_wrong_image) }
     private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
+    private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
 
     private val onTrackClicked: (Track) -> Unit = {
         if (itemClickDebouncer.clickDebounce()) {
@@ -67,14 +68,15 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
+                if (!s.isNullOrEmpty()) savedValue = s.toString()
                 showHistory(s.toString(), searchBar.hasFocus())
 
+                val searchRequest = Runnable {
+                    progressBar.visibility = VISIBLE
+                    getResults(savedValue)
+                }
+
                 if (savedValue.isNotBlank()) {
-                    savedValue = s.toString()
-                    val searchRequest = Runnable {
-                        progressBar.visibility = VISIBLE
-                        getResults(savedValue)
-                    }
                     trackListView.visibility = GONE
                     somethingWrong.visibility = GONE
                     searchRequestDebouncer.searchDebounce(searchRequest)
@@ -94,9 +96,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         searchHistory.refresh()
-        findViewById<MaterialToolbar>(R.id.toolbar).setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         configureSearchBar()
         configureTrackListView()
         configureClearButton()
@@ -160,7 +160,7 @@ class SearchActivity : AppCompatActivity() {
         searchBar.setText(savedValue)
         searchBar.addTextChangedListener(textWatcher)
         searchBar.setOnFocusChangeListener { _, hasFocus ->
-            showHistory("", hasFocus)
+            showHistory(savedValue, hasFocus)
         }
     }
 
@@ -195,9 +195,7 @@ class SearchActivity : AppCompatActivity() {
             && hasFocus
             && sharedPreferences.contains(SearchHistory.HISTORY_KEY)
         ) VISIBLE else GONE
-//        TODO("Rewrite this method. Somehow remove sharedPrefs from here to searchHistory.")
     }
-
 
     companion object {
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"

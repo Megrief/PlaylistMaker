@@ -44,8 +44,8 @@ class SearchHistory(private val sharedPreferences: SharedPreferences,
     private fun clearHistory() {
         sharedPreferences.edit().remove(HISTORY_KEY).apply()
         adapter.trackList.clear()
-        parentView.visibility = GONE
         adapter.notifyDataSetChanged()
+        parentView.visibility = GONE
     }
 
     private fun getHistoryFromSharedPreferences(): List<Track> {

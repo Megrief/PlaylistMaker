@@ -13,18 +13,22 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.trackRecyclerView.Track
+import com.example.playlistmaker.utils.Player
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.gson.Gson
 
 class AudioplayerActivity : AppCompatActivity() {
-    private val backButton by lazy { findViewById<ImageButton>(R.id.back) }
+    private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
     private val addToMediaButton by lazy { findViewById<ImageButton>(R.id.add_to_media) }
-    private val playButton by lazy { findViewById<ImageButton>(R.id.play_button) }
+    private val playPauseButton by lazy { findViewById<ImageButton>(R.id.play_button) }
     private val likeButton by lazy { findViewById<ImageButton>(R.id.like) }
-    private val playingTime by lazy { findViewById<TextView>(R.id.playing_time) }
+
+    private lateinit var audioPlayer: Player
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audioplayer)
+
         intent.getStringExtra(SearchActivity.K_TRACK)?.let {
             val track = Gson().fromJson(it, Track::class.java)
             bind(track)
@@ -32,13 +36,24 @@ class AudioplayerActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
             Toast.makeText(this, resources.getString(R.string.track_lost), Toast.LENGTH_SHORT).show()
         }
-        backButton.setOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        playPauseButton.setOnClickListener { audioPlayer.playbackControl() }
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        audioPlayer.releaseResources()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        audioPlayer.pauseMedia()
     }
 
     private fun bind(track: Track) {
         bindImagePoster(track.getPoster512())
+        audioPlayer = Player(track.previewUrl, findViewById(R.id.playing_time), playPauseButton)
         bindItemText(findViewById(R.id.track_name), track.trackName, findViewById(R.id.track_name))
         bindItemText(findViewById(R.id.artist_name), track.artistName, findViewById(R.id.artist_name))
         bindItemText(findViewById(R.id.track_length_value), track.getLength(), findViewById(R.id.track_length_group))
