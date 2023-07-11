@@ -23,7 +23,9 @@ data class Track(
     @SerializedName("releaseDate")
     val releaseDate: String,
     @SerializedName("primaryGenreName")
-    val primaryGenreName: String
+    val primaryGenreName: String,
+    @SerializedName("previewUrl")
+    val previewUrl: String
 ) {
     fun getYear() = LocalDateTime.parse(releaseDate.dropLast(1)).year.toString()
     fun getLength(): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTime)

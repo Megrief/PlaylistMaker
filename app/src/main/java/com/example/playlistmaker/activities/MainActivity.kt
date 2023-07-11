@@ -10,6 +10,7 @@ class MainActivity : AppCompatActivity() {
     private val settingsButton by lazy { findViewById<Button>(R.id.settings) }
     private val mediaButton by lazy { findViewById<Button>(R.id.media) }
     private val searchButton by lazy { findViewById<Button>(R.id.search) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         this.theme.changingConfigurations
         super.onCreate(savedInstanceState)
@@ -18,14 +19,11 @@ class MainActivity : AppCompatActivity() {
         searchButton.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
-
         mediaButton.setOnClickListener {
             startActivity(Intent(this, MediaActivity::class.java))
         }
-
         settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
-
     }
 }
