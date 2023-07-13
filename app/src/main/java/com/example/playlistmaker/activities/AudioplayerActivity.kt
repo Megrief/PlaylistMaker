@@ -29,7 +29,7 @@ class AudioplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audioplayer)
 
-        intent.getStringExtra(SearchActivity.K_TRACK)?.let {
+        intent.getStringExtra(SearchActivity.SAVED_TRACK)?.let {
             val track = Gson().fromJson(it, Track::class.java)
             bind(track)
         } ?: {

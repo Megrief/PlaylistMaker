@@ -11,9 +11,11 @@ import com.example.playlistmaker.trackRecyclerView.Track
 import com.example.playlistmaker.trackRecyclerView.TrackAdapter
 import com.google.gson.Gson
 
-class SearchHistory(private val sharedPreferences: SharedPreferences,
-                    private val parentView: ViewGroup,
-                    onTrackClicked: (Track) -> Unit) {
+class SearchHistory(
+    private val sharedPreferences: SharedPreferences,
+    private val parentView: ViewGroup,
+    onTrackClicked: (Track) -> Unit
+) {
     private val historyListView: RecyclerView = parentView.findViewById(R.id.history_list)
     private val clearButton: TextView = parentView.findViewById(R.id.clear_history)
     private val adapter = TrackAdapter(onTrackClicked)
@@ -37,8 +39,8 @@ class SearchHistory(private val sharedPreferences: SharedPreferences,
         if (list.size > 10) list.removeLast()
         adapter.trackList = list
         adapter.notifyDataSetChanged()
-        val jString = Gson().toJson(ITunesResponse(list.size, list), ITunesResponse::class.java)
-        sharedPreferences.edit().putString(HISTORY_KEY, jString).apply()
+        val jsonTrackListContainer = Gson().toJson(ITunesResponse(list.size, list), ITunesResponse::class.java)
+        sharedPreferences.edit().putString(HISTORY_KEY, jsonTrackListContainer).apply()
     }
 
     private fun clearHistory() {

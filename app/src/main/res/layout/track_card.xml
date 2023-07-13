@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/menu_button_height"
     android:orientation="horizontal">
@@ -30,12 +31,13 @@
             style="@style/TrackCardTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            tools:text="Name for song"
             android:layout_marginTop="@dimen/almost_medium"
             android:ellipsize="end"
             android:text="" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
@@ -46,8 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ellipsize="end"
-                android:text="" />
-
+                tools:text="Artist's name." />
             <ImageView
                 android:id="@+id/point"
                 android:layout_width="wrap_content"
@@ -58,14 +59,12 @@
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/point"
                 app:tint="?attr/colorSecondary" />
-
             <TextView
                 android:id="@+id/track_time"
                 style="@style/TrackCardTextStyle.Small"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0"
-                android:text="" />
+                android:layout_height="wrap_content"
+                tools:text="4:33" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

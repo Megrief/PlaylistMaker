@@ -9,9 +9,11 @@ import com.example.playlistmaker.R
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class Player(url: String,
-             private val timer: TextView,
-             private val playPauseButton: ImageButton) {
+class Player(
+    url: String,
+    private val timer: TextView,
+    private val playPauseButton: ImageButton
+    ) {
     private val player = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private val mainHandler = Handler(Looper.getMainLooper())

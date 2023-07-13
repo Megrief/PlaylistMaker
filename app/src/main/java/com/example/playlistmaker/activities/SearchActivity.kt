@@ -40,27 +40,28 @@ class SearchActivity : AppCompatActivity() {
     private val history by lazy { findViewById<LinearLayoutCompat>(R.id.history) }
     private val progressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
     private val refreshButton by lazy { findViewById<TextView>(R.id.refresh) }
-    private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
     private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
     private val somethingWrong by lazy { findViewById<LinearLayoutCompat>(R.id.something_wrong) }
     private val somethingWrongImage by lazy { findViewById<ImageView>(R.id.something_wrong_image) }
     private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
     private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
+    private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
 
-    private val onTrackClicked: (Track) -> Unit = {
+    private val onTrackClicked: (Track) -> Unit = { //3
         if (itemClickDebouncer.clickDebounce()) {
-            searchHistory.addToHistory(it)
-            val jTrack = Gson().toJson(it, Track::class.java)
+            searchHistory.addToHistory(it) //1
+            val jsonTrack = Gson().toJson(it, Track::class.java)
             startActivity(
                 Intent(this, AudioplayerActivity::class.java)
-                    .putExtra(K_TRACK, jTrack)
+                    .putExtra(SAVED_TRACK, jsonTrack)
             )
         }
     }
-    private val adapter = TrackAdapter(onTrackClicked)
+    // TODO("При создании ссылается на другое поле, еще не созданное, которое для инициализации требует onTrackClick")
+    private val adapter by lazy { TrackAdapter(onTrackClicked) }
     private val itemClickDebouncer = ItemClickDebouncer()
     private val searchRequestDebouncer = SearchRequestDebouncer()
-    private val searchHistory by lazy { SearchHistory(sharedPreferences, history, onTrackClicked) }
+    private val searchHistory by lazy { SearchHistory(sharedPreferences, history, onTrackClicked) } //2
     private val sharedPreferences by lazy { getSharedPreferences(App.PLAYLIST_MAKER, Context.MODE_PRIVATE) }
     private val textWatcher by lazy {
         object : TextWatcher {
@@ -70,12 +71,10 @@ class SearchActivity : AppCompatActivity() {
                 clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
                 if (!s.isNullOrEmpty()) savedValue = s.toString()
                 showHistory(s.toString(), searchBar.hasFocus())
-
                 val searchRequest = Runnable {
                     progressBar.visibility = VISIBLE
                     getResults(savedValue)
                 }
-
                 if (savedValue.isNotBlank()) {
                     trackListView.visibility = GONE
                     somethingWrong.visibility = GONE
@@ -107,8 +106,8 @@ class SearchActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_BAR_STATE, savedValue)
         if (trackList.isNotEmpty()) {
-            val listToJson = Gson().toJson(ITunesResponse(trackList.size, trackList), ITunesResponse::class.java)
-            outState.putString(TRACK_LIST_STATE, listToJson)
+            val jsonTrackListContainer = Gson().toJson(ITunesResponse(trackList.size, trackList), ITunesResponse::class.java)
+            outState.putString(TRACK_LIST_STATE, jsonTrackListContainer)
         }
     }
 
@@ -116,8 +115,9 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
         val savedList = savedInstanceState.getString(TRACK_LIST_STATE)
+        val jsonTrackListContainer = Gson().fromJson(savedList, ITunesResponse::class.java)
         if (savedList != null) {
-            trackList.addAll(Gson().fromJson(savedList, ITunesResponse::class.java).results)
+            trackList.addAll(jsonTrackListContainer.results)
             adapter.notifyDataSetChanged()
             trackListView.visibility = VISIBLE
         }
@@ -200,11 +200,12 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
         const val TRACK_LIST_STATE = "TRACK_LIST_STATE"
-        const val K_TRACK = "K_TRACK"
+        const val SAVED_TRACK = "SAVED_TRACK"
         const val BASE_URL = "https://itunes.apple.com"
 
         private var savedValue: String = ""
         private val trackList = mutableListOf<Track>()
+        // TODO("Проверить возможность удалить трек-лист и работать напрямую со списком из адаптера.")
     }
 
 }
