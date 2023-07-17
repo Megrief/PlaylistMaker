@@ -7,14 +7,11 @@
     android:orientation="vertical"
     tools:context=".activities.AudioplayerActivity">
     <!-- Back -->
-    <ImageButton
-        android:id="@+id/back"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/back_arrow"
-        android:backgroundTint="@color/transparent"
-        app:tint="?attr/colorOnSecondary" />
-
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        style="@style/ToolbarAppearance.WithIcon"
+        android:layout_marginBottom="@dimen/zero"
+        app:title="" />
     <!-- Content -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -143,7 +140,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/add_to_media"
                 app:layout_constraintStart_toEndOf="@id/left_border"
                 app:layout_constraintEnd_toStartOf="@id/right_border"
-                android:src="@drawable/play_button"
+                android:src="@drawable/play_icon"
                 app:tint="?attr/colorOnSecondary" />
             <ImageButton
                 android:id="@+id/like"

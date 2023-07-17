@@ -35,7 +35,6 @@ tools:context=".activities.SearchActivity" >
             android:drawableTint="?attr/colorSecondaryVariant"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/search"
-            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLength="40"
             android:maxLines="1"
@@ -136,4 +135,14 @@ tools:context=".activities.SearchActivity" >
         
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <!-- Progress bar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/background"
+        android:layout_gravity="center"
+        android:layout_marginTop="122dp"
+        android:visibility="gone" />
 </androidx.appcompat.widget.LinearLayoutCompat>
