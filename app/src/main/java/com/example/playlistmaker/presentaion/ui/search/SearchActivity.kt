@@ -1,8 +1,10 @@
-package com.example.playlistmaker.activities
+package com.example.playlistmaker.presentaion.ui.search
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View.GONE
@@ -15,25 +17,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.itunes.ITunesResponse
-import com.example.playlistmaker.itunes.ITunesSearch
-import com.example.playlistmaker.trackRecyclerView.Track
-import com.example.playlistmaker.trackRecyclerView.TrackAdapter
-import com.example.playlistmaker.utils.ItemClickDebouncer
-import com.example.playlistmaker.utils.SearchHistory
-import com.example.playlistmaker.utils.SearchRequestDebouncer
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.presentaion.adapter.TrackAdapter
+import com.example.playlistmaker.presentaion.ui.audioplayer.AudioplayerActivity
+import com.example.playlistmaker.presentaion.utils.Creator
+import com.example.playlistmaker.presentaion.utils.ItemClickDebouncer
+import com.example.playlistmaker.presentaion.utils.SearchRequestDebouncer
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
     private val clearButton by lazy { findViewById<ImageButton>(R.id.clear_button) }
@@ -47,30 +39,28 @@ class SearchActivity : AppCompatActivity() {
     private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
     private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
 
-    private val onTrackClicked: (Track) -> Unit = { //3
-        if (itemClickDebouncer.clickDebounce()) {
-            searchHistory.addToHistory(it) //1
-            val jsonTrack = Gson().toJson(it, Track::class.java)
-            startActivity(
-                Intent(this, AudioplayerActivity::class.java)
-                    .putExtra(SAVED_TRACK, jsonTrack)
-            )
+    private val onTrackClicked: (Track) -> Unit by lazy {
+        {
+            val storageInteractorTrack = Creator.createStorageInteractorTrack(applicationContext)
+            if (itemClickDebouncer.clickDebounce()) {
+                searchHistory.addToHistory(it)
+                storageInteractorTrack.save(TRACK, it)
+                startActivity(Intent(this, AudioplayerActivity::class.java))
+            }
         }
     }
-    // TODO("При создании ссылается на другое поле, еще не созданное, которое для инициализации требует onTrackClick")
     private val adapter by lazy { TrackAdapter(onTrackClicked) }
     private val itemClickDebouncer = ItemClickDebouncer()
     private val searchRequestDebouncer = SearchRequestDebouncer()
-    private val searchHistory by lazy { SearchHistory(sharedPreferences, history, onTrackClicked) } //2
-    private val sharedPreferences by lazy { getSharedPreferences(App.PLAYLIST_MAKER, Context.MODE_PRIVATE) }
+    private val searchHistory by lazy { SearchHistory(history, applicationContext, onTrackClicked) }
     private val textWatcher by lazy {
         object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
-                if (!s.isNullOrEmpty()) savedValue = s.toString()
-                showHistory(s.toString(), searchBar.hasFocus())
+                if (s != null) savedValue = s.toString()
+                searchHistory.showHistory(s.toString(), searchBar.hasFocus())
                 val searchRequest = Runnable {
                     progressBar.visibility = VISIBLE
                     getResults(savedValue)
@@ -85,11 +75,8 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) { }
         }
     }
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
+    private val storageInteractorList by lazy { Creator.createStorageInteractorList(applicationContext) }
+    private val searchInteractor by lazy { Creator.createSearchInteractor() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -106,52 +93,55 @@ class SearchActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_BAR_STATE, savedValue)
         if (trackList.isNotEmpty()) {
-            val jsonTrackListContainer = Gson().toJson(ITunesResponse(trackList.size, trackList), ITunesResponse::class.java)
-            outState.putString(TRACK_LIST_STATE, jsonTrackListContainer)
+            storageInteractorList.save(TRACK_LIST, trackList)
         }
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
-        val savedList = savedInstanceState.getString(TRACK_LIST_STATE)
-        val jsonTrackListContainer = Gson().fromJson(savedList, ITunesResponse::class.java)
+        val savedList = savedInstanceState.getString(TRACK_LIST)
         if (savedList != null) {
-            trackList.addAll(jsonTrackListContainer.results)
+            storageInteractorList.get(TRACK_LIST) {
+                trackList.addAll(it)
+            }
             adapter.notifyDataSetChanged()
             trackListView.visibility = VISIBLE
         }
     }
 
     private fun getResults(message: String) {
-        retrofit.create<ITunesSearch>().search(message).enqueue(object : Callback<ITunesResponse> {
-            override fun onResponse(call: Call<ITunesResponse>, response: Response<ITunesResponse>) {
+        searchInteractor.search(message) {
+            val mainHandler = Handler(Looper.getMainLooper())
+            mainHandler.post {
                 progressBar.visibility = GONE
                 trackList.clear()
-                if (response.isSuccessful) {
-                    if (response.body()?.resultCount == 0) {
-                        somethingWrongImage.setImageResource(R.drawable.nothing_found)
-                        somethingWrongMessage.setText(R.string.nothing_found)
-                        somethingWrong.visibility = VISIBLE
-                    } else {
-                        trackList.addAll(response.body()?.results!!)
+
+                when {
+                    it == null -> onError()
+                    it.isEmpty() -> onEmpty()
+                    else -> {
+                        trackList.addAll(it)
                         adapter.notifyDataSetChanged()
                         trackListView.visibility = VISIBLE
                     }
-                } else getError()
+                }
             }
-
-            override fun onFailure(call: Call<ITunesResponse>, t: Throwable) {
-                progressBar.visibility = GONE
-                getError()
-            }
-        })
+        }
     }
 
-    private fun getError() {
+    private fun onEmpty() {
+        somethingWrongImage.setImageResource(R.drawable.nothing_found)
+        somethingWrongMessage.setText(R.string.nothing_found)
+        history.visibility = GONE
+        somethingWrong.visibility = VISIBLE
+        refreshButton.visibility = GONE // на всякий случай
+    }
+
+    private fun onError() {
         somethingWrongImage.setImageResource(R.drawable.no_internet)
         somethingWrongMessage.setText(R.string.no_internet)
-        if (history.isVisible) history.visibility = GONE
+        history.visibility = GONE
         refreshButton.visibility = VISIBLE
         somethingWrong.visibility = VISIBLE
     }
@@ -160,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
         searchBar.setText(savedValue)
         searchBar.addTextChangedListener(textWatcher)
         searchBar.setOnFocusChangeListener { _, hasFocus ->
-            showHistory(savedValue, hasFocus)
+            searchHistory.showHistory(savedValue, hasFocus)
         }
     }
 
@@ -172,10 +162,12 @@ class SearchActivity : AppCompatActivity() {
     private fun configureClearButton() {
         clearButton.setOnClickListener {
             searchBar.setText("")
+            savedValue = ""
             val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
             trackList.clear()
             adapter.notifyDataSetChanged()
+            searchHistory.showHistory(savedValue, hasFocus = true)
             trackListView.visibility = GONE
             somethingWrong.visibility = GONE
         }
@@ -189,23 +181,18 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showHistory(s: String, hasFocus: Boolean) {
-        history.visibility = if (
-            s.isBlank()
-            && hasFocus
-            && sharedPreferences.contains(SearchHistory.HISTORY_KEY)
-        ) VISIBLE else GONE
+    override fun onDestroy() {
+        super.onDestroy()
+        savedValue = ""
     }
 
     companion object {
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
-        const val TRACK_LIST_STATE = "TRACK_LIST_STATE"
-        const val SAVED_TRACK = "SAVED_TRACK"
-        const val BASE_URL = "https://itunes.apple.com"
+        const val TRACK_LIST = "TRACK_LIST"
+        const val TRACK = "TRACK"
 
         private var savedValue: String = ""
         private val trackList = mutableListOf<Track>()
-        // TODO("Проверить возможность удалить трек-лист и работать напрямую со списком из адаптера.")
     }
 
 }

@@ -1,10 +1,13 @@
-package com.example.playlistmaker.activities
+package com.example.playlistmaker.presentaion.ui.main_activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
+import com.example.playlistmaker.presentaion.ui.media.MediaActivity
+import com.example.playlistmaker.presentaion.ui.settings.SettingsActivity
+import com.example.playlistmaker.presentaion.ui.search.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     private val settingsButton by lazy { findViewById<Button>(R.id.settings) }
