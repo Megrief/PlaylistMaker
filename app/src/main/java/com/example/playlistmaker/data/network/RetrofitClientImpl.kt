@@ -13,19 +13,16 @@ class RetrofitClientImpl : NetworkClient {
         .build()
     private val apiService = retrofit.create(ITunesApiService::class.java)
 
-    @Synchronized
-    override fun doRequest(dto: Any): Response {
-        return if (dto is TrackSearchRequest) {
-            val response = try {
-                apiService.search(dto.term).execute()
-            } catch(_: SocketTimeoutException) {
-                null
-            }
-            val body = response?.body() ?: Response()
+    override fun doSearch(dto: TrackSearchRequest): Response {
+        val response = try {
+            apiService.search(dto.term).execute()
+        } catch(_: SocketTimeoutException) {
+            null
+        }
+        val body = response?.body() ?: Response()
 
-            body.apply { resultCode = response?.code() ?: 400 }
+        body.apply { resultCode = response?.code() ?: Response.FAILURE }
 
-            body
-        } else Response().apply { resultCode = 400 }
+        return body
     }
 }

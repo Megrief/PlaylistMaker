@@ -140,7 +140,6 @@
                 app:layout_constraintBottom_toBottomOf="@id/add_to_media"
                 app:layout_constraintStart_toEndOf="@id/left_border"
                 app:layout_constraintEnd_toStartOf="@id/right_border"
-                android:clickable="false"
                 android:src="@drawable/play_icon"
                 app:tint="?attr/colorOnSecondary" />
             <ImageButton

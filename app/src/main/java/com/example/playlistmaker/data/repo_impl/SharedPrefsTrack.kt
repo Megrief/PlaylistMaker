@@ -8,16 +8,16 @@ import com.google.gson.Gson
 
 class SharedPrefsTrack(context: Context) : StorageManagerRepo<Track?> {
     private val sharedPrefs = context.getSharedPreferences(App.PLAYLIST_MAKER, Context.MODE_PRIVATE)
-
+    private val gson = Gson()
     override fun save(key: String, item: Track?) {
-        Gson().toJson(item).let {
+        gson.toJson(item).let {
             sharedPrefs.edit().putString(key, it).apply()
         }
     }
 
     override fun get(key: String): Track? {
         return sharedPrefs.getString(key, null)?.let {
-             Gson().fromJson(it, Track::class.java)
+             gson.fromJson(it, Track::class.java)
         }
     }
 }

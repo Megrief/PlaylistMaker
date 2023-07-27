@@ -4,8 +4,8 @@ import android.media.MediaPlayer
 
 class Player(
     url: String,
-    onPrepared: Runnable,
-    onCopletion: Runnable
+    onPrepared: () -> Unit,
+    onCopletion: () -> Unit
 ) {
     private val player = MediaPlayer()
     private var playerState = STATE_DEFAULT
@@ -14,13 +14,13 @@ class Player(
     init {
         player.setDataSource(url)
         player.prepareAsync()
-        player.setOnPreparedListener {
+        player.setOnPreparedListener() {
             playerState = STATE_PREPARED
-            onPrepared.run()
+            onPrepared()
         }
         player.setOnCompletionListener {
             playerState = STATE_PREPARED
-            onCopletion.run()
+            onCopletion()
         }
     }
 
@@ -31,7 +31,13 @@ class Player(
         }
     }
 
+    fun releaseResources() {
+        player.release()
+        playerState = STATE_DEFAULT
+    }
+
     fun getCurrentPosition(): Int = player.currentPosition
+
     private fun playMedia() {
         player.start()
         playerState = STATE_PLAYING
@@ -40,11 +46,6 @@ class Player(
     private fun pauseMedia() {
         player.pause()
         playerState = STATE_PAUSED
-    }
-
-    fun releaseResources() {
-        player.release()
-        playerState = STATE_DEFAULT
     }
 
     companion object {

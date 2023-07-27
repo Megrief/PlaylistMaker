@@ -22,7 +22,7 @@ class PlayerInteractor(
             val position = player.getCurrentPosition()
             timer.text = SimpleDateFormat("mm:ss", Locale.getDefault())
                 .format(position)
-            mainHandler.postDelayed(this, DELAY)
+            mainHandler.postDelayed(this, DELAY_MILLIS)
         }
     }
 
@@ -30,18 +30,12 @@ class PlayerInteractor(
         playButtonConfig()
         player = Player(
             url,
-            onPrepared = { playButton.isClickable = true },
+            onPrepared = { playButton.isEnabled = true },
             onCopletion = {
                 onPause()
                 timer.setText(R.string.time_left)
             }
         )
-    }
-
-    private fun onPlay() {
-        isPlaying = true
-        playButton.setImageResource(R.drawable.pause_icon)
-        mainHandler.postDelayed(counter, DELAY)
     }
 
     fun onPause() {
@@ -55,7 +49,14 @@ class PlayerInteractor(
         player.releaseResources()
     }
 
+    private fun onPlay() {
+        isPlaying = true
+        playButton.setImageResource(R.drawable.pause_icon)
+        mainHandler.postDelayed(counter, DELAY_MILLIS)
+    }
+
     private fun playButtonConfig() {
+        playButton.isEnabled = false
         playButton.setOnClickListener {
             player.playbackControl()
             if (isPlaying) onPause() else onPlay()
@@ -63,6 +64,6 @@ class PlayerInteractor(
     }
 
     companion object {
-        private const val DELAY = 333L
+        private const val DELAY_MILLIS = 333L
     }
 }

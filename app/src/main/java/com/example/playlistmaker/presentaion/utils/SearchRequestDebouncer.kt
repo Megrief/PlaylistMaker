@@ -8,9 +8,9 @@ class SearchRequestDebouncer {
 
     fun searchDebounce(request: Runnable) {
         mainHandler.removeCallbacks(request)
-        mainHandler.postDelayed(request, SEARCH_DEBOUNCE_DELAY)
+        mainHandler.postDelayed(request, SEARCH_DEBOUNCE_DELAY_MILLIS)
     }
     companion object {
-        const val SEARCH_DEBOUNCE_DELAY = 3000L
+        const val SEARCH_DEBOUNCE_DELAY_MILLIS = 3000L
     }
 }
