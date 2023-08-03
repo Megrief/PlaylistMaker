@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentaion.ui.search
+package com.example.playlistmaker.ui.search
 
 import android.content.Context
 import android.os.Handler
@@ -10,8 +10,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.presentaion.adapter.TrackAdapter
-import com.example.playlistmaker.presentaion.utils.Creator
+import com.example.playlistmaker.ui.adapter.TrackAdapter
+import com.example.playlistmaker.creator.Creator
 
 class SearchHistory(
     private val historyViewGroup: ViewGroup,

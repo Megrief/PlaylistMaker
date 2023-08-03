@@ -1,4 +1,4 @@
-package com.example.playlistmaker.presentaion.ui.search
+package com.example.playlistmaker.ui.search
 
 import android.content.Context
 import android.content.Intent
@@ -7,38 +7,22 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.LinearLayoutCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.presentaion.adapter.TrackAdapter
-import com.example.playlistmaker.presentaion.ui.audioplayer.AudioplayerActivity
-import com.example.playlistmaker.presentaion.utils.Creator
-import com.example.playlistmaker.presentaion.utils.ItemClickDebouncer
-import com.example.playlistmaker.presentaion.utils.SearchRequestDebouncer
-import com.google.android.material.appbar.MaterialToolbar
+import com.example.playlistmaker.ui.adapter.TrackAdapter
+import com.example.playlistmaker.ui.audioplayer.AudioplayerActivity
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.ui.utils.ItemClickDebouncer
+import com.example.playlistmaker.ui.utils.SearchRequestDebouncer
 
 class SearchActivity : AppCompatActivity() {
-    private val clearButton by lazy { findViewById<ImageButton>(R.id.clear_button) }
-    private val history by lazy { findViewById<LinearLayoutCompat>(R.id.history) }
-    private val progressBar by lazy { findViewById<ProgressBar>(R.id.progress_bar) }
-    private val refreshButton by lazy { findViewById<TextView>(R.id.refresh) }
-    private val searchBar by lazy { findViewById<EditText>(R.id.search_bar) }
-    private val somethingWrong by lazy { findViewById<LinearLayoutCompat>(R.id.something_wrong) }
-    private val somethingWrongImage by lazy { findViewById<ImageView>(R.id.something_wrong_image) }
-    private val somethingWrongMessage by lazy { findViewById<TextView>(R.id.something_wrong_message) }
-    private val toolbar by lazy { findViewById<MaterialToolbar>(R.id.toolbar) }
-    private val trackListView by lazy { findViewById<RecyclerView>(R.id.track_list) }
-
+    private val binding by lazy { ActivitySearchBinding.inflate(LayoutInflater.from(this)) }
     private val onTrackClicked: (Track) -> Unit by lazy {
         {
             val storageInteractorTrack = Creator.createStorageInteractorTrack(applicationContext)
@@ -52,22 +36,22 @@ class SearchActivity : AppCompatActivity() {
     private val adapter by lazy { TrackAdapter(onTrackClicked) }
     private val itemClickDebouncer = ItemClickDebouncer()
     private val searchRequestDebouncer = SearchRequestDebouncer()
-    private val searchHistory by lazy { SearchHistory(history, applicationContext, onTrackClicked) }
+    private val searchHistory by lazy { SearchHistory(binding.history, applicationContext, onTrackClicked) }
     private val textWatcher by lazy {
         object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
+                binding.clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
                 if (s != null) savedValue = s.toString()
-                searchHistory.showHistory(s.toString(), searchBar.hasFocus())
+                searchHistory.showHistory(s.toString(), binding.searchBar.hasFocus())
                 val searchRequest = Runnable {
-                    progressBar.visibility = VISIBLE
+                    binding.progressBar.visibility = VISIBLE
                     getResults(savedValue)
                 }
                 if (savedValue.isNotBlank()) {
-                    trackListView.visibility = GONE
-                    somethingWrong.visibility = GONE
+                    binding.trackList.visibility = GONE
+                    binding.somethingWrong.visibility = GONE
                     searchRequestDebouncer.searchDebounce(searchRequest)
                 }
             }
@@ -77,12 +61,13 @@ class SearchActivity : AppCompatActivity() {
     }
     private val storageInteractorList by lazy { Creator.createStorageInteractorList(applicationContext) }
     private val searchInteractor by lazy { Creator.createSearchInteractor() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        setContentView(binding.root)
 
         searchHistory.refresh()
-        toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
         configureSearchBar()
         configureTrackListView()
         configureClearButton()
@@ -106,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
                 trackList.addAll(it)
             }
             adapter.notifyDataSetChanged()
-            trackListView.visibility = VISIBLE
+            binding.trackList.visibility = VISIBLE
         }
     }
 
@@ -114,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
         searchInteractor.search(message) {
             val mainHandler = Handler(Looper.getMainLooper())
             mainHandler.post {
-                progressBar.visibility = GONE
+                binding.progressBar.visibility = GONE
                 trackList.clear()
 
                 when {
@@ -123,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
                     else -> {
                         trackList.addAll(it)
                         adapter.notifyDataSetChanged()
-                        trackListView.visibility = VISIBLE
+                        binding.trackList.visibility = VISIBLE
                     }
                 }
             }
@@ -131,54 +116,70 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun onEmpty() {
-        somethingWrongImage.setImageResource(R.drawable.nothing_found)
-        somethingWrongMessage.setText(R.string.nothing_found)
-        history.visibility = GONE
-        somethingWrong.visibility = VISIBLE
-        refreshButton.visibility = GONE // на всякий случай
+        with(binding) {
+            somethingWrongImage.setImageResource(R.drawable.nothing_found)
+            somethingWrongMessage.setText(R.string.nothing_found)
+            history.visibility = GONE
+            somethingWrong.visibility = VISIBLE
+            refresh.visibility = GONE // на всякий случай
+        }
+
     }
 
     private fun onError() {
-        somethingWrongImage.setImageResource(R.drawable.no_internet)
-        somethingWrongMessage.setText(R.string.no_internet)
-        history.visibility = GONE
-        refreshButton.visibility = VISIBLE
-        somethingWrong.visibility = VISIBLE
+        with(binding) {
+            somethingWrongImage.setImageResource(R.drawable.no_internet)
+            somethingWrongMessage.setText(R.string.no_internet)
+            history.visibility = GONE
+            refresh.visibility = VISIBLE
+            somethingWrong.visibility = VISIBLE
+        }
+
     }
 
     private fun configureSearchBar() {
-        searchBar.setText(savedValue)
-        searchBar.addTextChangedListener(textWatcher)
-        searchBar.setOnFocusChangeListener { _, hasFocus ->
-            searchHistory.showHistory(savedValue, hasFocus)
+        with(binding.searchBar) {
+            setText(savedValue)
+            addTextChangedListener(textWatcher)
+            setOnFocusChangeListener { _, hasFocus ->
+                searchHistory.showHistory(savedValue, hasFocus)
+            }
         }
+
     }
 
     private fun configureTrackListView() {
         adapter.trackList = trackList
-        trackListView.adapter = adapter
+        binding.trackList.adapter = adapter
     }
 
     private fun configureClearButton() {
-        clearButton.setOnClickListener {
-            searchBar.setText("")
-            savedValue = ""
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-            inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
-            trackList.clear()
-            adapter.notifyDataSetChanged()
-            searchHistory.showHistory(savedValue, hasFocus = true)
-            trackListView.visibility = GONE
-            somethingWrong.visibility = GONE
+        with(binding) {
+            clearButton.setOnClickListener {
+                searchBar.setText("")
+                savedValue = ""
+                val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
+
+                Companion.trackList.clear()
+                adapter.notifyDataSetChanged()
+                searchHistory.showHistory(savedValue, hasFocus = true)
+                trackList.visibility = GONE
+                somethingWrong.visibility = GONE
+            }
         }
+
     }
 
     private fun configureRefreshButton() {
-        refreshButton.setOnClickListener {
-            somethingWrong.visibility = GONE
-            refreshButton.visibility = GONE
-            getResults(savedValue)
+        with(binding) {
+            refresh.setOnClickListener {
+                somethingWrong.visibility = GONE
+                refresh.visibility = GONE
+                getResults(savedValue)
+            }
         }
+
     }
 
     override fun onDestroy() {
