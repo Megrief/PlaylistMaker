@@ -1,16 +1,14 @@
-package com.example.playlistmaker.ui.utils
+package com.example.playlistmaker.ui.search.vm
 
 import android.os.Handler
-import android.os.Looper
 
-class SearchRequestDebouncer {
-    private val mainHandler = Handler(Looper.getMainLooper())
-
+class SearchRequestDebouncer(private val mainHandler: Handler) {
     fun searchDebounce(request: Runnable) {
         mainHandler.removeCallbacks(request)
         mainHandler.postDelayed(request, SEARCH_DEBOUNCE_DELAY_MILLIS)
     }
+
     companion object {
-        const val SEARCH_DEBOUNCE_DELAY_MILLIS = 3000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 3000L
     }
 }

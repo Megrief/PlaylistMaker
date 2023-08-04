@@ -12,11 +12,11 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.ui.audioplayer.vm.player.Player
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.interactors.StorageInteractor
+import com.example.playlistmaker.ui.audioplayer.vm.player.Player
 import com.example.playlistmaker.ui.audioplayer.vm.player.PlayerStatus
-import com.example.playlistmaker.ui.search.SearchActivity
+import com.example.playlistmaker.ui.search.vm.SearchViewModel
 import java.util.Locale
 
 class AudiolayerViewModel(
@@ -43,7 +43,7 @@ class AudiolayerViewModel(
     }
 
     init {
-        trackInteractor.get(SearchActivity.TRACK) {
+        trackInteractor.get(SearchViewModel.TRACK) {
             screenStateLiveData.postValue(
                 if (it != null) {
                     player = Player(
