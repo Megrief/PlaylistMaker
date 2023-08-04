@@ -75,6 +75,7 @@ class SearchActivity : ComponentActivity() {
         configureSearchBar()
         configureClearButton()
         configureRefreshButton()
+        configureClearHistoryButton()
     }
     // new
     private fun viewModelConfig() {
