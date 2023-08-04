@@ -63,7 +63,9 @@ class SearchViewModel(
     // History new
 
     fun showHistory() {
-        if (history.isNotEmpty()) searchScreenStateLiveData.postValue(SearchScreeenState.SearchHistory(history))
+        if (history.isNotEmpty()) {
+            searchScreenStateLiveData.postValue(SearchScreeenState.SearchHistory(history))
+        } else searchScreenStateLiveData.postValue(SearchScreeenState.Empty)
     }
 
     fun addToHistory(track: Track) {
