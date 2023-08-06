@@ -38,13 +38,6 @@ class SearchViewModel(
     }
     private val mainHandler = Handler(Looper.getMainLooper())
     private val searchRequestDebouncer = SearchRequestDebouncer(mainHandler)
-    private var history: List<Track> = emptyList()
-
-    init {
-        storageInteractorList.get(HISTORY_KEY) {
-            history = it
-        }
-    }
 
     fun getSearchScreenStateLiveData(): LiveData<SearchScreeenState> = searchScreenStateLiveData
 
@@ -57,15 +50,21 @@ class SearchViewModel(
 
     fun clear() {
         searchScreenStateLiveData.postValue(SearchScreeenState.Empty)
-        mainHandler.removeCallbacks(getResults)
+        removeCallbacks()
     }
 
     // History new
 
+    fun removeCallbacks() {
+        mainHandler.removeCallbacks(getResults)
+    }
+
     fun showHistory() {
-        if (history.isNotEmpty()) {
-            searchScreenStateLiveData.postValue(SearchScreeenState.SearchHistory(history))
-        } else searchScreenStateLiveData.postValue(SearchScreeenState.Empty)
+        storageInteractorList.get(HISTORY_KEY) { history ->
+            if (history.isNotEmpty()) {
+                searchScreenStateLiveData.postValue(SearchScreeenState.SearchHistory(history))
+            } else searchScreenStateLiveData.postValue(SearchScreeenState.Empty)
+        }
     }
 
     fun addToHistory(track: Track) {
@@ -75,9 +74,8 @@ class SearchViewModel(
                 remove(track)
                 add(0, track)
                 if (size > 10) removeLast()
-                history = this
                 if (searchScreenStateLiveData.value is SearchScreeenState.SearchHistory) {
-                    searchScreenStateLiveData.postValue(SearchScreeenState.SearchHistory(history))
+                    searchScreenStateLiveData.postValue(SearchScreeenState.SearchHistory(this))
                 }
                 storageInteractorList.save(HISTORY_KEY, this)
             }

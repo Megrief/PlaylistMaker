@@ -39,20 +39,17 @@ class SearchActivity : ComponentActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 with(binding) {
-                    clearButton.visibility = if (s.isNullOrEmpty()) GONE else VISIBLE
                     if (s != null) savedValue = s.toString()
-                    if (s.isNullOrEmpty() && searchBar.hasFocus()) {
-                        viewModel.showHistory()
-                    }
-
-                    if (savedValue.isNotBlank()) {
-                        trackList.visibility = GONE
-                        somethingWrong.visibility = GONE
-                        // new
+                    if (s.isNullOrBlank()) {
+                        if (searchBar.hasFocus()) viewModel.showHistory()
+                        viewModel.removeCallbacks()
+                        clearButton.visibility = GONE
+                    } else {
+                        hideAll()
                         viewModel.search(savedValue)
+                        clearButton.visibility = VISIBLE
                     }
                 }
-
             }
 
             override fun afterTextChanged(s: Editable?) { }
@@ -192,6 +189,11 @@ class SearchActivity : ComponentActivity() {
         binding.clearHistory.setOnClickListener {
             hideAll()
             viewModel.clearHistory()
+            (binding.historyList.adapter as TrackAdapter).let {
+                it.trackList.clear()
+                it.notifyDataSetChanged()
+            }
+
         }
     }
 
