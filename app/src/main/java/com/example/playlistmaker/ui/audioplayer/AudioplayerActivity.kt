@@ -17,9 +17,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.ui.audioplayer.vm.AudioplayerScreenState
-import com.example.playlistmaker.ui.audioplayer.vm.AudiolayerViewModel
-import com.example.playlistmaker.ui.audioplayer.vm.player.PlayerStatus
+import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
+import com.example.playlistmaker.ui.audioplayer.view_model.AudiolayerViewModel
+import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import java.util.Locale
 
 class AudioplayerActivity : ComponentActivity() {

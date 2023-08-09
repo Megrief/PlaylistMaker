@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
@@ -15,22 +16,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31" >
+
         <activity
             android:name=".ui.audioplayer.AudioplayerActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.search.SearchActivity"
-            android:exported="false"
-            tools:ignore="LockedOrientationActivity" >
+            android:name=".ui.search.activity.SearchActivity"
+            android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".ui.media.MediaActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" >
+            android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -38,17 +37,15 @@
         <activity
             android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:theme="@style/Theme.PlaylistMaker.Settings"
-            tools:ignore="LockedOrientationActivity" >
+            android:theme="@style/Theme.PlaylistMaker.Settings" >
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.main_activity.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.PlaylistMaker.Main"
-            tools:ignore="LockedOrientationActivity" >
+            android:theme="@style/Theme.PlaylistMaker.Main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
