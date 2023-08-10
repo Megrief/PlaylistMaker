@@ -29,6 +29,8 @@ class AudioplayerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        // при смене темы на устройстве пересоздается активити,
+        // ставится на паузу воспроизведение и сбрасывается время воспроизведения
         viewModel = ViewModelProvider(this, AudiolayerViewModel.getViewModelFactory())[AudiolayerViewModel::class.java]
 
         viewModel.getScreenStateLiveData().observe(this) {

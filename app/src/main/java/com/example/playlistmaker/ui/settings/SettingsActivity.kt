@@ -1,11 +1,9 @@
 package com.example.playlistmaker.ui.settings
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import androidx.activity.ComponentActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.data.settings.dto.ThemeCode
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 
@@ -18,7 +16,7 @@ class SettingsActivity : ComponentActivity() {
         // new
         viewModel = ViewModelProvider(this, SettingsViewModel.getSettingsViewModelFactory())[SettingsViewModel::class.java]
         viewModel.getScreenState().observe(this) { screenState ->
-            binding.darkTheme.isChecked = screenState.theme.code == ThemeCode.NIGHT_MODE_CODE
+            binding.darkTheme.isChecked = screenState.theme.code
             binding.share.setOnClickListener { startActivity(screenState.shareApp) }
             binding.support.setOnClickListener { startActivity(screenState.mailToSupport) }
             binding.userAgreement.setOnClickListener { startActivity(screenState.userAgreement) }
@@ -35,7 +33,6 @@ class SettingsActivity : ComponentActivity() {
 // Maybe problem is hiding in application class.
     private fun configureThemeSwitcher() {
         binding.darkTheme.setOnCheckedChangeListener { _, checked ->
-            Log.wtf("SWITCH", "In activity switched")
             viewModel.switchTheme(checked)
         }
     }

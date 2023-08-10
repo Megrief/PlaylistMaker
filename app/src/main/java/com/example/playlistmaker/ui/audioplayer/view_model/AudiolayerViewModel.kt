@@ -13,7 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.utils.creator.Creator
-import com.example.playlistmaker.domain.use_cases.GetDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel

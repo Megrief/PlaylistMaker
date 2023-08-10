@@ -8,26 +8,24 @@ import com.example.playlistmaker.utils.creator.Creator
 class App : Application() {
     private val getThemeCodeUseCase by lazy { Creator.createGetThemeCodeUseCase(this) }
     private val storeThemeCodeUseCase by lazy { Creator.createStoreThemeCodeUseCase(this) }
+
     override fun onCreate() {
         super.onCreate()
         getThemeCodeUseCase.get(THEME) {
             AppCompatDelegate.setDefaultNightMode(
-                when (it?.code) {
-                    ThemeCode.DAY_MODE_CODE -> AppCompatDelegate.MODE_NIGHT_NO
-                    ThemeCode.NIGHT_MODE_CODE -> AppCompatDelegate.MODE_NIGHT_YES
-                    else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                }
+                if (it != null) {
+                    if (it.code) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             )
         }
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
+        storeThemeCodeUseCase.store(THEME, ThemeCode(darkThemeEnabled))
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
-                storeThemeCodeUseCase.store(THEME, ThemeCode(ThemeCode.NIGHT_MODE_CODE))
                 AppCompatDelegate.MODE_NIGHT_YES
             } else {
-                storeThemeCodeUseCase.store(THEME, ThemeCode(ThemeCode.DAY_MODE_CODE))
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )

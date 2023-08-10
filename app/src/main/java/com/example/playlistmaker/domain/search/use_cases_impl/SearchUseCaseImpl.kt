@@ -2,7 +2,7 @@ package com.example.playlistmaker.domain.search.use_cases_impl
 
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.search.SearchRepository
-import com.example.playlistmaker.domain.use_cases.GetDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import java.util.concurrent.Executors
 import java.util.function.Consumer
 

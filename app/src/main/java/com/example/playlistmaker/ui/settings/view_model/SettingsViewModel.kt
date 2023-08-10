@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.settings.view_model
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -14,7 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.data.settings.dto.ThemeCode
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
-import com.example.playlistmaker.domain.use_cases.GetDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.settings.SettingsScreenState
 import com.example.playlistmaker.utils.creator.Creator
 
@@ -45,7 +44,7 @@ class SettingsViewModel(
             getThemeCodeUseCase.get(App.THEME) {
                 postValue(
                     SettingsScreenState(
-                        theme = it ?: ThemeCode(ThemeCode.SYSTEM_MODE_CODE),
+                        theme = it ?: ThemeCode(false),
                         mailToSupport = supportIntent,
                         userAgreement = userAgreementIntent,
                         shareApp = shareAppIntent
@@ -60,8 +59,8 @@ class SettingsViewModel(
     fun getScreenState(): LiveData<SettingsScreenState> = screenState
 
     fun switchTheme(checked: Boolean) {
-        Log.wtf("SWITCH", "In viewModel switched")
         switchThemeUseCase.switchTheme(checked)
+
         getThemeCodeUseCase.get(App.THEME) {
             if (it != null) screenState.value = getScreenState().value?.copy(theme = it)
         }

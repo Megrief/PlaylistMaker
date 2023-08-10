@@ -1,6 +1,5 @@
 package com.example.playlistmaker.utils.creator
 
-import android.app.Application
 import android.content.Context
 import com.example.playlistmaker.data.search.SearchRepoImpl
 import com.example.playlistmaker.data.search.network.network_client.impl.RetrofitClientImpl
@@ -20,8 +19,8 @@ import com.example.playlistmaker.domain.storage.use_cases_impl.GetTrackListUseCa
 import com.example.playlistmaker.domain.storage.use_cases_impl.GetTrackUseCase
 import com.example.playlistmaker.domain.storage.use_cases_impl.StoreTrackListUseCase
 import com.example.playlistmaker.domain.storage.use_cases_impl.StoreTrackUseCase
-import com.example.playlistmaker.domain.use_cases.GetDataUseCase
-import com.example.playlistmaker.domain.use_cases.StoreDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 
 object Creator {
     private var storageManagerTrack: StorageManagerRepo<Track?>? = null
@@ -55,18 +54,18 @@ object Creator {
         return SearchUseCaseImpl(searchRepository!!)
     }
 
-    fun createGetThemeCodeUseCase(application: Application): GetDataUseCase<ThemeCode?> {
-        if (settingsRepository == null) settingsRepository = SettingsRepoImpl(application)
+    fun createGetThemeCodeUseCase(context: Context): GetDataUseCase<ThemeCode?> {
+        if (settingsRepository == null) settingsRepository = SettingsRepoImpl(context)
         return GetThemeCodeUseCase(settingsRepository!!)
     }
 
-    fun createStoreThemeCodeUseCase(application: Application): StoreDataUseCase<ThemeCode> {
-        if (settingsRepository == null) settingsRepository = SettingsRepoImpl(application)
+    fun createStoreThemeCodeUseCase(context: Context): StoreDataUseCase<ThemeCode> {
+        if (settingsRepository == null) settingsRepository = SettingsRepoImpl(context)
         return StoreThemeCodeUseCase(settingsRepository!!)
     }
 
-    fun createSwitchThemeUseCase(application: Application): SwitchThemeUseCase {
-        if (settingsRepository == null) settingsRepository = SettingsRepoImpl(application)
+    fun createSwitchThemeUseCase(context: Context): SwitchThemeUseCase {
+        if (settingsRepository == null) settingsRepository = SettingsRepoImpl(context)
         return SwitchThemeUseCase(settingsRepository!!)
 
     }

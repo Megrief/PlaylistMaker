@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.use_cases
+package com.example.playlistmaker.domain.storage.use_cases
 
 import java.util.function.Consumer
 

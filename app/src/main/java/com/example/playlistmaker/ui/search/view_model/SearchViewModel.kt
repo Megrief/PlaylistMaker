@@ -12,8 +12,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.domain.use_cases.GetDataUseCase
-import com.example.playlistmaker.domain.use_cases.StoreDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.utils.creator.Creator
 
 class SearchViewModel(
