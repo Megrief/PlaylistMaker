@@ -20,6 +20,7 @@
 
         <activity
             android:name=".ui.audioplayer.AudioplayerActivity"
+            android:theme="@style/Theme.PlaylistMaker.Audioplayer"
             android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"

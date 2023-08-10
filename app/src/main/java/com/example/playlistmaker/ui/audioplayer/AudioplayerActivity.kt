@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -17,17 +17,17 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudiolayerViewModel
+import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import java.util.Locale
 
-class AudioplayerActivity : ComponentActivity() {
+class AudioplayerActivity : AppCompatActivity() {
     private val binding by lazy { ActivityAudioplayerBinding.inflate(LayoutInflater.from(this)) }
     private lateinit var viewModel: AudiolayerViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(binding.root)
         // при смене темы на устройстве пересоздается активити,
         // ставится на паузу воспроизведение и сбрасывается время воспроизведения

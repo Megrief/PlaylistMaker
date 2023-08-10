@@ -9,18 +9,18 @@ import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.ui.audioplayer.AudioplayerActivity
-import com.example.playlistmaker.utils.ItemClickDebouncer
 import com.example.playlistmaker.ui.search.activity.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
+import com.example.playlistmaker.utils.ItemClickDebouncer
 
-class SearchActivity : ComponentActivity() {
+class SearchActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySearchBinding.inflate(LayoutInflater.from(this)) }
     private val onTrackClicked: (Track) -> Unit by lazy {
         {

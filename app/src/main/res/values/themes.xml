@@ -23,5 +23,8 @@
         <item name="color">@color/icons_gray</item>
     </style>
 
+    <style name="Theme.PlaylistMaker.Audioplayer">
+        <item name="color">@color/custom_black</item>
+    </style>
 
 </resources>

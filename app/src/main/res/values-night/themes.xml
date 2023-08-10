@@ -20,4 +20,8 @@
     <style name="Theme.PlaylistMaker.Settings">
         <item name="color">@color/white</item>
     </style>
+
+    <style name="Theme.PlaylistMaker.Audioplayer">
+        <item name="color">@color/custom_white</item>
+    </style>
 </resources>
