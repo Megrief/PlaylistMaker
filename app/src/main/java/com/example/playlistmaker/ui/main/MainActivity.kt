@@ -12,7 +12,6 @@ import com.example.playlistmaker.ui.search.activity.SearchActivity
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(LayoutInflater.from(this)) }
     override fun onCreate(savedInstanceState: Bundle?) {
-        this.theme.changingConfigurations
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

@@ -3,26 +3,25 @@ package com.example.playlistmaker.ui.audioplayer.view_model
 import android.icu.text.SimpleDateFormat
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.utils.creator.Creator
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
+import com.example.playlistmaker.utils.creator.Creator
 import java.util.Locale
 
 class AudiolayerViewModel(
     getDataUseCase: GetDataUseCase<Track?>,
-    application: App
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val screenStateLiveData = MutableLiveData<AudioplayerScreenState>(AudioplayerScreenState.Loading)
     private val playerStatusLiveData = MutableLiveData<PlayerStatus>(PlayerStatus.Default)
@@ -94,10 +93,9 @@ class AudiolayerViewModel(
         fun getViewModelFactory(): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    val application = this[APPLICATION_KEY] as App
-                    val context = application.applicationContext
+                    val context = (this[APPLICATION_KEY] as App).applicationContext
                     val getTrackUseCase = Creator.createGetTrackUseCase(context)
-                    AudiolayerViewModel(getTrackUseCase, application)
+                    AudiolayerViewModel(getTrackUseCase)
                 }
             }
         }

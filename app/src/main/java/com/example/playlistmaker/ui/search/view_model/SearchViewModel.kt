@@ -1,11 +1,10 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
@@ -17,12 +16,11 @@ import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.utils.creator.Creator
 
 class SearchViewModel(
-    application: Application,
     private val searchUseCase: GetDataUseCase<List<Track>?>,
     private val storeTrackUseCase: StoreDataUseCase<Track>,
     private val storeTrackListUseCase: StoreDataUseCase<List<Track>>,
     private val getTrackListUseCase: GetDataUseCase<List<Track>>
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val searchScreenStateLiveData = MutableLiveData<SearchScreeenState>(SearchScreeenState.Empty)
 
@@ -93,14 +91,12 @@ class SearchViewModel(
         fun getSearchViewModelFactory() : ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    val application = this[APPLICATION_KEY] as App
-                    val context = application.applicationContext
+                    val context = (this[APPLICATION_KEY] as App).applicationContext
                     val searchInteractor = Creator.createSearchUseCase()
                     val storeTrackUseCase = Creator.createStoreTrackUseCase(context)
                     val storeTrackListUseCase = Creator.createStoreTrackListUseCase(context)
                     val getTrackListUseCase = Creator.createGetTrackListUseCase(context)
                     SearchViewModel(
-                        application,
                         searchInteractor,
                         storeTrackUseCase,
                         storeTrackListUseCase,

@@ -1,7 +1,7 @@
 package com.example.playlistmaker.ui.settings.view_model
 
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
@@ -15,11 +15,10 @@ import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
 import com.example.playlistmaker.utils.creator.Creator
 
 class SettingsViewModel(
-    application: App,
     getThemeCodeUseCase: GetDataUseCase<ThemeFlag?>,
     private val switchThemeUseCase: SwitchThemeUseCase,
     private val sharingRepository: SharingRepository
-) : AndroidViewModel(application) {
+) : ViewModel() {
 
     private val darkThemeState = SingleLiveEvent<DarkThemeState>()
 
@@ -55,12 +54,11 @@ class SettingsViewModel(
         fun getSettingsViewModelFactory(): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    val application = this[APPLICATION_KEY] as App
-                    val getThemeCodeUseCase = Creator.createGetThemeFlagUseCase(application.applicationContext)
-                    val switchThemeUseCase = Creator.createSwitchThemeUseCase(application.applicationContext)
-                    val sharingRepository = Creator.createSharingRepository(application.applicationContext)
+                    val context = (this[APPLICATION_KEY] as App).applicationContext
+                    val getThemeCodeUseCase = Creator.createGetThemeFlagUseCase(context)
+                    val switchThemeUseCase = Creator.createSwitchThemeUseCase(context)
+                    val sharingRepository = Creator.createSharingRepository(context)
                     SettingsViewModel(
-                        application,
                         getThemeCodeUseCase,
                         switchThemeUseCase,
                         sharingRepository
