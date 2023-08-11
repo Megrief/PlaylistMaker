@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.settings
 
 import android.content.Context
 import com.example.playlistmaker.app.App
-import com.example.playlistmaker.data.settings.dto.ThemeCode
+import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.google.gson.Gson
 
@@ -15,15 +15,15 @@ class SettingsRepoImpl(private val context: Context) : SettingsRepository {
         context.switchTheme(checked)
     }
 
-    override fun store(key: String, item: ThemeCode?) {
-        gson.toJson(item, ThemeCode::class.java).let {
+    override fun store(key: String, item: ThemeFlag?) {
+        gson.toJson(item, ThemeFlag::class.java).let {
             sharedPrefs.edit().putString(key, it).apply()
         }
     }
 
-    override fun get(key: String): ThemeCode? {
+    override fun get(key: String): ThemeFlag? {
         return sharedPrefs.getString(key, null)?.let {
-            gson.fromJson(it, ThemeCode::class.java)
+            gson.fromJson(it, ThemeFlag::class.java)
         }
     }
 }

@@ -2,26 +2,26 @@ package com.example.playlistmaker.app
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.data.settings.dto.ThemeCode
+import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.utils.creator.Creator
 
 class App : Application() {
-    private val getThemeCodeUseCase by lazy { Creator.createGetThemeCodeUseCase(this) }
-    private val storeThemeCodeUseCase by lazy { Creator.createStoreThemeCodeUseCase(this) }
+    private val getThemeFlagUseCase by lazy { Creator.createGetThemeFlagUseCase(this) }
+    private val storeThemeFlagUseCase by lazy { Creator.createStoreThemeFlagUseCase(this) }
 
     override fun onCreate() {
         super.onCreate()
-        getThemeCodeUseCase.get(THEME) {
+        getThemeFlagUseCase.get(THEME) {
             AppCompatDelegate.setDefaultNightMode(
                 if (it != null) {
-                    if (it.code) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                    if (it.flag) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
                 } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             )
         }
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
-        storeThemeCodeUseCase.store(THEME, ThemeCode(darkThemeEnabled))
+        storeThemeFlagUseCase.store(THEME, ThemeFlag(darkThemeEnabled))
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
                 AppCompatDelegate.MODE_NIGHT_YES

@@ -1,83 +1,69 @@
 package com.example.playlistmaker.ui.settings.view_model
 
-import android.content.Intent
-import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.R
 import com.example.playlistmaker.app.App
-import com.example.playlistmaker.data.settings.dto.ThemeCode
+import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
+import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.ui.settings.SettingsScreenState
+import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
 import com.example.playlistmaker.utils.creator.Creator
 
 class SettingsViewModel(
     application: App,
-    private val getThemeCodeUseCase: GetDataUseCase<ThemeCode?>,
-    private val switchThemeUseCase: SwitchThemeUseCase
+    getThemeCodeUseCase: GetDataUseCase<ThemeFlag?>,
+    private val switchThemeUseCase: SwitchThemeUseCase,
+    private val sharingRepository: SharingRepository
 ) : AndroidViewModel(application) {
 
-    private val screenState = MutableLiveData<SettingsScreenState>()
+    private val darkThemeState = SingleLiveEvent<DarkThemeState>()
 
     init {
-        screenState.apply {
-            val shareAppIntent: Intent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, application.getString(R.string.android_developer))
-            }
-            val url = Uri.parse(application.getString(R.string.practicum_offer))
-            val userAgreementIntent = Intent(Intent.ACTION_VIEW, url)
-            val supportIntent: Intent = Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:")
-                with(application) {
-                    putExtra(Intent.EXTRA_EMAIL, getString(R.string.supp_message_address))
-                    putExtra(Intent.EXTRA_SUBJECT, getString(R.string.supp_message_theme))
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.supp_message_content))
-                }
-            }
+        darkThemeState.apply {
             getThemeCodeUseCase.get(App.THEME) {
                 postValue(
-                    SettingsScreenState(
-                        theme = it ?: ThemeCode(false),
-                        mailToSupport = supportIntent,
-                        userAgreement = userAgreementIntent,
-                        shareApp = shareAppIntent
+                    DarkThemeState(
+                        theme = it ?: ThemeFlag(false)
                     )
                 )
             }
-
-
         }
     }
 
-    fun getScreenState(): LiveData<SettingsScreenState> = screenState
+    fun getScreenState(): LiveData<DarkThemeState> = darkThemeState
 
     fun switchTheme(checked: Boolean) {
         switchThemeUseCase.switchTheme(checked)
-
-        getThemeCodeUseCase.get(App.THEME) {
-            if (it != null) screenState.value = getScreenState().value?.copy(theme = it)
-        }
     }
 
-    companion object {
+    fun shareApp() {
+        sharingRepository.shareApp()
+    }
+    fun openUserAgreement() {
+        sharingRepository.openUserAgreement()
+    }
 
+    fun mailToSupport() {
+        sharingRepository.mailToSupport()
+    }
+    companion object {
         fun getSettingsViewModelFactory(): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
                     val application = this[APPLICATION_KEY] as App
-                    val getThemeCodeUseCase = Creator.createGetThemeCodeUseCase(application)
-                    val switchThemeUseCase = Creator.createSwitchThemeUseCase(application)
+                    val getThemeCodeUseCase = Creator.createGetThemeFlagUseCase(application.applicationContext)
+                    val switchThemeUseCase = Creator.createSwitchThemeUseCase(application.applicationContext)
+                    val sharingRepository = Creator.createSharingRepository(application.applicationContext)
                     SettingsViewModel(
                         application,
                         getThemeCodeUseCase,
-                        switchThemeUseCase
+                        switchThemeUseCase,
+                        sharingRepository
                     )
                 }
             }

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.settings.entities
+package com.example.playlistmaker.domain.sharing.entities
 
 data class EmailData(
     val email: String,
