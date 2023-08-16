@@ -3,13 +3,12 @@ package com.example.playlistmaker.ui.search.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doOnTextChanged
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.entities.Track
@@ -23,76 +22,53 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySearchBinding.inflate(LayoutInflater.from(this)) }
-    private val onTrackClicked: (Track) -> Unit by lazy {
-        {
-            if (ItemClickDebouncer.clickDebounce()) {
-                viewModel.addToHistory(it)
-                (binding.historyList.adapter as TrackAdapter).notifyDataSetChanged()
-                startActivity(Intent(this, AudioplayerActivity::class.java))
-            }
-        }
-    }
-
-    private val textWatcher by lazy {
-        object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                with(binding) {
-                    if (s != null) savedValue = s.toString()
-                    if (s.isNullOrBlank()) {
-                        if (searchBar.hasFocus()) viewModel.showHistory()
-                        viewModel.removeCallbacks()
-                        clearButton.visibility = GONE
-                    } else {
-                        hideAll()
-                        viewModel.search(savedValue)
-                        clearButton.visibility = VISIBLE
-                    }
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) { }
-        }
-    }
-
-    // new
     private val viewModel: SearchViewModel by viewModel()
-    ////
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        //new
-        binding.trackList.adapter = TrackAdapter(onTrackClicked)
-        binding.historyList.adapter = TrackAdapter(onTrackClicked)
+
+        configureLists()
         viewModelConfig()
-        //
-        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+
         configureSearchBar()
         configureClearButton()
         configureRefreshButton()
         configureClearHistoryButton()
+        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
-    // new
+
+    private fun configureLists() {
+        with(binding) {
+            val onTrackClicked: (Track) -> Unit = { track ->
+                if (ItemClickDebouncer.clickDebounce()) {
+                    viewModel.addToHistory(track)
+                    (binding.historyList.adapter as TrackAdapter).notifyDataSetChanged()
+                    startActivity(Intent(this@SearchActivity, AudioplayerActivity::class.java))
+                }
+            }
+            trackList.adapter = TrackAdapter(onTrackClicked)
+            historyList.adapter = TrackAdapter(onTrackClicked)
+        }
+    }
     private fun viewModelConfig() {
-        viewModel.getSearchScreenStateLiveData().observe(this) {
-            when (it) {
+        viewModel.getSearchScreenStateLiveData().observe(this) { screenState ->
+            when (screenState) {
                 is SearchScreeenState.Empty -> {
                     hideAll()
                 }
-                is SearchScreeenState.SearchHistory -> { showHistory(it.trackList) }
+                is SearchScreeenState.SearchHistory -> { showHistory(screenState.trackList) }
                 is SearchScreeenState.IsLoading -> {
                     hideAll()
                     binding.progressBar.visibility = VISIBLE
                 }
                 is SearchScreeenState.NoInternetConnection -> { showNoInternetMessage() }
                 is SearchScreeenState.NoResults -> { showNoResultsMessage() }
-                is SearchScreeenState.SearchSuccess -> { showResults(it.trackList) }
+                is SearchScreeenState.SearchSuccess -> { showResults(screenState.trackList) }
             }
         }
     }
-    ////
-    // new
+
     private fun showResults(results: List<Track>) {
         with(binding.trackList.adapter as TrackAdapter) {
             trackList.clear()
@@ -102,6 +78,7 @@ class SearchActivity : AppCompatActivity() {
         hideAll()
         binding.trackList.visibility = VISIBLE
     }
+
     private fun hideAll() {
         with(binding) {
             history.visibility = GONE
@@ -110,6 +87,7 @@ class SearchActivity : AppCompatActivity() {
             progressBar.visibility = GONE
         }
     }
+
     private fun showNoInternetMessage() {
         hideAll()
         with(binding) {
@@ -119,6 +97,7 @@ class SearchActivity : AppCompatActivity() {
             somethingWrong.visibility = VISIBLE
         }
     }
+
     private fun showNoResultsMessage() {
         hideAll()
         with(binding) {
@@ -136,7 +115,6 @@ class SearchActivity : AppCompatActivity() {
         hideAll()
         binding.history.visibility = VISIBLE
     }
-    ////
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -151,7 +129,20 @@ class SearchActivity : AppCompatActivity() {
     private fun configureSearchBar() {
         with(binding.searchBar) {
             setText(savedValue)
-            addTextChangedListener(textWatcher)
+            doOnTextChanged { s, _, _, _ ->
+                with(binding) {
+                    if (s != null) savedValue = s.toString()
+                    if (s.isNullOrBlank()) {
+                        if (searchBar.hasFocus()) viewModel.showHistory()
+                        viewModel.removeCallbacks()
+                        clearButton.visibility = GONE
+                    } else {
+                        hideAll()
+                        viewModel.search(savedValue)
+                        clearButton.visibility = VISIBLE
+                    }
+                }
+            }
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus && savedValue.isEmpty()) viewModel.showHistory()
             }

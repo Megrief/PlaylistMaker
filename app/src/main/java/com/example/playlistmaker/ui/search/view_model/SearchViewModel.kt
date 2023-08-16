@@ -1,13 +1,13 @@
 package com.example.playlistmaker.ui.search.view_model
 
 import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
+import org.koin.java.KoinJavaComponent.getKoin
 
 class SearchViewModel(
     private val searchUseCase: GetDataUseCase<List<Track>?>,
@@ -21,16 +21,16 @@ class SearchViewModel(
     private var savedValue = ""
     private val getResults = Runnable {
         searchScreenStateLiveData.value = SearchScreeenState.IsLoading
-        searchUseCase.get(savedValue) {
+        searchUseCase.get(savedValue) { results ->
             when {
-                it == null -> searchScreenStateLiveData.postValue(SearchScreeenState.NoInternetConnection)
-                it.isEmpty() -> searchScreenStateLiveData.postValue(SearchScreeenState.NoResults)
-                else -> searchScreenStateLiveData.postValue(SearchScreeenState.SearchSuccess(it))
+                results == null -> searchScreenStateLiveData.postValue(SearchScreeenState.NoInternetConnection)
+                results.isEmpty() -> searchScreenStateLiveData.postValue(SearchScreeenState.NoResults)
+                else -> searchScreenStateLiveData.postValue(SearchScreeenState.SearchSuccess(results))
             }
         }
     }
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val searchRequestDebouncer = SearchRequestDebouncer(mainHandler)
+    private val mainHandler: Handler = getKoin().get()
+    private val searchRequestDebouncer: SearchRequestDebouncer = getKoin().get()
 
     fun getSearchScreenStateLiveData(): LiveData<SearchScreeenState> = searchScreenStateLiveData
 
@@ -60,8 +60,8 @@ class SearchViewModel(
 
     fun addToHistory(track: Track) {
         storeTrackUseCase.store(TRACK, track)
-        getTrackListUseCase.get(HISTORY_KEY) {
-            with(it.toMutableList()) {
+        getTrackListUseCase.get(HISTORY_KEY) { history ->
+            with(history.toMutableList()) {
                 remove(track)
                 add(0, track)
                 if (size > 10) removeLast()

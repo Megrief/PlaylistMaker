@@ -14,8 +14,6 @@ import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 
 class App : Application() {
-//    private val getThemeFlagUseCase by lazy { Creator.createGetThemeFlagUseCase(this) }
-//    private val storeThemeFlagUseCase by lazy { Creator.createStoreThemeFlagUseCase(this) }
     private val getThemeFlagUseCase: GetDataUseCase<ThemeFlag?> by inject(named("GetThemeFlagUseCase"))
     private val storeThemeFlagUseCase: StoreDataUseCase<ThemeFlag> by inject(named("StoreThemeFlagUseCase"))
     override fun onCreate() {
@@ -25,7 +23,6 @@ class App : Application() {
 
             modules(dataModule, domainModule, presentationModule)
         }
-//        val getThemeFlagUseCase: GetThemeFlagUseCase = getKoin().get()
         getThemeFlagUseCase.get(THEME) {
             AppCompatDelegate.setDefaultNightMode(
                 if (it != null) {
@@ -36,7 +33,6 @@ class App : Application() {
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
-//        val storeThemeFlagUseCase: StoreThemeFlagUseCase = getKoin().get()
         storeThemeFlagUseCase.store(THEME, ThemeFlag(darkThemeEnabled))
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {

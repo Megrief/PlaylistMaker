@@ -8,14 +8,14 @@ import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCa
 import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
+import org.koin.java.KoinJavaComponent.getKoin
 
 class SettingsViewModel(
     getThemeFlagUseCase: GetDataUseCase<ThemeFlag?>,
     private val switchThemeUseCase: SwitchThemeUseCase,
     private val sharingRepository: SharingRepository
 ) : ViewModel() {
-
-    private val darkThemeState = SingleLiveEvent<DarkThemeState>()
+    private val darkThemeState: SingleLiveEvent<DarkThemeState> = getKoin().get()
 
     init {
         darkThemeState.apply {

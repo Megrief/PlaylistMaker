@@ -52,10 +52,10 @@ val dataModule = module {
     }
 
     single<StorageManagerRepo<List<Track>>>(named("StorageManagerRepoList")) {
-        SharedPrefsList(sharedPrefs = get())
+        SharedPrefsList(sharedPrefs = get(), gson = get())
     }
 
     single<StorageManagerRepo<Track?>>(named("StorageManagerRepoTrack")) {
-        SharedPrefsTrack(sharedPrefs = get())
+        SharedPrefsTrack(sharedPrefs = get(), gson = get())
     }
 }

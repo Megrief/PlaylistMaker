@@ -3,7 +3,6 @@ package com.example.playlistmaker.ui.audioplayer
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -19,6 +18,7 @@ import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -27,18 +27,20 @@ class AudioplayerActivity : AppCompatActivity() {
     private val viewModel: AudioplayerViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(binding.root)
 
         viewModel.getScreenStateLiveData().observe(this) {
-            when (it) {
-                is AudioplayerScreenState.Error -> onBackPressedDispatcher
-                is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
-                is AudioplayerScreenState.Content -> {
-                    onSuccess(it.track)
+            val mainHandler: Handler = getKoin().get()
+            mainHandler.post {
+                when (it) {
+                    is AudioplayerScreenState.Error -> onBackPressedDispatcher
+                    is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
+                    is AudioplayerScreenState.Content -> {
+                        onSuccess(it.track)
+                    }
                 }
-
             }
+
         }
 
         viewModel.getPlayerStatusLiveData().observe(this) {
@@ -61,17 +63,16 @@ class AudioplayerActivity : AppCompatActivity() {
     private fun changeButtonAppearance(isPlaying: Boolean) {
         binding.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }
+
     private fun onSuccess(track: Track) {
-        val mainHandler = Handler(Looper.getMainLooper())
-        mainHandler.post {
-            binding.playButton.isEnabled = true
-            bind(track)
-            if (track.previewUrl.isEmpty()) {
-                Toast.makeText(this, getString(R.string.no_preview), Toast.LENGTH_LONG).show()
-                binding.playButton.isEnabled = false
-            }
+        binding.playButton.isEnabled = true
+        bind(track)
+        if (track.previewUrl.isEmpty()) {
+            Toast.makeText(this, getString(R.string.no_preview), Toast.LENGTH_LONG).show()
+            binding.playButton.isEnabled = false
         }
     }
+
     private fun bind(track: Track) {
         val cornerSizeInPx = resources.getDimensionPixelSize(R.dimen.small)
         if (track.artworkUrl100.isNotEmpty()) {

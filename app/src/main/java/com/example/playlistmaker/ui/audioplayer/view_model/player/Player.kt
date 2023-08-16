@@ -5,9 +5,9 @@ import android.media.MediaPlayer
 class Player(
     url: String,
     onPrepared: () -> Unit,
-    onCompeted: () -> Unit
+    onCompeted: () -> Unit,
+    private val player: MediaPlayer
 ) {
-    private val player = MediaPlayer()
 
     init {
         player.setDataSource(url)
