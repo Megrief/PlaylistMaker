@@ -1,33 +1,31 @@
 package com.example.playlistmaker.app
 
 import android.app.Application
-import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.domain.settings.entity.ThemeFlag
+import com.example.playlistmaker.utils.creator.Creator
 
 class App : Application() {
-    private val sharedPreferences by lazy { this.getSharedPreferences(PLAYLIST_MAKER, Context.MODE_PRIVATE) }
-    val themeCode by lazy {
-        sharedPreferences.getInt(DARK_THEME, -1).let {
-            when (it) {
-                1 -> AppCompatDelegate.MODE_NIGHT_NO
-                2 -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            }
-        }
-    }
+    private val getThemeFlagUseCase by lazy { Creator.createGetThemeFlagUseCase(this) }
+    private val storeThemeFlagUseCase by lazy { Creator.createStoreThemeFlagUseCase(this) }
 
     override fun onCreate() {
         super.onCreate()
-        AppCompatDelegate.setDefaultNightMode(themeCode)
+        getThemeFlagUseCase.get(THEME) {
+            AppCompatDelegate.setDefaultNightMode(
+                if (it != null) {
+                    if (it.flag) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
+        }
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
+        storeThemeFlagUseCase.store(THEME, ThemeFlag(darkThemeEnabled))
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
-                sharedPreferences.edit().putInt(DARK_THEME, AppCompatDelegate.MODE_NIGHT_YES).apply()
                 AppCompatDelegate.MODE_NIGHT_YES
             } else {
-                sharedPreferences.edit().putInt(DARK_THEME, AppCompatDelegate.MODE_NIGHT_NO).apply()
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
@@ -35,6 +33,6 @@ class App : Application() {
 
     companion object {
         const val PLAYLIST_MAKER = "PLAYLIST_MAKER"
-        const val DARK_THEME = "DARK_THEME"
+        const val THEME = "THEME"
     }
 }

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".app.App"
@@ -15,40 +17,44 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31" >
+
         <activity
-            android:name=".presentaion.ui.audioplayer.AudioplayerActivity"
-            android:exported="false" />
+            android:name=".ui.audioplayer.AudioplayerActivity"
+            android:theme="@style/Theme.PlaylistMaker.Audioplayer"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
         <activity
-            android:name=".presentaion.ui.search.SearchActivity"
-            android:exported="false"
-            tools:ignore="LockedOrientationActivity" >
+            android:name=".ui.search.activity.SearchActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <activity
+            android:name=".ui.media.MediaActivity"
+            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".presentaion.ui.media.MediaActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity" >
+            android:theme="@style/Theme.PlaylistMaker.Settings">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
         <activity
-            android:name=".presentaion.ui.settings.SettingsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.PlaylistMaker.Settings"
-            tools:ignore="LockedOrientationActivity" >
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".presentaion.ui.main_activity.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.PlaylistMaker.Main"
-            tools:ignore="LockedOrientationActivity" >
+            android:theme="@style/Theme.PlaylistMaker.Main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
