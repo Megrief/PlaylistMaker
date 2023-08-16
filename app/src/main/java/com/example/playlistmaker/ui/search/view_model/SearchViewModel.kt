@@ -5,15 +5,9 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
-import com.example.playlistmaker.utils.creator.Creator
 
 class SearchViewModel(
     private val searchUseCase: GetDataUseCase<List<Track>?>,
@@ -88,22 +82,5 @@ class SearchViewModel(
         const val HISTORY_KEY = "HISTORY_KEY"
         const val TRACK = "TRACK"
 
-        fun getSearchViewModelFactory() : ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    val context = (this[APPLICATION_KEY] as App).applicationContext
-                    val searchInteractor = Creator.createSearchUseCase()
-                    val storeTrackUseCase = Creator.createStoreTrackUseCase(context)
-                    val storeTrackListUseCase = Creator.createStoreTrackListUseCase(context)
-                    val getTrackListUseCase = Creator.createGetTrackListUseCase(context)
-                    SearchViewModel(
-                        searchInteractor,
-                        storeTrackUseCase,
-                        storeTrackListUseCase,
-                        getTrackListUseCase
-                    )
-                }
-            }
-        }
     }
 }

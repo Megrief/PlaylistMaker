@@ -10,7 +10,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.entities.Track
@@ -19,6 +18,8 @@ import com.example.playlistmaker.ui.search.activity.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.utils.ItemClickDebouncer
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class SearchActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySearchBinding.inflate(LayoutInflater.from(this)) }
@@ -56,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // new
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
     ////
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +65,6 @@ class SearchActivity : AppCompatActivity() {
         //new
         binding.trackList.adapter = TrackAdapter(onTrackClicked)
         binding.historyList.adapter = TrackAdapter(onTrackClicked)
-        viewModel = ViewModelProvider(this, SearchViewModel.getSearchViewModelFactory())[SearchViewModel::class.java]
         viewModelConfig()
         //
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
