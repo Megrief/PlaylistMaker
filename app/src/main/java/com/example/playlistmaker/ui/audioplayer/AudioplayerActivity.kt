@@ -29,23 +29,23 @@ class AudioplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        viewModel.getScreenStateLiveData().observe(this) {
+        viewModel.getScreenStateLiveData().observe(this) { screenState ->
             val mainHandler: Handler = getKoin().get()
             mainHandler.post {
-                when (it) {
+                when (screenState) {
                     is AudioplayerScreenState.Error -> onBackPressedDispatcher
                     is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
                     is AudioplayerScreenState.Content -> {
-                        onSuccess(it.track)
+                        onSuccess(screenState.track)
                     }
                 }
             }
 
         }
 
-        viewModel.getPlayerStatusLiveData().observe(this) {
-            if (it is PlayerStatus.Playing) {
-                binding.playingTime.text = it.currentPosition
+        viewModel.getPlayerStatusLiveData().observe(this) { playerStatus ->
+            if (playerStatus is PlayerStatus.Playing) {
+                binding.playingTime.text = playerStatus.currentPosition
                 changeButtonAppearance(true)
             } else changeButtonAppearance(false)
         }

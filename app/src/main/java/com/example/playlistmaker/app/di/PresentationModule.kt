@@ -22,7 +22,10 @@ val presentationModule = module {
 
     viewModel {
         val getTrackUseCase: GetDataUseCase<Track?> = get(named("GetTrackUseCase"))
-        AudioplayerViewModel(getDataUseCase =  getTrackUseCase)
+        AudioplayerViewModel(
+            getDataUseCase =  getTrackUseCase,
+            player = get()
+        )
     }
 
     viewModel {
@@ -59,13 +62,8 @@ val presentationModule = module {
         SearchRequestDebouncer(get())
     }
 
-    factory { params ->
-        Player(
-            url = params[0],
-            onPrepared = params[1],
-            onCompeted = params[1],
-            player = get()
-        )
+    factory {
+        Player(player = get())
     }
 
     factory {
