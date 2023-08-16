@@ -17,17 +17,25 @@ import com.example.playlistmaker.domain.storage.use_cases_impl.StoreTrackUseCase
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+const val SEARCH_USE_CASE = "SearchUseCase"
+const val GET_THEME_FLAG_USE_CASE = "GetThemeFlagUseCase"
+const val STORE_THEME_FLAG_USE_CASE = "StoreThemeFlagUseCase"
+const val GET_TRACK_USE_CASE = "GetTrackUseCase"
+const val GET_TRACK_LIST_USE_CASE = "GetTrackListUseCase"
+const val STORE_TRACK_LIST_USE_CASE = "StoreTrackListUseCase"
+const val STORE_TRACK_USE_CASE = "StoreTrackUseCase"
+
 val domainModule = module {
-    factory<GetDataUseCase<List<Track>?>>(named("SearchUseCase")) {
+    factory<GetDataUseCase<List<Track>?>>(named(SEARCH_USE_CASE)) {
         SearchUseCaseImpl(repository = get())
     }
 
-    factory<GetDataUseCase<ThemeFlag?>>(named("GetThemeFlagUseCase")) {
+    factory<GetDataUseCase<ThemeFlag?>>(named(GET_THEME_FLAG_USE_CASE)) {
         val storageManager: SettingsRepository = get()
         GetThemeFlagUseCase(repository = storageManager)
     }
 
-    factory<StoreDataUseCase<ThemeFlag>>(named("StoreThemeFlagUseCase")) {
+    factory<StoreDataUseCase<ThemeFlag>>(named(STORE_THEME_FLAG_USE_CASE)) {
         val storageManager: SettingsRepository = get()
         StoreThemeFlagUseCase(repository = storageManager)
     }
@@ -36,23 +44,25 @@ val domainModule = module {
         SwitchThemeUseCase(repository = get())
     }
 
-    factory<GetDataUseCase<Track?>>(named("GetTrackUseCase")) {
-        val storageManagerRepo: StorageManagerRepo<Track?> = get(named("StorageManagerRepoTrack"))
+    factory<GetDataUseCase<Track?>>(named(GET_TRACK_USE_CASE)) {
+        val storageManagerRepo: StorageManagerRepo<Track?> = get(named(STORAGE_MANAGER_REPO_TRACK))
         GetTrackUseCase(repository = storageManagerRepo)
     }
 
-    factory<GetDataUseCase<List<Track>>>(named("GetTrackListUseCase")) {
-        val storageManagerRepo: StorageManagerRepo<List<Track>> = get(named("StorageManagerRepoList"))
+    factory<GetDataUseCase<List<Track>>>(named(GET_TRACK_LIST_USE_CASE)) {
+        val storageManagerRepo: StorageManagerRepo<List<Track>> = get(named(
+            STORAGE_MANAGER_REPO_LIST))
         GetTrackListUseCase(repository = storageManagerRepo)
     }
 
-    factory<StoreDataUseCase<List<Track>>>(named("StoreTrackListUseCase")) {
-        val storageManagerRepo: StorageManagerRepo<List<Track>> = get(named("StorageManagerRepoList"))
+    factory<StoreDataUseCase<List<Track>>>(named(STORE_TRACK_LIST_USE_CASE)) {
+        val storageManagerRepo: StorageManagerRepo<List<Track>> = get(named(
+            STORAGE_MANAGER_REPO_LIST))
         StoreTrackListUseCase(repository = storageManagerRepo)
     }
 
-    factory<StoreDataUseCase<Track>>(named("StoreTrackUseCase")) {
-        val storageManagerRepo: StorageManagerRepo<Track?> = get(named("StorageManagerRepoTrack"))
+    factory<StoreDataUseCase<Track>>(named(STORE_TRACK_USE_CASE)) {
+        val storageManagerRepo: StorageManagerRepo<Track?> = get(named(STORAGE_MANAGER_REPO_TRACK))
         StoreTrackUseCase(repository = storageManagerRepo)
     }
 

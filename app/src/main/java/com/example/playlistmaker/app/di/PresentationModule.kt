@@ -21,7 +21,7 @@ import org.koin.dsl.module
 val presentationModule = module {
 
     viewModel {
-        val getTrackUseCase: GetDataUseCase<Track?> = get(named("GetTrackUseCase"))
+        val getTrackUseCase: GetDataUseCase<Track?> = get(named(GET_TRACK_USE_CASE))
         AudioplayerViewModel(
             getDataUseCase =  getTrackUseCase,
             player = get()
@@ -29,10 +29,10 @@ val presentationModule = module {
     }
 
     viewModel {
-        val searchUseCase: GetDataUseCase<List<Track>?> = get(named("SearchUseCase"))
-        val storeTrackUseCase: StoreDataUseCase<Track> = get(named("StoreTrackUseCase"))
-        val storeTrackListUseCase: StoreDataUseCase<List<Track>> = get(named("StoreTrackListUseCase"))
-        val getTrackListUseCase: GetDataUseCase<List<Track>> = get(named("GetTrackListUseCase"))
+        val searchUseCase: GetDataUseCase<List<Track>?> = get(named(SEARCH_USE_CASE))
+        val storeTrackUseCase: StoreDataUseCase<Track> = get(named(STORE_TRACK_USE_CASE))
+        val storeTrackListUseCase: StoreDataUseCase<List<Track>> = get(named(STORE_TRACK_LIST_USE_CASE))
+        val getTrackListUseCase: GetDataUseCase<List<Track>> = get(named(GET_TRACK_LIST_USE_CASE))
         SearchViewModel(
             searchUseCase = searchUseCase,
             storeTrackUseCase = storeTrackUseCase,
@@ -42,7 +42,7 @@ val presentationModule = module {
     }
 
     viewModel {
-        val getThemeFlagUseCase: GetDataUseCase<ThemeFlag?> = get(named("GetThemeFlagUseCase"))
+        val getThemeFlagUseCase: GetDataUseCase<ThemeFlag?> = get(named(GET_THEME_FLAG_USE_CASE))
         SettingsViewModel(
             getThemeFlagUseCase = getThemeFlagUseCase,
             switchThemeUseCase = get(),

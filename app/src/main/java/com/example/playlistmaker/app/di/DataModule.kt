@@ -22,6 +22,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
+const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
+const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
 val dataModule = module {
     single<NetworkClient> {
         RetrofitClientImpl()
@@ -51,11 +53,11 @@ val dataModule = module {
         SharingRepoImpl(context = get(), externalNavigator = get())
     }
 
-    single<StorageManagerRepo<List<Track>>>(named("StorageManagerRepoList")) {
+    single<StorageManagerRepo<List<Track>>>(named(STORAGE_MANAGER_REPO_LIST)) {
         SharedPrefsList(sharedPrefs = get(), gson = get())
     }
 
-    single<StorageManagerRepo<Track?>>(named("StorageManagerRepoTrack")) {
+    single<StorageManagerRepo<Track?>>(named(STORAGE_MANAGER_REPO_TRACK)) {
         SharedPrefsTrack(sharedPrefs = get(), gson = get())
     }
 }
