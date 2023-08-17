@@ -2,12 +2,11 @@ package com.example.playlistmaker.data.sharing.repo_impl
 
 import android.content.Context
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.sharing.external_navigator.impl.ExternalNavigatorImpl
+import com.example.playlistmaker.data.sharing.external_navigator.ExternalNavigator
 import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.sharing.entities.EmailData
 
-class SharingRepoImpl(context: Context) : SharingRepository {
-    private val externalNavigator = ExternalNavigatorImpl(context)
+class SharingRepoImpl(context: Context, private val externalNavigator: ExternalNavigator) : SharingRepository {
     private val resources = context.resources
 
     override fun shareApp() {

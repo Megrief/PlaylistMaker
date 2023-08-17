@@ -3,17 +3,18 @@ package com.example.playlistmaker.ui.audioplayer.view_model.player
 import android.media.MediaPlayer
 
 class Player(
-    url: String,
-    onPrepared: () -> Unit,
-    onCompeted: () -> Unit
+    private val player: MediaPlayer
 ) {
-    private val player = MediaPlayer()
 
-    init {
+    fun configurePlayer(
+        url: String,
+        onPrepared: () -> Unit,
+        onCompleted: () -> Unit
+    ) {
         player.setDataSource(url)
-        player.prepareAsync()
         player.setOnPreparedListener { onPrepared() }
-        player.setOnCompletionListener { onCompeted() }
+        player.setOnCompletionListener { onCompleted() }
+        player.prepareAsync()
     }
 
     fun releaseResources() {

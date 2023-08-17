@@ -6,9 +6,8 @@ import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.google.gson.Gson
 
-class SettingsRepoImpl(private val context: Context) : SettingsRepository {
+class SettingsRepoImpl(private val context: Context, private val gson: Gson) : SettingsRepository {
     private val sharedPrefs = context.getSharedPreferences(App.PLAYLIST_MAKER, Context.MODE_PRIVATE)
-    private val gson = Gson()
 
     override fun switchTheme(checked: Boolean) {
         context as App

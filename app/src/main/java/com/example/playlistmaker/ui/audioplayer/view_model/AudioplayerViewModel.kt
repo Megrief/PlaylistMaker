@@ -2,31 +2,25 @@ package com.example.playlistmaker.ui.audioplayer.view_model
 
 import android.icu.text.SimpleDateFormat
 import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.utils.creator.Creator
+import org.koin.java.KoinJavaComponent.getKoin
 import java.util.Locale
 
-class AudiolayerViewModel(
+class AudioplayerViewModel(
     getDataUseCase: GetDataUseCase<Track?>,
+    private val player: Player
 ) : ViewModel() {
 
     private val screenStateLiveData = MutableLiveData<AudioplayerScreenState>(AudioplayerScreenState.Loading)
     private val playerStatusLiveData = MutableLiveData<PlayerStatus>(PlayerStatus.Default)
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private lateinit var player: Player
+    private val mainHandler: Handler = getKoin().get()
 
     private val refreshPosition = object : Runnable {
         override fun run() {
@@ -42,15 +36,17 @@ class AudiolayerViewModel(
     }
 
     init {
-        getDataUseCase.get(SearchViewModel.TRACK) {
+        getDataUseCase.get(SearchViewModel.TRACK) { track ->
             screenStateLiveData.postValue(
-                if (it != null) {
-                    player = Player(
-                        it.previewUrl,
-                        { playerStatusLiveData.value = PlayerStatus.Prepared },
-                        { playerStatusLiveData.value = PlayerStatus.Prepared }
-                    )
-                    AudioplayerScreenState.Content(it)
+                if (track != null) {
+                    if (track.previewUrl.isNotBlank()) {
+                        player.configurePlayer(
+                            track.previewUrl,
+                            { playerStatusLiveData.value = PlayerStatus.Prepared },
+                            { playerStatusLiveData.value = PlayerStatus.Prepared }
+                        )
+                    }
+                    AudioplayerScreenState.Content(track)
                 } else AudioplayerScreenState.Error
             )
         }
@@ -90,14 +86,5 @@ class AudiolayerViewModel(
     companion object {
         private const val DELAY_MILLIS = 333L
 
-        fun getViewModelFactory(): ViewModelProvider.Factory {
-            return viewModelFactory {
-                initializer {
-                    val context = (this[APPLICATION_KEY] as App).applicationContext
-                    val getTrackUseCase = Creator.createGetTrackUseCase(context)
-                    AudiolayerViewModel(getTrackUseCase)
-                }
-            }
-        }
     }
 }
