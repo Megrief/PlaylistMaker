@@ -24,6 +24,7 @@ import org.koin.dsl.module
 
 const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
 const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
+
 val dataModule = module {
     single<NetworkClient> {
         RetrofitClientImpl()
