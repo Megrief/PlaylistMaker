@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.TrackCardBinding
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
 
 class TrackAdapter(private val onTrackClicked: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
     private val trackList: MutableList<Track> = mutableListOf()

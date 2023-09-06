@@ -5,7 +5,7 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus

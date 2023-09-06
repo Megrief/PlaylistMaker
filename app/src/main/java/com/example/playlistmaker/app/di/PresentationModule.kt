@@ -3,13 +3,16 @@ package com.example.playlistmaker.app.di
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
-import com.example.playlistmaker.ui.search.view_model.SearchRequestDebouncer
+import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
+import com.example.playlistmaker.ui.media.fragments.view_models.SavedMediaViewModel
+import com.example.playlistmaker.ui.search.view_model.util.SearchRequestDebouncer
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
@@ -47,6 +50,30 @@ val presentationModule = module {
             getThemeFlagUseCase = getThemeFlagUseCase,
             switchThemeUseCase = get(),
             sharingRepository = get()
+        )
+    }
+
+    viewModel {
+        val getPlaylistListUseCase: GetDataUseCase<List<Playlist>> = get(named(GET_PLAYLIST_LIST_USE_CASE))
+        val storePlaylistListUseCase: StoreDataUseCase<List<Playlist>> = get(named(STORE_PLAYLIST_LIST_USE_CASE))
+        val storePlaylistUseCase: StoreDataUseCase<Playlist> = get(named(STORE_PLAYLIST_USE_CASE))
+
+        PlaylistsViewModel(
+            getPlaylists = getPlaylistListUseCase,
+            storePlaylists = storePlaylistListUseCase,
+            storePlaylist = storePlaylistUseCase
+        )
+    }
+
+    viewModel {
+        val getTrackListUseCase: GetDataUseCase<List<Track>> = get(named(GET_TRACK_LIST_USE_CASE))
+        val storeTrackUseCase: StoreDataUseCase<Track> = get(named(STORE_TRACK_USE_CASE))
+        val storeTrackListUseCase: StoreDataUseCase<List<Track>> = get(named(STORE_TRACK_LIST_USE_CASE))
+
+        SavedMediaViewModel(
+            getTrackListUseCase = getTrackListUseCase,
+            storeTrackListUseCase = storeTrackListUseCase,
+            storeTrackUseCase = storeTrackUseCase
         )
     }
 

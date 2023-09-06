@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search.view_model
+package com.example.playlistmaker.ui.search.view_model.util
 
 import android.os.Handler
 

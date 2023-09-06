@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.AudioplayerActivity
 import com.example.playlistmaker.ui.search.activity.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState

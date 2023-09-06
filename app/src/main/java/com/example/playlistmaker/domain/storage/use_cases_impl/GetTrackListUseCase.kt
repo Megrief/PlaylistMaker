@@ -1,12 +1,13 @@
 package com.example.playlistmaker.domain.storage.use_cases_impl
 
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import java.util.function.Consumer
 
-class GetTrackListUseCase(private val repository: StorageManagerRepo<List<Track>>) :
-    GetDataUseCase<List<Track>> {
+class GetTrackListUseCase(
+    private val repository: StorageManagerRepo<List<Track>>
+) : GetDataUseCase<List<Track>> {
 
     override fun get(key: String, consumer: Consumer<List<Track>>) {
         consumer.accept(repository.get(key))

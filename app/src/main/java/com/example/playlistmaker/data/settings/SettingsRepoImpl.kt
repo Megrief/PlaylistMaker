@@ -15,14 +15,14 @@ class SettingsRepoImpl(private val context: Context, private val gson: Gson) : S
     }
 
     override fun store(key: String, item: ThemeFlag?) {
-        gson.toJson(item, ThemeFlag::class.java).let {
-            sharedPrefs.edit().putString(key, it).apply()
+        gson.toJson(item, ThemeFlag::class.java).also { themeFlagJson ->
+            sharedPrefs.edit().putString(key, themeFlagJson).apply()
         }
     }
 
     override fun get(key: String): ThemeFlag? {
-        return sharedPrefs.getString(key, null)?.let {
-            gson.fromJson(it, ThemeFlag::class.java)
+        return sharedPrefs.getString(key, null)?.let { themeFlagJson ->
+            gson.fromJson(themeFlagJson, ThemeFlag::class.java)
         }
     }
 }
