@@ -79,14 +79,14 @@ tools:context=".ui.search.activity.SearchActivity" >
 
         <ImageView
             android:id="@+id/something_wrong_image"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="@dimen/image_size"
+            android:layout_height="@dimen/image_size"
             android:layout_marginBottom="@dimen/medium"
             android:src="@drawable/nothing_found" />
         
         <TextView
             android:id="@+id/something_wrong_message"
-            style="@style/SearchMessageTextStyle"
+            style="@style/MessageTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/nothing_found" />

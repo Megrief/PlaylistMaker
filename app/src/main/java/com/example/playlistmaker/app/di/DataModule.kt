@@ -2,7 +2,10 @@ package com.example.playlistmaker.app.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import com.example.playlistmaker.app.App
+import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylist
+import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylistList
 import com.example.playlistmaker.data.search.SearchRepoImpl
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
 import com.example.playlistmaker.data.search.network.network_client.impl.RetrofitClientImpl
@@ -12,7 +15,8 @@ import com.example.playlistmaker.data.sharing.external_navigator.impl.ExternalNa
 import com.example.playlistmaker.data.sharing.repo_impl.SharingRepoImpl
 import com.example.playlistmaker.data.storage.repo_impl.SharedPrefsList
 import com.example.playlistmaker.data.storage.repo_impl.SharedPrefsTrack
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.search.SearchRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.sharing.SharingRepository
@@ -24,6 +28,9 @@ import org.koin.dsl.module
 
 const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
 const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
+const val  STORAGE_MANAGER_REPO_PLAYLIST = "StorageManagerRepoPlaylist"
+const val STORAGE_MANAGER_REPO_PLAYLIST_LIST = "StorageManagerRepoPlaylistList"
+
 val dataModule = module {
     single<NetworkClient> {
         RetrofitClientImpl()
@@ -35,6 +42,11 @@ val dataModule = module {
 
     factory {
         Gson()
+    }
+
+    factory<Resources> {
+        val context: Context = get()
+        context.resources
     }
 
     single<SettingsRepository> {
@@ -50,7 +62,7 @@ val dataModule = module {
     }
 
     single<SharingRepository> {
-        SharingRepoImpl(context = get(), externalNavigator = get())
+        SharingRepoImpl(resources = get(), externalNavigator = get())
     }
 
     single<StorageManagerRepo<List<Track>>>(named(STORAGE_MANAGER_REPO_LIST)) {
@@ -59,5 +71,13 @@ val dataModule = module {
 
     single<StorageManagerRepo<Track?>>(named(STORAGE_MANAGER_REPO_TRACK)) {
         SharedPrefsTrack(sharedPrefs = get(), gson = get())
+    }
+
+    single<StorageManagerRepo<Playlist?>>(named(STORAGE_MANAGER_REPO_PLAYLIST)) {
+        SharedPrefsPlaylist(sharedPrefs = get(), gson = get())
+    }
+
+    single<StorageManagerRepo<List<Playlist>>>(named(STORAGE_MANAGER_REPO_PLAYLIST_LIST)) {
+        SharedPrefsPlaylistList(sharedPrefs = get(), gson = get())
     }
 }

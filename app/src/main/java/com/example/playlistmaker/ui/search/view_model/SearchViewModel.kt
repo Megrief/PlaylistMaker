@@ -4,9 +4,10 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
+import com.example.playlistmaker.ui.search.view_model.util.SearchRequestDebouncer
 import org.koin.java.KoinJavaComponent.getKoin
 
 class SearchViewModel(

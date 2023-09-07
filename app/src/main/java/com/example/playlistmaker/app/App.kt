@@ -23,10 +23,10 @@ class App : Application() {
 
             modules(dataModule, domainModule, presentationModule)
         }
-        getThemeFlagUseCase.get(THEME) {
+        getThemeFlagUseCase.get(THEME) { flag ->
             AppCompatDelegate.setDefaultNightMode(
-                if (it != null) {
-                    if (it.flag) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                if (flag != null) {
+                    if (flag.flag) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
                 } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
             )
         }

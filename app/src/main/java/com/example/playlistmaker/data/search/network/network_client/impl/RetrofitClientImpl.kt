@@ -6,7 +6,7 @@ import com.example.playlistmaker.data.search.network.api.ITunesApiService
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.net.SocketTimeoutException
+import java.io.IOException
 
 class RetrofitClientImpl : NetworkClient {
     private val baseUrl = "https://itunes.apple.com"
@@ -19,7 +19,7 @@ class RetrofitClientImpl : NetworkClient {
     override fun doSearch(dto: TrackSearchRequest): Response {
         val response = try {
             apiService.search(dto.term).execute()
-        } catch(_: SocketTimeoutException) {
+        } catch(_: IOException) {
             null
         }
         val body = response?.body() ?: Response()

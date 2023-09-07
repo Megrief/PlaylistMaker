@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.AudioplayerActivity
 import com.example.playlistmaker.ui.search.activity.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
@@ -43,7 +43,6 @@ class SearchActivity : AppCompatActivity() {
             val onTrackClicked: (Track) -> Unit = { track ->
                 if (ItemClickDebouncer.clickDebounce()) {
                     viewModel.addToHistory(track)
-                    (binding.historyList.adapter as TrackAdapter).notifyDataSetChanged()
                     startActivity(Intent(this@SearchActivity, AudioplayerActivity::class.java))
                 }
             }
@@ -57,7 +56,9 @@ class SearchActivity : AppCompatActivity() {
                 is SearchScreeenState.Empty -> {
                     hideAll()
                 }
-                is SearchScreeenState.SearchHistory -> { showHistory(screenState.trackList) }
+                is SearchScreeenState.SearchHistory -> {
+                    showHistory(screenState.trackList)
+                }
                 is SearchScreeenState.IsLoading -> {
                     hideAll()
                     binding.progressBar.visibility = VISIBLE
@@ -70,11 +71,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showResults(results: List<Track>) {
-        with(binding.trackList.adapter as TrackAdapter) {
-            trackList.clear()
-            trackList.addAll(results)
-            notifyDataSetChanged()
-        }
+        (binding.trackList.adapter as TrackAdapter).setTrackList(results)
         hideAll()
         binding.trackList.visibility = VISIBLE
     }
@@ -108,10 +105,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showHistory(history: List<Track>) {
-        with(binding.historyList.adapter as TrackAdapter) {
-            trackList.clear()
-            trackList.addAll(history)
-        }
+        (binding.historyList.adapter as TrackAdapter).setTrackList(history)
         hideAll()
         binding.history.visibility = VISIBLE
     }
@@ -157,7 +151,7 @@ class SearchActivity : AppCompatActivity() {
                 val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
                 viewModel.clear()
-                (binding.trackList.adapter as TrackAdapter).notifyDataSetChanged()
+                (binding.trackList.adapter as TrackAdapter).setTrackList(emptyList())
                 hideAll()
                 viewModel.showHistory()
             }
@@ -179,11 +173,7 @@ class SearchActivity : AppCompatActivity() {
         binding.clearHistory.setOnClickListener {
             hideAll()
             viewModel.clearHistory()
-            (binding.historyList.adapter as TrackAdapter).let {
-                it.trackList.clear()
-                it.notifyDataSetChanged()
-            }
-
+            (binding.historyList.adapter as TrackAdapter).setTrackList(emptyList())
         }
     }
 
