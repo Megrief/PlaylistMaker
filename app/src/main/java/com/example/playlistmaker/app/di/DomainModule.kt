@@ -1,7 +1,7 @@
 package com.example.playlistmaker.app.di
 
-import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.media.use_cases_impl.GetPlaylistListUseCase
 import com.example.playlistmaker.domain.media.use_cases_impl.GetPlaylistUseCase
 import com.example.playlistmaker.domain.media.use_cases_impl.StorePlaylistListUseCase

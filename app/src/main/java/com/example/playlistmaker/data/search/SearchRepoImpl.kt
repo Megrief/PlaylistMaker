@@ -11,6 +11,7 @@ import java.time.LocalDateTime
 class SearchRepoImpl(private val networkClient: NetworkClient) : SearchRepository {
     override fun search(term: String): List<Track>? {
         val response = networkClient.doSearch(TrackSearchRequest(term))
+
         return if (response.resultCode == Response.SUCCESS) {
             response as ITunesResponse
             if (response.resultCount == 0) emptyList() else {

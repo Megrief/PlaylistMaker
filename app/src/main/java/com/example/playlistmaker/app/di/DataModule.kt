@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import com.example.playlistmaker.app.App
+import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylist
+import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylistList
 import com.example.playlistmaker.data.search.SearchRepoImpl
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
 import com.example.playlistmaker.data.search.network.network_client.impl.RetrofitClientImpl
@@ -12,11 +14,9 @@ import com.example.playlistmaker.data.sharing.external_navigator.ExternalNavigat
 import com.example.playlistmaker.data.sharing.external_navigator.impl.ExternalNavigatorImpl
 import com.example.playlistmaker.data.sharing.repo_impl.SharingRepoImpl
 import com.example.playlistmaker.data.storage.repo_impl.SharedPrefsList
-import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylist
-import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylistList
 import com.example.playlistmaker.data.storage.repo_impl.SharedPrefsTrack
-import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.search.SearchRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.sharing.SharingRepository
