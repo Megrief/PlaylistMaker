@@ -28,7 +28,7 @@
         </activity>
 
         <activity
-            android:name=".ui.search.activity.SearchActivity"
+            android:name=".ui.search.SearchActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
@@ -36,7 +36,7 @@
         </activity>
 
         <activity
-            android:name=".ui.media.MediaActivity"
+            android:name=".ui.media.MediaFragment"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

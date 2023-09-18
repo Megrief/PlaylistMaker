@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search.activity
+package com.example.playlistmaker.ui.search
 
 import android.content.Context
 import android.content.Intent
@@ -13,7 +13,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.AudioplayerActivity
-import com.example.playlistmaker.ui.search.activity.adapter.TrackAdapter
+import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.utils.ItemClickDebouncer
@@ -50,6 +50,7 @@ class SearchActivity : AppCompatActivity() {
             historyList.adapter = TrackAdapter(onTrackClicked)
         }
     }
+
     private fun viewModelConfig() {
         viewModel.getSearchScreenStateLiveData().observe(this) { screenState ->
             when (screenState) {

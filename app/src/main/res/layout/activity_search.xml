@@ -5,12 +5,12 @@ xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
 android:orientation="vertical"
-tools:context=".ui.search.activity.SearchActivity" >
+tools:context=".ui.search.SearchActivity" >
 
     <!-- Head -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
-        style="@style/ToolbarAppearance.WithIcon"
+        style="@style/ToolbarAppearance"
         app:title="@string/search" />
 
     <!-- Search bar -->

@@ -1,13 +1,12 @@
 package com.example.playlistmaker.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.ui.media.MediaActivity
-import com.example.playlistmaker.ui.settings.SettingsActivity
-import com.example.playlistmaker.ui.search.activity.SearchActivity
 
 class MainActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMainBinding.inflate(LayoutInflater.from(this)) }
@@ -15,14 +14,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.search.setOnClickListener {
-            startActivity(Intent(this, SearchActivity::class.java))
-        }
-        binding.media.setOnClickListener {
-            startActivity(Intent(this, MediaActivity::class.java))
-        }
-        binding.settings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.bottomNav.setupWithNavController(navController)
     }
 }
