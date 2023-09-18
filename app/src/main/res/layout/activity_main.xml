@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/sub_medium" >
+    android:orientation="vertical">
 
-    <!-- Title -->
-    <com.google.android.material.appbar.MaterialToolbar
-        style="@style/ToolbarAppearance"
-        app:title="@string/title"
-        app:titleTextColor="@color/white"
-        android:layout_marginBottom="@dimen/padding_bottom" />
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
 
-    <!-- Search -->
-    <Button
-        android:id="@+id/search"
-        style="@style/ButtonWithTextOnMain"
-        android:text="@string/search"
-        app:icon="@drawable/search" />
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:navGraph="@navigation/nav_graph"
+        app:defaultNavHost="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav" />
 
-    <!-- Media -->
-    <Button
-        android:id="@+id/media"
-        style="@style/ButtonWithTextOnMain"
-        android:text="@string/media"
-        app:icon="@drawable/media" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
 
-    <!-- Settings -->
-    <Button
-        android:id="@+id/settings"
-        style="@style/ButtonWithTextOnMain"
-        android:text="@string/settings"
-        app:icon="@drawable/settings" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
