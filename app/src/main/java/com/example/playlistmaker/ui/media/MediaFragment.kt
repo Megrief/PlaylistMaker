@@ -16,19 +16,9 @@ class MediaFragment : Fragment() {
         get() = _binding!!
 
 
-    private val tabMediator by lazy {
-        TabLayoutMediator(binding.mediaTl, binding.mediaVp) { tab,position ->
-            tab.text =
-                if (position == 0) getString(R.string.favourite_tracks)
-                else getString(R.string.playlists)
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
+    private var _tabMediator: TabLayoutMediator? = null
+    private val tabMediator: TabLayoutMediator
+        get() = _tabMediator!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +33,12 @@ class MediaFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.mediaVp.adapter = AdapterVP(parentFragmentManager, lifecycle)
+        _tabMediator = TabLayoutMediator(binding.mediaTl, binding.mediaVp) { tab,position ->
+            tab.text =
+                if (position == 0) getString(R.string.favourite_tracks)
+                else getString(R.string.playlists)
+        }
+        binding.mediaVp.adapter = AdapterVP(childFragmentManager, lifecycle)
         tabMediator.attach()
     }
 
@@ -51,10 +46,6 @@ class MediaFragment : Fragment() {
         super.onDestroyView()
 
         tabMediator.detach()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
 }

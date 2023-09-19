@@ -1,18 +1,19 @@
 package com.example.playlistmaker.ui.search
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.ui.audioplayer.AudioplayerActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
@@ -20,14 +21,25 @@ import com.example.playlistmaker.utils.ItemClickDebouncer
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class SearchActivity : AppCompatActivity() {
-    private val binding by lazy { ActivitySearchBinding.inflate(LayoutInflater.from(this)) }
+class SearchFragment : Fragment() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding: FragmentSearchBinding
+        get() = _binding!!
+
     private val viewModel: SearchViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         configureLists()
         viewModelConfig()
 
@@ -35,15 +47,13 @@ class SearchActivity : AppCompatActivity() {
         configureClearButton()
         configureRefreshButton()
         configureClearHistoryButton()
-        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
     }
-
     private fun configureLists() {
         with(binding) {
             val onTrackClicked: (Track) -> Unit = { track ->
                 if (ItemClickDebouncer.clickDebounce()) {
                     viewModel.addToHistory(track)
-                    startActivity(Intent(this@SearchActivity, AudioplayerActivity::class.java))
+                    findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
                 }
             }
             trackList.adapter = TrackAdapter(onTrackClicked)
@@ -52,7 +62,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun viewModelConfig() {
-        viewModel.getSearchScreenStateLiveData().observe(this) { screenState ->
+        viewModel.getSearchScreenStateLiveData().observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is SearchScreeenState.Empty -> {
                     hideAll()
@@ -116,10 +126,11 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_BAR_STATE, savedValue)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        savedValue = savedInstanceState.getString(SEARCH_BAR_STATE) ?: ""
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedValue = savedInstanceState?.getString(SEARCH_BAR_STATE) ?: ""
     }
+
 
     private fun configureSearchBar() {
         with(binding.searchBar) {
@@ -149,7 +160,7 @@ class SearchActivity : AppCompatActivity() {
             clearButton.setOnClickListener {
                 searchBar.setText("")
                 savedValue = ""
-                val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 inputMethodManager?.hideSoftInputFromWindow(searchBar.windowToken, 0)
                 viewModel.clear()
                 (binding.trackList.adapter as TrackAdapter).setTrackList(emptyList())
