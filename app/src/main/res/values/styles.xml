@@ -158,4 +158,5 @@
         <item name="android:layout_marginTop">@dimen/medium</item>
         <item name="layout_goneMarginTop">@dimen/medium</item>
     </style>
+
 </resources>

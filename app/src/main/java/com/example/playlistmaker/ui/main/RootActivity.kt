@@ -6,10 +6,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityMainBinding
+import com.example.playlistmaker.databinding.ActivityRootBinding
 
-class MainActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityMainBinding.inflate(LayoutInflater.from(this)) }
+class RootActivity : AppCompatActivity() {
+    private val binding by lazy { ActivityRootBinding.inflate(LayoutInflater.from(this)) }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

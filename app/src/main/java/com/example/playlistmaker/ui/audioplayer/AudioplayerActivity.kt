@@ -24,10 +24,12 @@ import java.util.Locale
 
 class AudioplayerActivity : AppCompatActivity() {
     private val binding by lazy { ActivityAudioplayerBinding.inflate(LayoutInflater.from(this)) }
+
     private val viewModel: AudioplayerViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
 
         viewModel.getScreenStateLiveData().observe(this) { screenState ->
             val mainHandler: Handler = getKoin().get()
