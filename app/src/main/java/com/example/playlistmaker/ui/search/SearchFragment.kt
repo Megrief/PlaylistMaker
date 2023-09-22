@@ -27,6 +27,8 @@ class SearchFragment : Fragment() {
         get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
+    private var savedValue: String = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +50,23 @@ class SearchFragment : Fragment() {
         configureRefreshButton()
         configureClearHistoryButton()
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SEARCH_BAR_STATE, savedValue)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedValue = savedInstanceState?.getString(SEARCH_BAR_STATE) ?: ""
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        savedValue = ""
+    }
+
     private fun configureLists() {
         with(binding) {
             val onTrackClicked: (Track) -> Unit = { track ->
@@ -121,17 +140,6 @@ class SearchFragment : Fragment() {
         binding.history.visibility = VISIBLE
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_BAR_STATE, savedValue)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedValue = savedInstanceState?.getString(SEARCH_BAR_STATE) ?: ""
-    }
-
-
     private fun configureSearchBar() {
         with(binding.searchBar) {
             setText(savedValue)
@@ -189,15 +197,8 @@ class SearchFragment : Fragment() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        savedValue = ""
-    }
-
     companion object {
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
-
-        private var savedValue: String = ""
     }
 
 }

@@ -43,4 +43,9 @@ class SettingsFragment : Fragment() {
             support.setOnClickListener { viewModel.mailToSupport() }
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

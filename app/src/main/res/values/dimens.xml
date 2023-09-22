@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="zero">0dp</dimen>
+    <dimen name="very_small">4dp</dimen>
     <dimen name="track_card_point_pad">5dp</dimen>
     <dimen name="small">8dp</dimen>
     <dimen name="icon_pad">10dp</dimen>
@@ -12,6 +13,7 @@
     <dimen name="margin_medium">28dp</dimen>
     <dimen name="margin_big">40dp</dimen>
     <dimen name="track_image_size">45dp</dimen>
+    <dimen name="image_button_on_audioplayer">51dp</dimen>
     <dimen name="menu_button_height">61dp</dimen>
     <dimen name="image_size">120dp</dimen>
 

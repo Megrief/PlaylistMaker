@@ -66,7 +66,7 @@
         <item name="textAllCaps">false</item>
         <item name="fontFamily">@font/ys_display_regular</item>
         <item name="fontWeight">400</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">@dimen/sub_medium</item>
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="iconTint">?attr/colorOnSecondary</item>
         <item name="iconGravity">textTop</item>
@@ -77,7 +77,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginStart">@dimen/very_small</item>
         <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:backgroundTint">?android:background</item>
         <item name="android:contentDescription">@string/arrow_back</item>
@@ -153,10 +153,26 @@
     <style name="SmallTextViewOnAudioplayer">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="layout_constraintHorizontal_chainStyle">spread_inside</item>
         <item name="android:textAppearance">@style/SmallTextOnAudioplayer</item>
-        <item name="android:layout_marginTop">@dimen/medium</item>
-        <item name="layout_goneMarginTop">@dimen/medium</item>
+        <item name="android:textColor">@color/icons_gray</item>
+    </style>
+
+    <style name="SmallTextViewOnAudioplayer.Value">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:textColor">?attr/colorOnSecondary</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textAlignment">viewEnd</item>
+        <item name="android:layout_marginStart">@dimen/very_small</item>
+    </style>
+
+    <style name="InfoContainerOnAudioplayer">
+        <item name="android:layout_width">@dimen/zero</item>
+        <item name="android:layout_height">wrap_content</item>
+<!--        <item name="android:layout_marginTop">@dimen/medium</item>-->
+        <item name="android:paddingVertical">@dimen/small</item>
+        <item name="android:orientation">horizontal</item>
+<!--        <item name="layout_goneMarginTop">@dimen/medium</item>-->
     </style>
 
 </resources>
