@@ -7,6 +7,7 @@ import com.example.playlistmaker.app.App
 import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylist
 import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylistList
 import com.example.playlistmaker.data.search.SearchRepoImpl
+import com.example.playlistmaker.data.search.network.api.ITunesApiService
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
 import com.example.playlistmaker.data.search.network.network_client.impl.RetrofitClientImpl
 import com.example.playlistmaker.data.settings.SettingsRepoImpl
@@ -25,6 +26,8 @@ import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
 const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
@@ -33,7 +36,7 @@ const val STORAGE_MANAGER_REPO_PLAYLIST_LIST = "StorageManagerRepoPlaylistList"
 
 val dataModule = module {
     single<NetworkClient> {
-        RetrofitClientImpl()
+        RetrofitClientImpl(apiService = get())
     }
 
     single<SearchRepository> {
@@ -49,6 +52,14 @@ val dataModule = module {
         context.resources
     }
 
+    factory<ITunesApiService> {
+        val baseUrl = "https://itunes.apple.com"
+        val retrofit = Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        retrofit.create(ITunesApiService::class.java)
+    }
     single<SettingsRepository> {
         SettingsRepoImpl(context = get(), gson = get())
     }

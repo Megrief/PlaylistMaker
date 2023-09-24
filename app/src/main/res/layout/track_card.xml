@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/menu_button_height"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingVertical="@dimen/small"
     android:orientation="horizontal">
 
     <!-- Track Poster -->
@@ -22,7 +24,8 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/track_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_weight="1"
         android:orientation="vertical" >
 
@@ -32,7 +35,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Name for song"
-            android:layout_marginTop="@dimen/almost_medium"
             android:ellipsize="end"
             android:text="" />
 
@@ -49,6 +51,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 tools:text="Artist's name." />
+
             <ImageView
                 android:id="@+id/point"
                 android:layout_width="wrap_content"
@@ -59,6 +62,7 @@
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/point"
                 app:tint="?attr/colorSecondary" />
+
             <TextView
                 android:id="@+id/track_time"
                 style="@style/TrackCardTextStyle.Small"

@@ -20,7 +20,7 @@
 
         <activity
             android:name=".ui.audioplayer.AudioplayerActivity"
-            android:theme="@style/Theme.PlaylistMaker.Audioplayer"
+            android:theme="@style/Theme.PlaylistMaker"
             android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
@@ -28,33 +28,10 @@
         </activity>
 
         <activity
-            android:name=".ui.search.activity.SearchActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-
-        <activity
-            android:name=".ui.media.MediaActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.settings.SettingsActivity"
-            android:exported="false"
-            android:theme="@style/Theme.PlaylistMaker.Settings">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-
-        <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.main.RootActivity"
             android:exported="true"
-            android:theme="@style/Theme.PlaylistMaker.Main" >
+            android:theme="@style/Theme.PlaylistMaker"
+            android:windowSoftInputMode="adjustNothing" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -9,7 +9,7 @@
     <!-- Head -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
-        style="@style/ToolbarAppearance.WithIcon"
+        style="@style/ToolbarAppearance"
         app:title="@string/settings" />
 
     <!-- Dark theme -->
