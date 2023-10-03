@@ -31,7 +31,7 @@ class AudioplayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        viewModel.getScreenStateLiveData().observe(this) { screenState ->
+        viewModel.screenState.observe(this) { screenState ->
             val mainHandler: Handler = getKoin().get()
             mainHandler.post {
                 when (screenState) {
@@ -45,11 +45,20 @@ class AudioplayerActivity : AppCompatActivity() {
 
         }
 
-        viewModel.getPlayerStatusLiveData().observe(this) { playerStatus ->
-            if (playerStatus is PlayerStatus.Playing) {
-                binding.playingTime.text = playerStatus.currentPosition
-                changeButtonAppearance(true)
-            } else changeButtonAppearance(false)
+        viewModel.playerStatus.observe(this) { playerStatus ->
+            when (playerStatus) {
+                is PlayerStatus.Prepared, is PlayerStatus.Paused -> {
+                    changeButtonAppearance(false)
+                    if (playerStatus is PlayerStatus.Prepared) {
+                        binding.playingTime.text = getString(R.string.time_left)
+                    }
+                }
+                is PlayerStatus.Playing -> {
+                    binding.playingTime.text = playerStatus.currentPosition
+                    changeButtonAppearance(true)
+                }
+                is PlayerStatus.Default -> { }
+            }
         }
 
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }

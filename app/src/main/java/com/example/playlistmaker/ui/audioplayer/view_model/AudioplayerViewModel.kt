@@ -1,16 +1,17 @@
 package com.example.playlistmaker.ui.audioplayer.view_model
 
 import android.icu.text.SimpleDateFormat
-import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import org.koin.java.KoinJavaComponent.getKoin
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class AudioplayerViewModel(
@@ -18,32 +19,29 @@ class AudioplayerViewModel(
     private val player: Player
 ) : ViewModel() {
 
-    private val screenStateLiveData = MutableLiveData<AudioplayerScreenState>(AudioplayerScreenState.Loading)
-    private val playerStatusLiveData = MutableLiveData<PlayerStatus>(PlayerStatus.Default)
-    private val mainHandler: Handler = getKoin().get()
+    private val _screenState = MutableLiveData<AudioplayerScreenState>(AudioplayerScreenState.Loading)
+    val screenState: LiveData<AudioplayerScreenState>
+        get() = _screenState
 
-    private val refreshPosition = object : Runnable {
-        override fun run() {
-            val value = getPlayerStatusLiveData().value
-            if (value is PlayerStatus.Playing) {
-                playerStatusLiveData.value = value.copy(
-                    currentPosition = getLength(player.getCurrentPosition())
-                )
-            } else mainHandler.removeCallbacks(this)
+    private val _playerStatus = MutableLiveData<PlayerStatus>(PlayerStatus.Default)
+    val playerStatus: LiveData<PlayerStatus>
+        get() = _playerStatus
 
-            mainHandler.postDelayed(this, DELAY_MILLIS)
-        }
-    }
+    private var playingProcess: Job? = null
 
     init {
         getDataUseCase.get(SearchViewModel.TRACK) { track ->
-            screenStateLiveData.postValue(
+            _screenState.postValue(
                 if (track != null) {
                     if (track.previewUrl.isNotBlank()) {
                         player.configurePlayer(
                             track.previewUrl,
-                            { playerStatusLiveData.value = PlayerStatus.Prepared },
-                            { playerStatusLiveData.value = PlayerStatus.Prepared }
+                            onPrepared = { _playerStatus.value = PlayerStatus.Prepared },
+                            onCompleted = {
+                                _playerStatus.value = PlayerStatus.Prepared
+                                playingProcess?.cancel()
+                                playingProcess = null
+                            }
                         )
                     }
                     AudioplayerScreenState.Content(track)
@@ -52,39 +50,44 @@ class AudioplayerViewModel(
         }
     }
 
-    fun getScreenStateLiveData(): LiveData<AudioplayerScreenState> = screenStateLiveData
-    fun getPlayerStatusLiveData(): LiveData<PlayerStatus> = playerStatusLiveData
-
     fun playback() {
-        when (playerStatusLiveData.value) {
+        when (_playerStatus.value) {
             is PlayerStatus.Playing -> {
-                playerStatusLiveData.value = PlayerStatus.Paused
+                _playerStatus.value = PlayerStatus.Paused
+                playingProcess?.cancel()
+                playingProcess = null
                 player.pause()
             }
             is PlayerStatus.Paused, is PlayerStatus.Prepared -> {
-                playerStatusLiveData.value = PlayerStatus.Playing(getLength(player.getCurrentPosition()))
+                _playerStatus.value = PlayerStatus.Playing(getLength(player.currentPosition))
                 player.play()
-                mainHandler.postDelayed(refreshPosition, DELAY_MILLIS)
+                playingProcess = getPosition()
             }
             else -> { }
         }
     }
 
     fun pause() {
-        playerStatusLiveData.value = PlayerStatus.Paused
+        _playerStatus.value = PlayerStatus.Paused
         player.pause()
     }
 
     override fun onCleared() {
         super.onCleared()
-        playerStatusLiveData.value = PlayerStatus.Default
+        _playerStatus.value = PlayerStatus.Default
         player.releaseResources()
     }
 
     private fun getLength(time: Int): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
-    companion object {
-        private const val DELAY_MILLIS = 333L
-
+    private fun getPosition(): Job = viewModelScope.launch {
+        player.getCurrentPosition().collect { position ->
+            val value = playerStatus.value
+            if (value is PlayerStatus.Playing) {
+                _playerStatus.value = value.copy(
+                    currentPosition = getLength(position)
+                )
+            } else _playerStatus.value = PlayerStatus.Playing(getLength(position))
+        }
     }
 }
