@@ -30,36 +30,9 @@ class AudioplayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setScreenStateObserver()
 
-        viewModel.screenState.observe(this) { screenState ->
-            val mainHandler: Handler = getKoin().get()
-            mainHandler.post {
-                when (screenState) {
-                    is AudioplayerScreenState.Error -> onBackPressedDispatcher
-                    is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
-                    is AudioplayerScreenState.Content -> {
-                        onSuccess(screenState.track)
-                    }
-                }
-            }
-
-        }
-
-        viewModel.playerStatus.observe(this) { playerStatus ->
-            when (playerStatus) {
-                is PlayerStatus.Prepared, is PlayerStatus.Paused -> {
-                    changeButtonAppearance(false)
-                    if (playerStatus is PlayerStatus.Prepared) {
-                        binding.playingTime.text = getString(R.string.time_left)
-                    }
-                }
-                is PlayerStatus.Playing -> {
-                    binding.playingTime.text = playerStatus.currentPosition
-                    changeButtonAppearance(true)
-                }
-                is PlayerStatus.Default -> { }
-            }
-        }
+        setPlayerStatusObserver()
 
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
@@ -71,6 +44,33 @@ class AudioplayerActivity : AppCompatActivity() {
         viewModel.pause()
     }
 
+    private fun setScreenStateObserver() {
+        viewModel.screenState.observe(this) { screenState ->
+            val mainHandler: Handler = getKoin().get()
+            mainHandler.post {
+                when (screenState) {
+                    is AudioplayerScreenState.Error -> onBackPressedDispatcher
+                    is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
+                    is AudioplayerScreenState.Content -> {
+                        onSuccess(screenState.track)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setPlayerStatusObserver() {
+        viewModel.playerStatus.observe(this) { playerStatus ->
+            when (playerStatus) {
+                is PlayerStatus.Prepared, is PlayerStatus.Paused -> changeButtonAppearance(false)
+                is PlayerStatus.Playing -> {
+                    binding.playingTime.text = playerStatus.currentPosition
+                    changeButtonAppearance(true)
+                }
+                is PlayerStatus.Default -> { }
+            }
+        }
+    }
     private fun changeButtonAppearance(isPlaying: Boolean) {
         binding.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }

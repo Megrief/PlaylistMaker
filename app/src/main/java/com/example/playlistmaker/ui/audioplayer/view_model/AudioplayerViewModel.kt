@@ -38,9 +38,11 @@ class AudioplayerViewModel(
                             track.previewUrl,
                             onPrepared = { _playerStatus.value = PlayerStatus.Prepared },
                             onCompleted = {
-                                _playerStatus.value = PlayerStatus.Prepared
                                 playingProcess?.cancel()
                                 playingProcess = null
+                                _playerStatus.value = (playerStatus.value as PlayerStatus.Playing)
+                                    .copy(currentPosition = getLength())
+                                _playerStatus.value = PlayerStatus.Prepared
                             }
                         )
                     }
@@ -78,7 +80,7 @@ class AudioplayerViewModel(
         player.releaseResources()
     }
 
-    private fun getLength(time: Int): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
+    private fun getLength(time: Int = 0): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     private fun getPosition(): Job = viewModelScope.launch {
         player.getCurrentPosition().collect { position ->

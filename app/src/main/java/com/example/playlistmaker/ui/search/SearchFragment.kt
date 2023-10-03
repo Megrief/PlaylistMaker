@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
@@ -17,7 +18,7 @@ import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.utils.ItemClickDebouncer
+import com.example.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -69,11 +70,13 @@ class SearchFragment : Fragment() {
 
     private fun configureLists() {
         with(binding) {
-            val onTrackClicked: (Track) -> Unit = { track ->
-                if (ItemClickDebouncer.clickDebounce()) {
-                    viewModel.addToHistory(track)
-                    findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
-                }
+            val onTrackClicked = debounce<Track>(
+                CLICK_DEBOUNCE_DELAY,
+                lifecycleScope,
+                false
+            ) { track ->
+                viewModel.addToHistory(track)
+                findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
             }
             trackList.adapter = TrackAdapter(onTrackClicked)
             historyList.adapter = TrackAdapter(onTrackClicked)
@@ -81,7 +84,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun viewModelConfig() {
-        viewModel.getSearchScreenStateLiveData().observe(viewLifecycleOwner) { screenState ->
+        viewModel.searchScreenState.observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is SearchScreeenState.Empty -> {
                     hideAll()
@@ -145,14 +148,13 @@ class SearchFragment : Fragment() {
             setText(savedValue)
             doOnTextChanged { s, _, _, _ ->
                 with(binding) {
-                    if (s != null) savedValue = s.toString()
+                    savedValue = s?.toString() ?: ""
                     if (s.isNullOrBlank()) {
                         if (searchBar.hasFocus()) viewModel.showHistory()
-                        viewModel.removeCallbacks()
                         clearButton.visibility = GONE
                     } else {
                         hideAll()
-                        viewModel.search(savedValue)
+                        viewModel.search(savedValue) // ---
                         clearButton.visibility = VISIBLE
                     }
                 }
@@ -199,6 +201,7 @@ class SearchFragment : Fragment() {
 
     companion object {
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
 }
