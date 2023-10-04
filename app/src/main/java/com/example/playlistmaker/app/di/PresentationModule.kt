@@ -1,8 +1,6 @@
 package com.example.playlistmaker.app.di
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.settings.entity.ThemeFlag
@@ -78,10 +76,6 @@ val presentationModule = module {
 
     factory {
         SingleLiveEvent<DarkThemeState>()
-    }
-
-    factory {
-        Handler(Looper.getMainLooper())
     }
 
     factory {

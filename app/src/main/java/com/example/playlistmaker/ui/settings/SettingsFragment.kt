@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -36,11 +39,25 @@ class SettingsFragment : Fragment() {
 
         with(binding) {
             darkTheme.setOnCheckedChangeListener { _, checked ->
-                viewModel.switchTheme(checked)
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.switchTheme(checked)
+                }
             }
-            share.setOnClickListener { viewModel.shareApp() }
-            userAgreement.setOnClickListener { viewModel.openUserAgreement() }
-            support.setOnClickListener { viewModel.mailToSupport() }
+            share.setOnClickListener {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.shareApp()
+                }
+            }
+            userAgreement.setOnClickListener {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.openUserAgreement()
+                }
+            }
+            support.setOnClickListener {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    viewModel.mailToSupport()
+                }
+            }
         }
     }
 

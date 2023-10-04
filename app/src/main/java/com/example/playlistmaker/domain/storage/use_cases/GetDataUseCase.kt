@@ -1,7 +1,7 @@
 package com.example.playlistmaker.domain.storage.use_cases
 
-import java.util.function.Consumer
+import kotlinx.coroutines.flow.Flow
 
 interface GetDataUseCase<T> {
-    fun get(key: String, consumer: Consumer<T>)
+    suspend fun get(key: String): Flow<T>
 }

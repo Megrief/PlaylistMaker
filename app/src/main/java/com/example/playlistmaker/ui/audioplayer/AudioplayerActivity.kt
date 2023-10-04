@@ -2,13 +2,13 @@ package com.example.playlistmaker.ui.audioplayer
 
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,7 +18,8 @@ import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
-import org.koin.android.ext.android.getKoin
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -46,8 +47,7 @@ class AudioplayerActivity : AppCompatActivity() {
 
     private fun setScreenStateObserver() {
         viewModel.screenState.observe(this) { screenState ->
-            val mainHandler: Handler = getKoin().get()
-            mainHandler.post {
+            lifecycleScope.launch(Dispatchers.Main) {
                 when (screenState) {
                     is AudioplayerScreenState.Error -> onBackPressedDispatcher
                     is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
@@ -62,7 +62,12 @@ class AudioplayerActivity : AppCompatActivity() {
     private fun setPlayerStatusObserver() {
         viewModel.playerStatus.observe(this) { playerStatus ->
             when (playerStatus) {
-                is PlayerStatus.Prepared, is PlayerStatus.Paused -> changeButtonAppearance(false)
+                is PlayerStatus.Prepared, is PlayerStatus.Paused -> {
+                    if (playerStatus is PlayerStatus.Prepared) {
+                        binding.playingTime.text = playerStatus.currentPosition ?: getString(R.string.half_minute)
+                    }
+                    changeButtonAppearance(false)
+                }
                 is PlayerStatus.Playing -> {
                     binding.playingTime.text = playerStatus.currentPosition
                     changeButtonAppearance(true)

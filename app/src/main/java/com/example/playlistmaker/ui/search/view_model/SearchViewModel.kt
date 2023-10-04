@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,7 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
-import com.example.playlistmaker.utils.debounce
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchUseCase: GetDataUseCase<List<Track>?>,
@@ -22,27 +25,34 @@ class SearchViewModel(
         get() = _searchScreenState
 
     private var savedValue = ""
-
-    private val searchDebounce = debounce<String>(
-        SEARCH_DEBOUNCE_DELAY_MILLIS,
-        viewModelScope,
-        true
-    ) {
-            Log.e("Debug", "In search debounce")
-            _searchScreenState.value = SearchScreeenState.IsLoading
-            searchUseCase.get(savedValue) { results ->
-                when {
-                    results == null -> _searchScreenState.postValue(SearchScreeenState.NoInternetConnection)
-                    results.isEmpty() -> _searchScreenState.postValue(SearchScreeenState.NoResults)
-                    else -> _searchScreenState.postValue(SearchScreeenState.SearchSuccess(results))
-                }
-            }
-        }
+    private var searchJob: Job? = null
 
     fun search(term: String) {
-        if (savedValue != term || _searchScreenState.value !is SearchScreeenState.SearchSuccess) {
-            savedValue = term
-            searchDebounce(savedValue) // new
+        if (savedValue != term) {
+            if (term.isBlank()) {
+                searchJob?.cancel()
+                searchJob = null
+            } else {
+                savedValue = term
+                setSearchJob(term)
+            }
+        }
+    }
+
+    private fun setSearchJob(term: String) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+            _searchScreenState.value = SearchScreeenState.IsLoading
+            onResult(searchUseCase.get(term).singleOrNull())
+        }
+    }
+
+    private fun onResult(result: List<Track>?) {
+        when {
+            result == null -> _searchScreenState.postValue(SearchScreeenState.NoInternetConnection)
+            result.isEmpty() -> _searchScreenState.postValue(SearchScreeenState.NoResults)
+            else -> _searchScreenState.postValue(SearchScreeenState.SearchSuccess(result))
         }
     }
 
@@ -51,24 +61,29 @@ class SearchViewModel(
     }
 
     fun showHistory() {
-        getTrackListUseCase.get(HISTORY_KEY) { history ->
-            if (history.isNotEmpty()) {
-                _searchScreenState.postValue(SearchScreeenState.SearchHistory(history))
-            } else _searchScreenState.postValue(SearchScreeenState.Empty)
+        viewModelScope.launch {
+            getTrackListUseCase.get(HISTORY_KEY).collect { history ->
+                if (history.isNotEmpty()) {
+                    _searchScreenState.postValue(SearchScreeenState.SearchHistory(history))
+                } else _searchScreenState.postValue(SearchScreeenState.Empty)
+            }
         }
     }
 
     fun addToHistory(track: Track) {
-        storeTrackUseCase.store(TRACK, track)
-        getTrackListUseCase.get(HISTORY_KEY) { history ->
-            with(history.toMutableList()) {
-                remove(track)
-                add(0, track)
-                if (size > 10) removeLast()
-                if (_searchScreenState.value is SearchScreeenState.SearchHistory) {
-                    _searchScreenState.postValue(SearchScreeenState.SearchHistory(this))
+        viewModelScope.launch(Dispatchers.IO) {
+            storeTrackUseCase.store(TRACK, track)
+
+            getTrackListUseCase.get(HISTORY_KEY).collect { history ->
+                with(history.toMutableList()) {
+                    remove(track)
+                    add(0, track)
+                    if (size > 10) removeLast()
+                    if (_searchScreenState.value is SearchScreeenState.SearchHistory) {
+                        _searchScreenState.postValue(SearchScreeenState.SearchHistory(this))
+                    }
+                    storeTrackListUseCase.store(HISTORY_KEY, this)
                 }
-                storeTrackListUseCase.store(HISTORY_KEY, this)
             }
         }
     }
@@ -81,7 +96,7 @@ class SearchViewModel(
     companion object {
         const val HISTORY_KEY = "HISTORY_KEY"
         const val TRACK = "TRACK"
-        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 3000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
 
     }
 }

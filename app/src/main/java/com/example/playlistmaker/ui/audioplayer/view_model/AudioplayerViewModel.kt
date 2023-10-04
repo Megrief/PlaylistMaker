@@ -27,43 +27,47 @@ class AudioplayerViewModel(
     val playerStatus: LiveData<PlayerStatus>
         get() = _playerStatus
 
-    private var playingProcess: Job? = null
+    private var playingTimeCounter: Job? = null
 
     init {
-        getDataUseCase.get(SearchViewModel.TRACK) { track ->
-            _screenState.postValue(
-                if (track != null) {
-                    if (track.previewUrl.isNotBlank()) {
-                        player.configurePlayer(
-                            track.previewUrl,
-                            onPrepared = { _playerStatus.value = PlayerStatus.Prepared },
-                            onCompleted = {
-                                playingProcess?.cancel()
-                                playingProcess = null
-                                _playerStatus.value = (playerStatus.value as PlayerStatus.Playing)
-                                    .copy(currentPosition = getLength())
-                                _playerStatus.value = PlayerStatus.Prepared
-                            }
-                        )
-                    }
-                    AudioplayerScreenState.Content(track)
-                } else AudioplayerScreenState.Error
-            )
+        // -- work in process --
+        viewModelScope.launch {
+            getDataUseCase.get(SearchViewModel.TRACK).collect { track ->
+                _screenState.postValue(
+                    if (track != null) {
+                        if (track.previewUrl.isNotBlank()) {
+                            player.configurePlayer(
+                                track.previewUrl,
+                                onPrepared = {
+                                    _playerStatus.value = PlayerStatus.Prepared(null)
+                                },
+                                onCompleted = {
+                                    playingTimeCounter?.cancel()
+                                    playingTimeCounter = null
+                                    _playerStatus.value = PlayerStatus.Prepared(getLength())
+                                }
+                            )
+                        }
+                        AudioplayerScreenState.Content(track)
+                    } else AudioplayerScreenState.Error
+                )
+            }
         }
+
     }
 
     fun playback() {
         when (_playerStatus.value) {
             is PlayerStatus.Playing -> {
                 _playerStatus.value = PlayerStatus.Paused
-                playingProcess?.cancel()
-                playingProcess = null
+                playingTimeCounter?.cancel()
+                playingTimeCounter = null
                 player.pause()
             }
             is PlayerStatus.Paused, is PlayerStatus.Prepared -> {
                 _playerStatus.value = PlayerStatus.Playing(getLength(player.currentPosition))
                 player.play()
-                playingProcess = getPosition()
+                playingTimeCounter = getPosition()
             }
             else -> { }
         }

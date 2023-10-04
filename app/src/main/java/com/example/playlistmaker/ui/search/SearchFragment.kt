@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isGone
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -78,6 +79,7 @@ class SearchFragment : Fragment() {
                 viewModel.addToHistory(track)
                 findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
             }
+
             trackList.adapter = TrackAdapter(onTrackClicked)
             historyList.adapter = TrackAdapter(onTrackClicked)
         }
@@ -146,21 +148,28 @@ class SearchFragment : Fragment() {
     private fun configureSearchBar() {
         with(binding.searchBar) {
             setText(savedValue)
-            doOnTextChanged { s, _, _, _ ->
-                with(binding) {
-                    savedValue = s?.toString() ?: ""
-                    if (s.isNullOrBlank()) {
-                        if (searchBar.hasFocus()) viewModel.showHistory()
-                        clearButton.visibility = GONE
-                    } else {
-                        hideAll()
-                        viewModel.search(savedValue) // ---
-                        clearButton.visibility = VISIBLE
+
+            doOnTextChanged { s, _, _, _->
+                savedValue = s?.toString() ?: ""
+                if (s.isNullOrBlank()) {
+                    if (binding.searchBar.hasFocus()) {
+                        if (binding.history.isGone) {
+                            hideAll()
+                            viewModel.showHistory()
+                        }
                     }
+                    binding.clearButton.visibility = GONE
+                } else {
+                    hideAll()
+                    binding.clearButton.visibility = VISIBLE
                 }
+                viewModel.search(savedValue)
             }
+
             setOnFocusChangeListener { _, hasFocus ->
-                if (hasFocus && savedValue.isEmpty()) viewModel.showHistory()
+                if (hasFocus && savedValue.isEmpty()) {
+                    viewModel.showHistory()
+                }
             }
         }
     }
@@ -178,7 +187,6 @@ class SearchFragment : Fragment() {
                 viewModel.showHistory()
             }
         }
-
     }
 
     private fun configureRefreshButton() {

@@ -4,20 +4,20 @@ import com.example.playlistmaker.data.search.dto.TrackSearchRequest
 import com.example.playlistmaker.data.search.network.Response
 import com.example.playlistmaker.data.search.network.api.ITunesApiService
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class RetrofitClientImpl(private val apiService: ITunesApiService) : NetworkClient {
 
-    override fun doSearch(dto: TrackSearchRequest): Response {
-        val response = try {
-            apiService.search(dto.term).execute()
-        } catch(_: IOException) {
-            null
+    override suspend fun doSearch(dto: TrackSearchRequest): Response {
+
+        return withContext(Dispatchers.IO) {
+            try {
+                apiService.search(dto.term).apply { resultCode = Response.SUCCESS }
+            } catch (_: IOException) {
+                Response(Response.FAILURE)
+            }
         }
-        val body = response?.body() ?: Response()
-
-        body.apply { resultCode = response?.code() ?: Response.FAILURE }
-
-        return body
     }
 }
