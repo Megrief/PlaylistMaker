@@ -13,9 +13,7 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, link)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }.also {
-            context.startActivity(it)
-        }
+        }.also { context.startActivity(it) }
     }
 
     override fun openUserAgreement(link: String) {
@@ -31,8 +29,6 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
             putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
             putExtra(Intent.EXTRA_TEXT, emailData.text)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        }.also {
-            context.startActivity(it)
-        }
+        }.also { context.startActivity(it) }
     }
 }

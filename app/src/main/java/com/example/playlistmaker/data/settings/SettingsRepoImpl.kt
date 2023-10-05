@@ -12,8 +12,7 @@ class SettingsRepoImpl(private val context: Context, private val gson: Gson) : S
     private val sharedPrefs: SharedPreferences = getKoin().get()
 
     override fun switchTheme(checked: Boolean) {
-        context as App
-        context.switchTheme(checked)
+        (context as App).switchTheme(checked)
     }
 
     override fun store(key: String, item: ThemeFlag?) {

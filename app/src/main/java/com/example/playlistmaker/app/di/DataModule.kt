@@ -66,6 +66,7 @@ val dataModule = module {
             .build()
         retrofit.create(ITunesApiService::class.java)
     }
+
     single<SettingsRepository> {
         SettingsRepoImpl(context = get(), gson = get())
     }

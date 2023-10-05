@@ -28,11 +28,13 @@ class App : Application() {
 
             modules(dataModule, domainModule, presentationModule)
         }
+
         coroutineScope.launch {
             getThemeFlagUseCase.get(THEME).collect { flag ->
                 AppCompatDelegate.setDefaultNightMode(
                     if (flag != null) {
-                        if (flag.flag) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+                        if (flag.flag) AppCompatDelegate.MODE_NIGHT_YES
+                        else AppCompatDelegate.MODE_NIGHT_NO
                     } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                 )
             }
@@ -44,11 +46,8 @@ class App : Application() {
             storeThemeFlagUseCase.store(THEME, ThemeFlag(darkThemeEnabled))
         }
         AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
+            if (darkThemeEnabled) AppCompatDelegate.MODE_NIGHT_YES
+            else AppCompatDelegate.MODE_NIGHT_NO
         )
     }
 

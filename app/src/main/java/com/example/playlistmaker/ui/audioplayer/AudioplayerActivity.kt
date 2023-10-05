@@ -8,7 +8,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,8 +17,6 @@ import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -27,6 +24,7 @@ class AudioplayerActivity : AppCompatActivity() {
     private val binding by lazy { ActivityAudioplayerBinding.inflate(LayoutInflater.from(this)) }
 
     private val viewModel: AudioplayerViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -47,13 +45,11 @@ class AudioplayerActivity : AppCompatActivity() {
 
     private fun setScreenStateObserver() {
         viewModel.screenState.observe(this) { screenState ->
-            lifecycleScope.launch(Dispatchers.Main) {
-                when (screenState) {
-                    is AudioplayerScreenState.Error -> onBackPressedDispatcher
-                    is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
-                    is AudioplayerScreenState.Content -> {
-                        onSuccess(screenState.track)
-                    }
+            when (screenState) {
+                is AudioplayerScreenState.Error -> onBackPressedDispatcher
+                is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
+                is AudioplayerScreenState.Content -> {
+                    onSuccess(screenState.track)
                 }
             }
         }
@@ -76,6 +72,7 @@ class AudioplayerActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun changeButtonAppearance(isPlaying: Boolean) {
         binding.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }

@@ -10,14 +10,13 @@ import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.getKoin
 
 class SettingsViewModel(
     getThemeFlagUseCase: GetDataUseCase<ThemeFlag?>,
     private val switchThemeUseCase: SwitchThemeUseCase,
-    private val sharingRepository: SharingRepository
+    private val sharingRepository: SharingRepository,
+    private val darkThemeState: SingleLiveEvent<DarkThemeState>
 ) : ViewModel() {
-    private val darkThemeState: SingleLiveEvent<DarkThemeState> = getKoin().get()
 
     init {
         viewModelScope.launch {
@@ -27,7 +26,6 @@ class SettingsViewModel(
                 }
             }
         }
-
     }
 
     fun getScreenState(): LiveData<DarkThemeState> = darkThemeState

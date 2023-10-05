@@ -24,8 +24,8 @@ class Player(
         player.release()
     }
 
-    val currentPosition: Int
-        get() = player.currentPosition
+//    val currentPosition: Int
+//        get() = player.currentPosition
 
     fun play() {
         player.start()

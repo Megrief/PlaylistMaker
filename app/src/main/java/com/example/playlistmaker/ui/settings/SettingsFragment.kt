@@ -38,23 +38,17 @@ class SettingsFragment : Fragment() {
         }
 
         with(binding) {
-            darkTheme.setOnCheckedChangeListener { _, checked ->
-                lifecycleScope.launch(Dispatchers.IO) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                darkTheme.setOnCheckedChangeListener { _, checked ->
                     viewModel.switchTheme(checked)
                 }
-            }
-            share.setOnClickListener {
-                lifecycleScope.launch(Dispatchers.IO) {
+                share.setOnClickListener {
                     viewModel.shareApp()
                 }
-            }
-            userAgreement.setOnClickListener {
-                lifecycleScope.launch(Dispatchers.IO) {
+                userAgreement.setOnClickListener {
                     viewModel.openUserAgreement()
                 }
-            }
-            support.setOnClickListener {
-                lifecycleScope.launch(Dispatchers.IO) {
+                support.setOnClickListener {
                     viewModel.mailToSupport()
                 }
             }

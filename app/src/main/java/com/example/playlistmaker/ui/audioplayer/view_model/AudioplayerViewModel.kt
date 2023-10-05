@@ -28,44 +28,48 @@ class AudioplayerViewModel(
         get() = _playerStatus
 
     private var playingTimeCounter: Job? = null
+        set(value) {
+            field?.cancel()
+            field = value
+        }
 
     init {
-        // -- work in process --
         viewModelScope.launch {
             getDataUseCase.get(SearchViewModel.TRACK).collect { track ->
                 _screenState.postValue(
                     if (track != null) {
-                        if (track.previewUrl.isNotBlank()) {
-                            player.configurePlayer(
-                                track.previewUrl,
-                                onPrepared = {
-                                    _playerStatus.value = PlayerStatus.Prepared(null)
-                                },
-                                onCompleted = {
-                                    playingTimeCounter?.cancel()
-                                    playingTimeCounter = null
-                                    _playerStatus.value = PlayerStatus.Prepared(getLength())
-                                }
-                            )
-                        }
+                        player.configurePlayer(
+                            track.previewUrl,
+                            onPrepared = {
+                                _playerStatus.value = PlayerStatus.Prepared(null)
+                            },
+                            onCompleted = {
+                                playingTimeCounter = null
+                                _playerStatus.value = PlayerStatus.Prepared(getLength())
+                            }
+                        )
                         AudioplayerScreenState.Content(track)
                     } else AudioplayerScreenState.Error
                 )
             }
         }
+    }
 
+    override fun onCleared() {
+        super.onCleared()
+        _playerStatus.value = PlayerStatus.Default
+        player.releaseResources()
+        playingTimeCounter = null
     }
 
     fun playback() {
         when (_playerStatus.value) {
             is PlayerStatus.Playing -> {
                 _playerStatus.value = PlayerStatus.Paused
-                playingTimeCounter?.cancel()
                 playingTimeCounter = null
                 player.pause()
             }
             is PlayerStatus.Paused, is PlayerStatus.Prepared -> {
-                _playerStatus.value = PlayerStatus.Playing(getLength(player.currentPosition))
                 player.play()
                 playingTimeCounter = getPosition()
             }
@@ -78,21 +82,13 @@ class AudioplayerViewModel(
         player.pause()
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        _playerStatus.value = PlayerStatus.Default
-        player.releaseResources()
-    }
-
     private fun getLength(time: Int = 0): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     private fun getPosition(): Job = viewModelScope.launch {
         player.getCurrentPosition().collect { position ->
             val value = playerStatus.value
             if (value is PlayerStatus.Playing) {
-                _playerStatus.value = value.copy(
-                    currentPosition = getLength(position)
-                )
+                _playerStatus.value = value.copy(getLength(position))
             } else _playerStatus.value = PlayerStatus.Playing(getLength(position))
         }
     }

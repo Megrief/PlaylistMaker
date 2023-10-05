@@ -14,8 +14,6 @@ class SingleLiveEvent<T> : MutableLiveData<T>() {
                 observer.onChanged(t)
             }
         }
-
-
     }
 
     override fun setValue(value: T) {

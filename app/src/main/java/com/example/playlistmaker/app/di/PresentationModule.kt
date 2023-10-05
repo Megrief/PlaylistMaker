@@ -46,7 +46,8 @@ val presentationModule = module {
         SettingsViewModel(
             getThemeFlagUseCase = getThemeFlagUseCase,
             switchThemeUseCase = get(),
-            sharingRepository = get()
+            sharingRepository = get(),
+            darkThemeState = get()
         )
     }
 

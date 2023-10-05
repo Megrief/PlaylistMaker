@@ -5,7 +5,6 @@ import com.example.playlistmaker.domain.settings.SettingsRepository
 class SwitchThemeUseCase(private val repository: SettingsRepository) {
 
     fun switchTheme(checked: Boolean) {
-
         repository.switchTheme(checked)
     }
 }

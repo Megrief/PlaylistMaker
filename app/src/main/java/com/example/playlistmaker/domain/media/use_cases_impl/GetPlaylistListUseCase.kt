@@ -12,7 +12,8 @@ class GetPlaylistListUseCase(
 
     override suspend fun get(key: String): Flow<List<Playlist>> {
         return flow {
-            repository.get(key)
+            emit(repository.get(key))
         }
+
     }
 }

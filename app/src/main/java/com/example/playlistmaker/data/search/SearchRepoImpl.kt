@@ -32,7 +32,6 @@ class SearchRepoImpl(private val networkClient: NetworkClient) : SearchRepositor
                             previewUrl = previewUrl ?: ""
                         )
                     }
-
                 }.let { emit(it) }
             } else emit(null)
         }

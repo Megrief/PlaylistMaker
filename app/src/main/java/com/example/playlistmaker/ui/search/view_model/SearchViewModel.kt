@@ -26,33 +26,25 @@ class SearchViewModel(
 
     private var savedValue = ""
     private var searchJob: Job? = null
+        set(value) {
+            field?.cancel()
+            field = value
+        }
+
+    override fun onCleared() {
+        super.onCleared()
+        _searchScreenState.postValue(SearchScreeenState.Empty)
+        searchJob = null
+    }
 
     fun search(term: String) {
         if (savedValue != term) {
             if (term.isBlank()) {
-                searchJob?.cancel()
                 searchJob = null
             } else {
                 savedValue = term
                 setSearchJob(term)
             }
-        }
-    }
-
-    private fun setSearchJob(term: String) {
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
-            _searchScreenState.value = SearchScreeenState.IsLoading
-            onResult(searchUseCase.get(term).singleOrNull())
-        }
-    }
-
-    private fun onResult(result: List<Track>?) {
-        when {
-            result == null -> _searchScreenState.postValue(SearchScreeenState.NoInternetConnection)
-            result.isEmpty() -> _searchScreenState.postValue(SearchScreeenState.NoResults)
-            else -> _searchScreenState.postValue(SearchScreeenState.SearchSuccess(result))
         }
     }
 
@@ -91,6 +83,23 @@ class SearchViewModel(
     fun clearHistory() {
         storeTrackListUseCase.store(HISTORY_KEY, emptyList())
         _searchScreenState.postValue(SearchScreeenState.Empty)
+    }
+
+    private fun setSearchJob(term: String) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+            _searchScreenState.value = SearchScreeenState.IsLoading
+            onResult(searchUseCase.get(term).singleOrNull())
+        }
+    }
+
+    private fun onResult(result: List<Track>?) {
+        when {
+            result == null -> _searchScreenState.postValue(SearchScreeenState.NoInternetConnection)
+            result.isEmpty() -> _searchScreenState.postValue(SearchScreeenState.NoResults)
+            else -> _searchScreenState.postValue(SearchScreeenState.SearchSuccess(result))
+        }
     }
 
     companion object {
