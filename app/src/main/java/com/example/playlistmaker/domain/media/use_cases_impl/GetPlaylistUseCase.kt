@@ -3,13 +3,16 @@ package com.example.playlistmaker.domain.media.use_cases_impl
 import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import java.util.function.Consumer
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class GetPlaylistUseCase(
     private val repository: StorageManagerRepo<Playlist?>
 ) : GetDataUseCase<Playlist?> {
 
-    override fun get(key: String, consumer: Consumer<Playlist?>) {
-        consumer.accept(repository.get(key))
+    override suspend fun get(key: String): Flow<Playlist?> {
+        return flow {
+            emit(repository.get(key))
+        }
     }
 }

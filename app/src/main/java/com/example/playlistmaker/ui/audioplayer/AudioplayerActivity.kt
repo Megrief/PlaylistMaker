@@ -2,7 +2,6 @@ package com.example.playlistmaker.ui.audioplayer
 
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -18,7 +17,6 @@ import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
-import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
@@ -26,31 +24,14 @@ class AudioplayerActivity : AppCompatActivity() {
     private val binding by lazy { ActivityAudioplayerBinding.inflate(LayoutInflater.from(this)) }
 
     private val viewModel: AudioplayerViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        setScreenStateObserver()
 
-        viewModel.getScreenStateLiveData().observe(this) { screenState ->
-            val mainHandler: Handler = getKoin().get()
-            mainHandler.post {
-                when (screenState) {
-                    is AudioplayerScreenState.Error -> onBackPressedDispatcher
-                    is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
-                    is AudioplayerScreenState.Content -> {
-                        onSuccess(screenState.track)
-                    }
-                }
-            }
-
-        }
-
-        viewModel.getPlayerStatusLiveData().observe(this) { playerStatus ->
-            if (playerStatus is PlayerStatus.Playing) {
-                binding.playingTime.text = playerStatus.currentPosition
-                changeButtonAppearance(true)
-            } else changeButtonAppearance(false)
-        }
+        setPlayerStatusObserver()
 
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
@@ -60,6 +41,36 @@ class AudioplayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.pause()
+    }
+
+    private fun setScreenStateObserver() {
+        viewModel.screenState.observe(this) { screenState ->
+            when (screenState) {
+                is AudioplayerScreenState.Error -> onBackPressedDispatcher
+                is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
+                is AudioplayerScreenState.Content -> {
+                    onSuccess(screenState.track)
+                }
+            }
+        }
+    }
+
+    private fun setPlayerStatusObserver() {
+        viewModel.playerStatus.observe(this) { playerStatus ->
+            when (playerStatus) {
+                is PlayerStatus.Prepared, is PlayerStatus.Paused -> {
+                    if (playerStatus is PlayerStatus.Prepared) {
+                        binding.playingTime.text = playerStatus.currentPosition ?: getString(R.string.half_minute)
+                    }
+                    changeButtonAppearance(false)
+                }
+                is PlayerStatus.Playing -> {
+                    binding.playingTime.text = playerStatus.currentPosition
+                    changeButtonAppearance(true)
+                }
+                is PlayerStatus.Default -> { }
+            }
+        }
     }
 
     private fun changeButtonAppearance(isPlaying: Boolean) {

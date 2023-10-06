@@ -1,8 +1,6 @@
 package com.example.playlistmaker.app.di
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.settings.entity.ThemeFlag
@@ -13,7 +11,6 @@ import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.media.fragments.view_models.SavedMediaViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.search.view_model.util.SearchRequestDebouncer
 import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
@@ -49,7 +46,8 @@ val presentationModule = module {
         SettingsViewModel(
             getThemeFlagUseCase = getThemeFlagUseCase,
             switchThemeUseCase = get(),
-            sharingRepository = get()
+            sharingRepository = get(),
+            darkThemeState = get()
         )
     }
 
@@ -79,14 +77,6 @@ val presentationModule = module {
 
     factory {
         SingleLiveEvent<DarkThemeState>()
-    }
-
-    factory {
-        Handler(Looper.getMainLooper())
-    }
-
-    factory {
-        SearchRequestDebouncer(get())
     }
 
     factory {

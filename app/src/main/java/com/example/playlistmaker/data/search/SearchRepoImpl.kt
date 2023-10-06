@@ -6,15 +6,17 @@ import com.example.playlistmaker.data.search.network.api.ITunesResponse
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.search.SearchRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
 
 class SearchRepoImpl(private val networkClient: NetworkClient) : SearchRepository {
-    override fun search(term: String): List<Track>? {
+    override suspend fun search(term: String): Flow<List<Track>?> {
         val response = networkClient.doSearch(TrackSearchRequest(term))
 
-        return if (response.resultCode == Response.SUCCESS) {
-            response as ITunesResponse
-            if (response.resultCount == 0) emptyList() else {
+        return flow {
+            if (response.resultCode == Response.SUCCESS) {
+                response as ITunesResponse
                 response.results.map { track ->
                     with(track) {
                         Track(
@@ -30,10 +32,9 @@ class SearchRepoImpl(private val networkClient: NetworkClient) : SearchRepositor
                             previewUrl = previewUrl ?: ""
                         )
                     }
-
-                }
-            }
-        } else null
+                }.let { emit(it) }
+            } else emit(null)
+        }
     }
 
     private fun getYear(dateString: String) = LocalDateTime.parse(dateString.dropLast(1)).year.toString()

@@ -23,6 +23,8 @@ import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -47,6 +49,10 @@ val dataModule = module {
         Gson()
     }
 
+    factory {
+        CoroutineScope(Dispatchers.IO)
+    }
+
     factory<Resources> {
         val context: Context = get()
         context.resources
@@ -60,6 +66,7 @@ val dataModule = module {
             .build()
         retrofit.create(ITunesApiService::class.java)
     }
+
     single<SettingsRepository> {
         SettingsRepoImpl(context = get(), gson = get())
     }

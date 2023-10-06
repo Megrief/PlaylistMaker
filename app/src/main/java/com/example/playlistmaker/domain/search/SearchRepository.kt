@@ -1,7 +1,8 @@
 package com.example.playlistmaker.domain.search
 
 import com.example.playlistmaker.domain.entity.Track
+import kotlinx.coroutines.flow.Flow
 
 interface SearchRepository {
-    fun search(term: String): List<Track>?
+    suspend fun search(term: String): Flow<List<Track>?>
 }
