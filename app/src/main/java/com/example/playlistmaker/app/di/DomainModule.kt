@@ -1,5 +1,6 @@
 package com.example.playlistmaker.app.di
 
+import com.example.playlistmaker.domain.db.DbRepo
 import com.example.playlistmaker.domain.db.use_cases.DeleteItemUseCase
 import com.example.playlistmaker.domain.db.use_cases.GetItemByIdUseCase
 import com.example.playlistmaker.domain.db.use_cases_impl.DeleteTrackUseCaseImpl
@@ -55,8 +56,9 @@ val domainModule = module {
     }
 
     factory<StoreDataUseCase<Track>>(named(STORE_TRACK_IN_DB_USE_CASE)) {
+        val repository: DbRepo<Track> = get(named(DB_REPO_TRACK))
         StoreTrackInDbUseCaseImpl(
-            repository = get(named(DB_REPO_TRACK))
+            repository = repository
         )
     }
 

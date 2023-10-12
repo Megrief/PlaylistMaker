@@ -17,6 +17,9 @@ val presentationModule = module {
     viewModel {
         AudioplayerViewModel(
             getDataUseCase = get(named(GET_TRACK_USE_CASE)),
+            getItemByIdUseCase = get(named(GET_TRACK_BY_ID_USE_CASE)),
+            deleteItemUseCase = get(named(DELETE_TRACK_USE_CASE)),
+            storeDataUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
             player = get()
         )
     }

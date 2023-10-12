@@ -5,18 +5,25 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.db.use_cases.DeleteItemUseCase
+import com.example.playlistmaker.domain.db.use_cases.GetItemByIdUseCase
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class AudioplayerViewModel(
     getDataUseCase: GetDataUseCase<Track?>,
+    private val getItemByIdUseCase: GetItemByIdUseCase<Track>,
+    private val deleteItemUseCase: DeleteItemUseCase<Track>,
+    private val storeDataUseCase: StoreDataUseCase<Track>,
     private val player: Player
 ) : ViewModel() {
 
@@ -49,7 +56,7 @@ class AudioplayerViewModel(
                                 _playerStatus.value = PlayerStatus.Prepared(getLength())
                             }
                         )
-                        AudioplayerScreenState.Content(track)
+                        AudioplayerScreenState.Content(track, inFavourite(track.trackId))
                     } else AudioplayerScreenState.Error
                 )
             }
@@ -83,14 +90,29 @@ class AudioplayerViewModel(
         player.pause()
     }
 
+    fun likeback() {
+        viewModelScope.launch(Dispatchers.IO) {
+            with(_screenState.value as AudioplayerScreenState.Content) {
+                if (inFavourite)
+                    deleteItemUseCase.delete(track)
+                else
+                    storeDataUseCase.store(track)
+                withContext(Dispatchers.Main) {
+                    _screenState.value = copy(inFavourite = !inFavourite)
+                }
+            }
+        }
+    }
+    private suspend fun inFavourite(id: Long): Boolean = getItemByIdUseCase.get(id).single() != null
     private fun getLength(time: Int = 0): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     private fun getPosition(): Job = viewModelScope.launch {
         player.getCurrentPosition().collect { position ->
             val value = playerStatus.value
-            if (value is PlayerStatus.Playing) {
+            if (value is PlayerStatus.Playing)
                 _playerStatus.value = value.copy(getLength(position))
-            } else _playerStatus.value = PlayerStatus.Playing(getLength(position))
+            else
+                _playerStatus.value = PlayerStatus.Playing(getLength(position))
         }
     }
 }
