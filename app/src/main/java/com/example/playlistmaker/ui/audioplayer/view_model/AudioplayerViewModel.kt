@@ -9,8 +9,9 @@ import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
-import com.example.playlistmaker.ui.search.view_model.SearchViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -34,8 +35,8 @@ class AudioplayerViewModel(
         }
 
     init {
-        viewModelScope.launch {
-            getDataUseCase.get(SearchViewModel.TRACK).collect { track ->
+        viewModelScope.launch(Dispatchers.IO) {
+            getDataUseCase.get().single().let { track ->
                 _screenState.postValue(
                     if (track != null) {
                         player.configurePlayer(

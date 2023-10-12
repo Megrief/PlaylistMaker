@@ -73,6 +73,13 @@ class AudioplayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun configureLikeButton() {
+
+        binding.like.setOnClickListener {
+
+        }
+    }
+
     private fun changeButtonAppearance(isPlaying: Boolean) {
         binding.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }

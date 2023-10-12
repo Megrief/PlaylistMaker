@@ -1,7 +1,9 @@
 package com.example.playlistmaker.domain.storage
 
-interface StorageManagerRepo<T> {
-    fun store(key: String, item: T)
+import kotlinx.coroutines.flow.Flow
 
-    fun get(key: String): T
+interface StorageManagerRepo<T> {
+    fun store(item: T)
+
+    fun get(): Flow<T>
 }

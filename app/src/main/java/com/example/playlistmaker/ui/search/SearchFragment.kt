@@ -79,7 +79,6 @@ class SearchFragment : Fragment() {
                 viewModel.addToHistory(track)
                 findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
             }
-
             trackList.adapter = TrackAdapter(onTrackClicked)
             historyList.adapter = TrackAdapter(onTrackClicked)
         }

@@ -8,7 +8,7 @@ class StoreTrackListUseCase(
     private val repository: StorageManagerRepo<List<Track>>
 ) : StoreDataUseCase<List<Track>> {
 
-    override fun store(key: String, item: List<Track>) {
-        repository.store(key, item)
+    override fun store(item: List<Track>) {
+        repository.store(item)
     }
 }

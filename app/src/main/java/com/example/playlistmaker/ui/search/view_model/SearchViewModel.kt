@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.search.SearchUseCase
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val searchUseCase: GetDataUseCase<List<Track>?>,
+    private val searchUseCase: SearchUseCase,
     private val storeTrackUseCase: StoreDataUseCase<Track>,
     private val storeTrackListUseCase: StoreDataUseCase<List<Track>>,
     private val getTrackListUseCase: GetDataUseCase<List<Track>>
@@ -54,7 +55,7 @@ class SearchViewModel(
 
     fun showHistory() {
         viewModelScope.launch {
-            getTrackListUseCase.get(HISTORY_KEY).collect { history ->
+            getTrackListUseCase.get().collect { history ->
                 if (history.isNotEmpty()) {
                     _searchScreenState.postValue(SearchScreeenState.SearchHistory(history))
                 } else _searchScreenState.postValue(SearchScreeenState.Empty)
@@ -64,9 +65,9 @@ class SearchViewModel(
 
     fun addToHistory(track: Track) {
         viewModelScope.launch(Dispatchers.IO) {
-            storeTrackUseCase.store(TRACK, track)
+            storeTrackUseCase.store(track)
 
-            getTrackListUseCase.get(HISTORY_KEY).collect { history ->
+            getTrackListUseCase.get().collect { history ->
                 with(history.toMutableList()) {
                     remove(track)
                     add(0, track)
@@ -74,14 +75,14 @@ class SearchViewModel(
                     if (_searchScreenState.value is SearchScreeenState.SearchHistory) {
                         _searchScreenState.postValue(SearchScreeenState.SearchHistory(this))
                     }
-                    storeTrackListUseCase.store(HISTORY_KEY, this)
+                    storeTrackListUseCase.store(this)
                 }
             }
         }
     }
 
     fun clearHistory() {
-        storeTrackListUseCase.store(HISTORY_KEY, emptyList())
+        storeTrackListUseCase.store(emptyList())
         _searchScreenState.postValue(SearchScreeenState.Empty)
     }
 
@@ -90,7 +91,7 @@ class SearchViewModel(
         searchJob = viewModelScope.launch {
             delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
             _searchScreenState.value = SearchScreeenState.IsLoading
-            onResult(searchUseCase.get(term).singleOrNull())
+            onResult(searchUseCase.search(term).singleOrNull())
         }
     }
 
@@ -103,9 +104,6 @@ class SearchViewModel(
     }
 
     companion object {
-        const val HISTORY_KEY = "HISTORY_KEY"
-        const val TRACK = "TRACK"
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
-
     }
 }

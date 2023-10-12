@@ -14,4 +14,5 @@
     <color name="light_gray">#E6E8EB</color>
     <color name="transparent">#00000000</color>
     <color name="button_audioplayer">#401A1B22</color>
+    <color name="favourite">#F56B6C</color>
 </resources>

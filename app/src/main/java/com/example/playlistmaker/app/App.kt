@@ -30,7 +30,7 @@ class App : Application() {
         }
 
         coroutineScope.launch {
-            getThemeFlagUseCase.get(THEME).collect { flag ->
+            getThemeFlagUseCase.get().collect { flag ->
                 AppCompatDelegate.setDefaultNightMode(
                     if (flag != null) {
                         if (flag.flag) AppCompatDelegate.MODE_NIGHT_YES
@@ -43,7 +43,7 @@ class App : Application() {
 
     fun switchTheme(darkThemeEnabled: Boolean) {
         coroutineScope.launch {
-            storeThemeFlagUseCase.store(THEME, ThemeFlag(darkThemeEnabled))
+            storeThemeFlagUseCase.store(ThemeFlag(darkThemeEnabled))
         }
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) AppCompatDelegate.MODE_NIGHT_YES
@@ -53,6 +53,5 @@ class App : Application() {
 
     companion object {
         const val PLAYLIST_MAKER = "PLAYLIST_MAKER"
-        const val THEME = "THEME"
     }
 }

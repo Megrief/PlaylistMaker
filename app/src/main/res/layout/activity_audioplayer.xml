@@ -132,8 +132,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/add_to_media"
                 app:layout_constraintDimensionRatio="w, 1:1"
                 app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintTop_toTopOf="@id/add_to_media"
-                app:tint="@color/white" />
+                app:layout_constraintTop_toTopOf="@id/add_to_media" />
 
             <!-- Available playing time -->
             <TextView
