@@ -16,7 +16,7 @@ interface DbDao {
     @Delete(entity = TrackDb::class)
     fun delete(trackDb: TrackDb)
 
-    @Query("SELECT * FROM favourite_tracks_table")
+    @Query("SELECT * FROM favourite_tracks_table ORDER BY addingDate DESC")
     fun getAll(): List<TrackDb>
 
     @Query("SELECT * FROM favourite_tracks_table WHERE trackId = :id")

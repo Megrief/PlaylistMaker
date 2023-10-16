@@ -7,6 +7,7 @@ import androidx.room.Room
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.data.db.AppDb
 import com.example.playlistmaker.data.db.repo_impl.DbRepoImpl
+import com.example.playlistmaker.data.db.util.TrackConverter
 import com.example.playlistmaker.data.search.SearchRepoImpl
 import com.example.playlistmaker.data.search.network.api.ITunesApiService
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
@@ -31,6 +32,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Date
 
 const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
 const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
@@ -47,7 +49,7 @@ val dataModule = module {
     }
 
     single<DbRepo<Track>>(named(DB_REPO_TRACK)) {
-        DbRepoImpl(appDb = get())
+        DbRepoImpl(appDb = get(), converter = get())
     }
 
     single<NetworkClient> {
@@ -56,6 +58,14 @@ val dataModule = module {
 
     single<SearchRepository> {
         SearchRepoImpl(networkClient = get())
+    }
+
+    factory {
+        Date()
+    }
+
+    factory {
+        TrackConverter(date = get())
     }
 
     factory {

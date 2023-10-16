@@ -18,5 +18,6 @@ data class TrackDb(
     val country: String,
     val releaseDate: String,
     val primaryGenreName: String,
-    val previewUrl: String
+    val previewUrl: String,
+    val addingDate: Long
 )

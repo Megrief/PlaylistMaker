@@ -8,11 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class DbRepoImpl(
-    appDb: AppDb
+    appDb: AppDb,
+    private val converter: TrackConverter
 ) : DbRepo<Track> {
     private val dbDao = appDb.getDbDao()
+
     override fun delete(item: Track) {
-        val trackDb = TrackConverter.convertToTrackDb(item)
+        val trackDb = converter.convertToTrackDb(item)
         dbDao.delete(trackDb)
     }
 
@@ -20,25 +22,21 @@ class DbRepoImpl(
         val trackDb = dbDao.getById(id)
         return flow {
             emit(
-                if (trackDb == null) {
-                    null
-                } else {
-                    TrackConverter.convertToTrack(trackDb)
-                }
+                if (trackDb == null) null
+                else converter.convertToTrack(trackDb)
             )
         }
     }
 
     override fun store(item: Track) {
-        val trackDb = TrackConverter.convertToTrackDb(item)
+        val trackDb = converter.convertToTrackDb(item)
         dbDao.store(trackDb)
-
     }
 
     override fun get(): Flow<Track> {
         return flow {
             dbDao.getAll().forEach { trackDb ->
-                emit(TrackConverter.convertToTrack(trackDb))
+                emit(converter.convertToTrack(trackDb))
             }
         }
     }

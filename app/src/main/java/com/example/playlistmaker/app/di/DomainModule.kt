@@ -15,6 +15,7 @@ import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.GetThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.StoreThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
+import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases_impl.GetTrackListUseCase
@@ -35,6 +36,7 @@ const val DELETE_TRACK_USE_CASE = "DeleteTrackUseCase"
 const val GET_TRACK_BY_ID_USE_CASE = "GetTrackByIdUseCase"
 const val GET_FAVOURITES_USE_CASE = "GetFavouritesUseCase"
 const val STORE_TRACK_IN_DB_USE_CASE = "StoreTrackInDbUseCase"
+
 val domainModule = module {
 
     factory<DeleteItemUseCase<Track>>(named(DELETE_TRACK_USE_CASE)) {
@@ -50,8 +52,9 @@ val domainModule = module {
     }
 
     factory<GetDataUseCase<List<Track>>>(named(GET_FAVOURITES_USE_CASE)) {
+        val repository: DbRepo<Track> = get(named(DB_REPO_TRACK))
         GetFavouritesUseCaseImpl(
-            repository = get(named(DB_REPO_TRACK))
+            repository = repository as StorageManagerRepo<Track>
         )
     }
 

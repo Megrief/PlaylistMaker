@@ -76,7 +76,7 @@ class SearchFragment : Fragment() {
                 lifecycleScope,
                 false
             ) { track ->
-                viewModel.addToHistory(track)
+                viewModel.onTrackClick(track)
                 findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
             }
             trackList.adapter = TrackAdapter(onTrackClicked)
@@ -208,7 +208,7 @@ class SearchFragment : Fragment() {
 
     companion object {
         const val SEARCH_BAR_STATE = "SEARCH_BAR_STATE"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val CLICK_DEBOUNCE_DELAY = 0L
     }
 
 }

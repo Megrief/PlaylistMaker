@@ -2,8 +2,10 @@ package com.example.playlistmaker.data.db.util
 
 import com.example.playlistmaker.data.db.dto.TrackDb
 import com.example.playlistmaker.domain.entity.Track
+import java.util.Date
 
-object TrackConverter {
+class TrackConverter(private val date: Date) {
+
     fun convertToTrackDb(track: Track): TrackDb =
         TrackDb(
             trackId = track.trackId,
@@ -15,7 +17,8 @@ object TrackConverter {
             country = track.country,
             releaseDate = track.releaseDate,
             primaryGenreName = track.primaryGenreName,
-            previewUrl = track.previewUrl
+            previewUrl = track.previewUrl,
+            addingDate = date.time
         )
 
     fun convertToTrack(trackDb: TrackDb): Track = Track(

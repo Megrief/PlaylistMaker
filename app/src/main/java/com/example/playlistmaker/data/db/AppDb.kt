@@ -8,7 +8,8 @@ import com.example.playlistmaker.data.db.dto.TrackDb
     version = 1,
     entities = [
         TrackDb::class
-    ]
+    ],
+    exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {
     abstract fun getDbDao(): DbDao

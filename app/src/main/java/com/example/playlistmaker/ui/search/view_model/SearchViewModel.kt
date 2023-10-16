@@ -63,7 +63,7 @@ class SearchViewModel(
         }
     }
 
-    fun addToHistory(track: Track) {
+    fun onTrackClick(track: Track) {
         viewModelScope.launch(Dispatchers.IO) {
             storeTrackUseCase.store(track)
 
