@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data.db.repo_impl
 
-import android.util.Log
 import com.example.playlistmaker.data.db.AppDb
 import com.example.playlistmaker.data.db.util.TrackConverter
 import com.example.playlistmaker.domain.db.DbRepo
@@ -36,7 +35,6 @@ class DbRepoImpl(
     override fun get(): Flow<Track> {
         return flow {
             dbDao.getAll().forEach { trackDb ->
-                Log.d("DEBUG", trackDb.trackName)
                 emit(TrackConverter.convertToTrack(trackDb))
             }
         }

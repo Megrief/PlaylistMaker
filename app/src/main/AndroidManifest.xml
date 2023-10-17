@@ -20,7 +20,6 @@
 
         <activity
             android:name=".ui.audioplayer.AudioplayerActivity"
-            android:theme="@style/Theme.PlaylistMaker"
             android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"
@@ -30,7 +29,6 @@
         <activity
             android:name=".ui.main.RootActivity"
             android:exported="true"
-            android:theme="@style/Theme.PlaylistMaker"
             android:windowSoftInputMode="adjustNothing" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

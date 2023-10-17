@@ -86,7 +86,7 @@ class AudioplayerActivity : AppCompatActivity() {
         binding.playButton.isEnabled = true
         binding.likeButton.isEnabled = true
         Glide.with(this)
-            .load(if (inFavourite) R.drawable.favourite else R.drawable.not_favourite)
+            .load(if (inFavourite) R.drawable.favorite else R.drawable.not_favourite)
             .into(binding.likeButton)
         bind(track)
         if (track.previewUrl.isEmpty()) {
