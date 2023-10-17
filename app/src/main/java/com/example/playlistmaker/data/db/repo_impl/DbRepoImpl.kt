@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data.db.repo_impl
 
+import android.util.Log
 import com.example.playlistmaker.data.db.AppDb
 import com.example.playlistmaker.data.db.util.TrackConverter
 import com.example.playlistmaker.domain.db.DbRepo
@@ -9,13 +10,12 @@ import kotlinx.coroutines.flow.flow
 
 class DbRepoImpl(
     appDb: AppDb,
-    private val converter: TrackConverter
 ) : DbRepo<Track> {
     private val dbDao = appDb.getDbDao()
 
-    override fun delete(item: Track) {
-        val trackDb = converter.convertToTrackDb(item)
-        dbDao.delete(trackDb)
+    override fun delete(id: Long) {
+        val trackDb = dbDao.getById(id)
+        if (trackDb != null) dbDao.delete(trackDb)
     }
 
     override fun getById(id: Long): Flow<Track?> {
@@ -23,22 +23,24 @@ class DbRepoImpl(
         return flow {
             emit(
                 if (trackDb == null) null
-                else converter.convertToTrack(trackDb)
+                else TrackConverter.convertToTrack(trackDb)
             )
         }
     }
 
     override fun store(item: Track) {
-        val trackDb = converter.convertToTrackDb(item)
+        val trackDb = TrackConverter.convertToTrackDb(item)
         dbDao.store(trackDb)
     }
 
     override fun get(): Flow<Track> {
         return flow {
             dbDao.getAll().forEach { trackDb ->
-                emit(converter.convertToTrack(trackDb))
+                Log.d("DEBUG", trackDb.trackName)
+                emit(TrackConverter.convertToTrack(trackDb))
             }
         }
     }
+
 
 }

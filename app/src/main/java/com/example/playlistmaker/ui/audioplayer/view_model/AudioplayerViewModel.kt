@@ -22,7 +22,7 @@ import java.util.Locale
 class AudioplayerViewModel(
     getDataUseCase: GetDataUseCase<Track?>,
     private val getItemByIdUseCase: GetItemByIdUseCase<Track>,
-    private val deleteItemUseCase: DeleteItemUseCase<Track>,
+    private val deleteItemUseCase: DeleteItemUseCase,
     private val storeDataUseCase: StoreDataUseCase<Track>,
     private val player: Player
 ) : ViewModel() {
@@ -94,7 +94,7 @@ class AudioplayerViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             with(_screenState.value as AudioplayerScreenState.Content) {
                 if (inFavourite)
-                    deleteItemUseCase.delete(track)
+                    deleteItemUseCase.delete(track.trackId)
                 else
                     storeDataUseCase.store(track)
                 withContext(Dispatchers.Main) {

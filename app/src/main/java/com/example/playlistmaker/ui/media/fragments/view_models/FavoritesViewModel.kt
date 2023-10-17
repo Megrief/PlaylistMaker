@@ -7,24 +7,24 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
-import com.example.playlistmaker.ui.media.fragments.screen_states.FavouritesScreenState
+import com.example.playlistmaker.ui.media.fragments.screen_states.FavoritesScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FavouritesViewModel(
+class FavoritesViewModel(
     private val getFavouritesUseCase: GetDataUseCase<List<Track>>,
     private val storeTrackUseCase: StoreDataUseCase<Track>
 ) : ViewModel() {
 
-    private val _screenState = MutableLiveData<FavouritesScreenState>(FavouritesScreenState.Loading)
-    val screenState: LiveData<FavouritesScreenState>
+    private val _screenState = MutableLiveData<FavoritesScreenState>(FavoritesScreenState.Loading)
+    val screenState: LiveData<FavoritesScreenState>
         get() = _screenState
 
     fun checkContent(list: List<Track>) {
         viewModelScope.launch(Dispatchers.IO) {
             getFavouritesUseCase.get().collect { favourites ->
                 if (!isEquals(list, favourites) || favourites.isEmpty()) {
-                    _screenState.postValue(FavouritesScreenState.Content(favourites))
+                    _screenState.postValue(FavoritesScreenState.Content(favourites))
                 }
             }
         }

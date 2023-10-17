@@ -3,7 +3,7 @@ package com.example.playlistmaker.app.di
 import android.media.MediaPlayer
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
-import com.example.playlistmaker.ui.media.fragments.view_models.FavouritesViewModel
+import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
@@ -43,7 +43,7 @@ val presentationModule = module {
     }
 
     viewModel {
-        FavouritesViewModel(
+        FavoritesViewModel(
             getFavouritesUseCase = get(named(GET_FAVOURITES_USE_CASE)),
             storeTrackUseCase = get(named(STORE_TRACK_USE_CASE))
         )
