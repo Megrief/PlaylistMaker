@@ -19,9 +19,7 @@
         android:id="@+id/dark_theme"
         style="@style/MenuTextStyle"
         android:layout_width="match_parent"
-        app:trackTintMode="multiply"
         app:trackTint="@color/switcher_track_color"
-        app:thumbTintMode="multiply"
         app:thumbTint="@color/switcher_thumb_color"
         android:layout_height="@dimen/menu_button_height"
         android:text="@string/dark_theme" />
