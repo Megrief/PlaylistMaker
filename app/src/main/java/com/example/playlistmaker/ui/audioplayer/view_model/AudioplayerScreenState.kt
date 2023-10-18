@@ -4,6 +4,6 @@ import com.example.playlistmaker.domain.entity.Track
 
 sealed class AudioplayerScreenState {
     object Loading : AudioplayerScreenState()
-    class Content(val track: Track) : AudioplayerScreenState()
+    data class Content(val track: Track, val inFavourite: Boolean) : AudioplayerScreenState()
     object Error : AudioplayerScreenState()
 }

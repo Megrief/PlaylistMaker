@@ -3,9 +3,10 @@ package com.example.playlistmaker.app.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
+import androidx.room.Room
 import com.example.playlistmaker.app.App
-import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylist
-import com.example.playlistmaker.data.media.repo_impl.SharedPrefsPlaylistList
+import com.example.playlistmaker.data.db.AppDb
+import com.example.playlistmaker.data.db.repo_impl.DbRepoImpl
 import com.example.playlistmaker.data.search.SearchRepoImpl
 import com.example.playlistmaker.data.search.network.api.ITunesApiService
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
@@ -16,8 +17,8 @@ import com.example.playlistmaker.data.sharing.external_navigator.impl.ExternalNa
 import com.example.playlistmaker.data.sharing.repo_impl.SharingRepoImpl
 import com.example.playlistmaker.data.storage.repo_impl.SharedPrefsList
 import com.example.playlistmaker.data.storage.repo_impl.SharedPrefsTrack
+import com.example.playlistmaker.domain.db.DbRepo
 import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.domain.media.entity.Playlist
 import com.example.playlistmaker.domain.search.SearchRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.sharing.SharingRepository
@@ -33,10 +34,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
 const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
-const val  STORAGE_MANAGER_REPO_PLAYLIST = "StorageManagerRepoPlaylist"
-const val STORAGE_MANAGER_REPO_PLAYLIST_LIST = "StorageManagerRepoPlaylistList"
+const val DB_REPO_TRACK = "DbRepoTrack"
 
 val dataModule = module {
+
+    single {
+        Room.databaseBuilder(
+                androidContext(),
+                AppDb::class.java,
+                "playlist_maker.db"
+            ).build()
+    }
+
+    single<DbRepo<Track>>(named(DB_REPO_TRACK)) {
+        DbRepoImpl(appDb = get())
+    }
+
     single<NetworkClient> {
         RetrofitClientImpl(apiService = get())
     }
@@ -54,21 +67,23 @@ val dataModule = module {
     }
 
     factory<Resources> {
-        val context: Context = get()
-        context.resources
+        androidContext().resources
     }
 
     factory<ITunesApiService> {
         val baseUrl = "https://itunes.apple.com"
-        val retrofit = Retrofit.Builder()
+        Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-        retrofit.create(ITunesApiService::class.java)
+            .create(ITunesApiService::class.java)
     }
 
     single<SettingsRepository> {
-        SettingsRepoImpl(context = get(), gson = get())
+        SettingsRepoImpl(
+            sharedPrefs = get(),
+            context = androidContext(),
+            gson = get())
     }
 
     single<SharedPreferences> {
@@ -76,7 +91,7 @@ val dataModule = module {
     }
 
     single<ExternalNavigator> {
-        ExternalNavigatorImpl(context = get())
+        ExternalNavigatorImpl(context = androidContext())
     }
 
     single<SharingRepository> {
@@ -89,13 +104,5 @@ val dataModule = module {
 
     single<StorageManagerRepo<Track?>>(named(STORAGE_MANAGER_REPO_TRACK)) {
         SharedPrefsTrack(sharedPrefs = get(), gson = get())
-    }
-
-    single<StorageManagerRepo<Playlist?>>(named(STORAGE_MANAGER_REPO_PLAYLIST)) {
-        SharedPrefsPlaylist(sharedPrefs = get(), gson = get())
-    }
-
-    single<StorageManagerRepo<List<Playlist>>>(named(STORAGE_MANAGER_REPO_PLAYLIST_LIST)) {
-        SharedPrefsPlaylistList(sharedPrefs = get(), gson = get())
     }
 }

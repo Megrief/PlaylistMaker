@@ -3,9 +3,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/no_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="nothing_found_iv, message_tv" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playlists_rv"
+        android:id="@+id/favourites_list_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -15,7 +21,18 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:orientation="vertical" 
         android:visibility="gone" />
-    
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/blue"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone" />
+
     <ImageView
         android:id="@+id/nothing_found_iv"
         android:layout_width="@dimen/image_size"

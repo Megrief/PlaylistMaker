@@ -8,7 +8,10 @@ import com.example.playlistmaker.databinding.TrackCardBinding
 import com.example.playlistmaker.domain.entity.Track
 
 class TrackAdapter(private val onTrackClicked: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
-    private val trackList: MutableList<Track> = mutableListOf()
+    private val _trackList: MutableList<Track> = mutableListOf()
+
+    val trackList: List<Track>
+        get() = _trackList
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val layoutInspector = LayoutInflater.from(parent.context)
@@ -16,20 +19,20 @@ class TrackAdapter(private val onTrackClicked: (Track) -> Unit) : RecyclerView.A
     }
 
     override fun getItemCount(): Int {
-        return trackList.size
+        return _trackList.size
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        val track = trackList[position]
+        val track = _trackList[position]
         holder.bind(track)
         holder.itemView.setOnClickListener { onTrackClicked(track) }
     }
 
     fun setTrackList(newTrackList: List<Track>) {
-        val diffCallback = TrackListCallback(trackList, newTrackList)
+        val diffCallback = TrackListCallback(_trackList, newTrackList)
         val diffTracks = DiffUtil.calculateDiff(diffCallback)
-        trackList.clear()
-        trackList.addAll(newTrackList)
+        _trackList.clear()
+        _trackList.addAll(newTrackList)
         diffTracks.dispatchUpdatesTo(this)
     }
 }

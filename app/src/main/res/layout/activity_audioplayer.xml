@@ -101,7 +101,7 @@
                 android:layout_marginStart="@dimen/small"
                 android:layout_marginTop="54dp"
                 android:background="@drawable/circle_shape"
-                android:backgroundTint="@color/button_audioplayer"
+                android:backgroundTint="@color/transparent_black"
                 android:src="@drawable/add_to_media"
                 app:layout_constraintDimensionRatio="w, 1:1"
                 app:layout_constraintStart_toEndOf="@id/left_border"
@@ -122,18 +122,17 @@
                 app:layout_constraintTop_toTopOf="@id/add_to_media" />
 
             <ImageButton
-                android:id="@+id/like"
+                android:id="@+id/like_button"
                 android:layout_width="@dimen/zero"
                 android:layout_height="@dimen/image_button_on_audioplayer"
                 android:layout_marginEnd="@dimen/small"
                 android:background="@drawable/circle_shape"
-                android:backgroundTint="@color/button_audioplayer"
-                android:src="@drawable/like"
+                android:backgroundTint="@color/transparent_black"
+                android:src="@drawable/not_favourite"
                 app:layout_constraintBottom_toBottomOf="@id/add_to_media"
                 app:layout_constraintDimensionRatio="w, 1:1"
                 app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintTop_toTopOf="@id/add_to_media"
-                app:tint="@color/white" />
+                app:layout_constraintTop_toTopOf="@id/add_to_media" />
 
             <!-- Available playing time -->
             <TextView

@@ -3,27 +3,36 @@ package com.example.playlistmaker.data.settings
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.playlistmaker.app.App
-import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.SettingsRepository
+import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.google.gson.Gson
-import org.koin.java.KoinJavaComponent.getKoin
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-class SettingsRepoImpl(private val context: Context, private val gson: Gson) : SettingsRepository {
-    private val sharedPrefs: SharedPreferences = getKoin().get()
+class SettingsRepoImpl(
+    private val sharedPrefs: SharedPreferences,
+    private val context: Context,
+    private val gson: Gson) : SettingsRepository {
 
     override fun switchTheme(checked: Boolean) {
         (context as App).switchTheme(checked)
     }
 
-    override fun store(key: String, item: ThemeFlag?) {
+    override fun store(item: ThemeFlag?) {
         gson.toJson(item, ThemeFlag::class.java).also { themeFlagJson ->
-            sharedPrefs.edit().putString(key, themeFlagJson).apply()
+            sharedPrefs.edit().putString(THEME, themeFlagJson).apply()
         }
     }
 
-    override fun get(key: String): ThemeFlag? {
-        return sharedPrefs.getString(key, null)?.let { themeFlagJson ->
-            gson.fromJson(themeFlagJson, ThemeFlag::class.java)
+    override fun get(): Flow<ThemeFlag?> {
+        return flow {
+            sharedPrefs.getString(THEME, null)?.let { themeFlagJson ->
+                emit(gson.fromJson(themeFlagJson, ThemeFlag::class.java))
+            }
         }
+    }
+
+    companion object {
+        private const val THEME = "THEME"
     }
 }

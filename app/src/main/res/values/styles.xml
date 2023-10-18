@@ -169,10 +169,8 @@
     <style name="InfoContainerOnAudioplayer">
         <item name="android:layout_width">@dimen/zero</item>
         <item name="android:layout_height">wrap_content</item>
-<!--        <item name="android:layout_marginTop">@dimen/medium</item>-->
         <item name="android:paddingVertical">@dimen/small</item>
         <item name="android:orientation">horizontal</item>
-<!--        <item name="layout_goneMarginTop">@dimen/medium</item>-->
     </style>
 
 </resources>

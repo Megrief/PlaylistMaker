@@ -36,6 +36,8 @@ class AudioplayerActivity : AppCompatActivity() {
         binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
 
         binding.playButton.setOnClickListener { viewModel.playback() }
+
+        binding.likeButton.setOnClickListener { viewModel.likeback() }
     }
 
     override fun onPause() {
@@ -47,9 +49,12 @@ class AudioplayerActivity : AppCompatActivity() {
         viewModel.screenState.observe(this) { screenState ->
             when (screenState) {
                 is AudioplayerScreenState.Error -> onBackPressedDispatcher
-                is AudioplayerScreenState.Loading -> binding.playButton.isEnabled = false
+                is AudioplayerScreenState.Loading -> {
+                    binding.likeButton.isEnabled = false
+                    binding.playButton.isEnabled = false
+                }
                 is AudioplayerScreenState.Content -> {
-                    onSuccess(screenState.track)
+                    onSuccess(screenState.track, screenState.inFavourite)
                 }
             }
         }
@@ -77,8 +82,12 @@ class AudioplayerActivity : AppCompatActivity() {
         binding.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }
 
-    private fun onSuccess(track: Track) {
+    private fun onSuccess(track: Track, inFavourite: Boolean) {
         binding.playButton.isEnabled = true
+        binding.likeButton.isEnabled = true
+        Glide.with(this)
+            .load(if (inFavourite) R.drawable.favorite else R.drawable.not_favourite)
+            .into(binding.likeButton)
         bind(track)
         if (track.previewUrl.isEmpty()) {
             Toast.makeText(this, getString(R.string.no_preview), Toast.LENGTH_LONG).show()

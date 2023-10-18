@@ -60,8 +60,7 @@
                 android:paddingEnd="@dimen/track_card_point_pad"
                 android:layout_weight="0"
                 android:layout_gravity="center_vertical"
-                android:src="@drawable/point"
-                app:tint="?attr/colorSecondary" />
+                android:src="@drawable/point" />
 
             <TextView
                 android:id="@+id/track_time"
