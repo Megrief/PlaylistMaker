@@ -12,5 +12,5 @@ import com.example.playlistmaker.data.db.dto.TrackDb
     exportSchema = false
 )
 abstract class AppDb : RoomDatabase() {
-    abstract fun getDbDao(): DbDao
+    abstract val dbDao: DbDao
 }

@@ -6,7 +6,5 @@ import com.example.playlistmaker.domain.entity.Track
 import kotlinx.coroutines.flow.Flow
 
 class GetTrackByIdUseCaseImpl(private val repository: DbRepo<Track>) : GetItemByIdUseCase<Track> {
-    override fun get(id: Long): Flow<Track?> {
-        return repository.getById(id)
-    }
+    override fun get(id: Long): Flow<Track?> = repository.getById(id)
 }

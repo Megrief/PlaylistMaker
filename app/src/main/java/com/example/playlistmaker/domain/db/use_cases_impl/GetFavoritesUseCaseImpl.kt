@@ -8,10 +8,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 
 class GetFavoritesUseCaseImpl(private val repository: StorageManagerRepo<Track>) : GetDataUseCase<List<Track>> {
-    override suspend fun get(): Flow<List<Track>> {
-        return flow {
+    override suspend fun get(): Flow<List<Track>> =
+        flow {
             emit(repository.get().toList())
         }
-    }
 
 }

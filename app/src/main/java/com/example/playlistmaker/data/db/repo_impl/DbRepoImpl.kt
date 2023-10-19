@@ -1,16 +1,16 @@
 package com.example.playlistmaker.data.db.repo_impl
 
-import com.example.playlistmaker.data.db.AppDb
-import com.example.playlistmaker.data.db.util.TrackConverter
+import com.example.playlistmaker.data.db.DbDao
 import com.example.playlistmaker.domain.db.DbRepo
 import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.utils.TrackConverter.toTrack
+import com.example.playlistmaker.utils.TrackConverter.toTrackDb
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class DbRepoImpl(
-    appDb: AppDb,
+    private val dbDao: DbDao,
 ) : DbRepo<Track> {
-    private val dbDao = appDb.getDbDao()
 
     override fun delete(id: Long) {
         val trackDb = dbDao.getById(id)
@@ -19,23 +19,18 @@ class DbRepoImpl(
 
     override fun getById(id: Long): Flow<Track?> {
         val trackDb = dbDao.getById(id)
-        return flow {
-            emit(
-                if (trackDb == null) null
-                else TrackConverter.convertToTrack(trackDb)
-            )
-        }
+        return flow { emit(trackDb?.toTrack()) }
     }
 
     override fun store(item: Track) {
-        val trackDb = TrackConverter.convertToTrackDb(item)
+        val trackDb = item.toTrackDb()
         dbDao.store(trackDb)
     }
 
     override fun get(): Flow<Track> {
         return flow {
             dbDao.getAll().forEach { trackDb ->
-                emit(TrackConverter.convertToTrack(trackDb))
+                emit(trackDb.toTrack())
             }
         }
     }

@@ -5,11 +5,6 @@ import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import kotlinx.coroutines.flow.Flow
 
-class GetThemeFlagUseCase(
-    private val repository: StorageManagerRepo<ThemeFlag?>
-) : GetDataUseCase<ThemeFlag?> {
-
-    override suspend fun get(): Flow<ThemeFlag?> {
-        return repository.get()
-    }
+class GetThemeFlagUseCase(private val repository: StorageManagerRepo<ThemeFlag?>) : GetDataUseCase<ThemeFlag?> {
+    override suspend fun get(): Flow<ThemeFlag?> = repository.get()
 }

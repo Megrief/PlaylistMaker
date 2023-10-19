@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import androidx.room.Room
-import com.example.playlistmaker.app.App
 import com.example.playlistmaker.data.db.AppDb
 import com.example.playlistmaker.data.db.repo_impl.DbRepoImpl
 import com.example.playlistmaker.data.search.SearchRepoImpl
@@ -35,6 +34,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val STORAGE_MANAGER_REPO_LIST = "StorageManagerRepoList"
 const val STORAGE_MANAGER_REPO_TRACK = "StorageManagerRepoTrack"
 const val DB_REPO_TRACK = "DbRepoTrack"
+const val PLAYLIST_MAKER = "PLAYLIST_MAKER"
 
 val dataModule = module {
 
@@ -46,8 +46,13 @@ val dataModule = module {
             ).build()
     }
 
+    factory {
+        val appDb: AppDb = get()
+        appDb.dbDao
+    }
+
     single<DbRepo<Track>>(named(DB_REPO_TRACK)) {
-        DbRepoImpl(appDb = get())
+        DbRepoImpl(dbDao = get())
     }
 
     single<NetworkClient> {
@@ -87,7 +92,7 @@ val dataModule = module {
     }
 
     single<SharedPreferences> {
-        androidContext().getSharedPreferences(App.PLAYLIST_MAKER, Context.MODE_PRIVATE)
+        androidContext().getSharedPreferences(PLAYLIST_MAKER, Context.MODE_PRIVATE)
     }
 
     single<ExternalNavigator> {

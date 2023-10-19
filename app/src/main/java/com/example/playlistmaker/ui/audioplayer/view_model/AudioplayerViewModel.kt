@@ -85,9 +85,10 @@ class AudioplayerViewModel(
         }
     }
 
-    fun pause() {
-        _playerStatus.value = PlayerStatus.Paused
-        player.pause()
+    fun stop() {
+        if (playerStatus.value is PlayerStatus.Playing) {
+            playback()
+        }
     }
 
     fun likeback() {
@@ -103,7 +104,9 @@ class AudioplayerViewModel(
             }
         }
     }
+
     private suspend fun inFavourite(id: Long): Boolean = getItemByIdUseCase.get(id).single() != null
+
     private fun getLength(time: Int = 0): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     private fun getPosition(): Job = viewModelScope.launch {

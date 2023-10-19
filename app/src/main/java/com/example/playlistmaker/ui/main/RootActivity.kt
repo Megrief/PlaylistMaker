@@ -10,6 +10,7 @@ import com.example.playlistmaker.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
     private val binding by lazy { ActivityRootBinding.inflate(LayoutInflater.from(this)) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)

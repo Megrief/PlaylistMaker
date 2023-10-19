@@ -46,7 +46,6 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         configureLists()
         viewModelConfig()
-
         configureSearchBar()
         configureClearButton()
         configureRefreshButton()

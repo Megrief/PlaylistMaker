@@ -15,7 +15,6 @@ import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.GetThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.StoreThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
-import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases_impl.GetTrackListUseCase
@@ -54,7 +53,7 @@ val domainModule = module {
     factory<GetDataUseCase<List<Track>>>(named(GET_FAVOURITES_USE_CASE)) {
         val repository: DbRepo<Track> = get(named(DB_REPO_TRACK))
         GetFavoritesUseCaseImpl(
-            repository = repository as StorageManagerRepo<Track>
+            repository = repository
         )
     }
 

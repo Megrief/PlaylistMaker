@@ -6,8 +6,5 @@ import com.example.playlistmaker.domain.search.SearchUseCase
 import kotlinx.coroutines.flow.Flow
 
 class SearchUseCaseImpl(private val repository: SearchRepository) : SearchUseCase {
-
-    override suspend fun search(term: String): Flow<List<Track>?> {
-        return repository.search(term)
-    }
+    override suspend fun search(term: String): Flow<List<Track>?> = repository.search(term)
 }

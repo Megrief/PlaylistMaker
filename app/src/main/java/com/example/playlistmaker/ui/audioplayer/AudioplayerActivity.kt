@@ -42,7 +42,7 @@ class AudioplayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.pause()
+        viewModel.stop()
     }
 
     private fun setScreenStateObserver() {
@@ -64,9 +64,8 @@ class AudioplayerActivity : AppCompatActivity() {
         viewModel.playerStatus.observe(this) { playerStatus ->
             when (playerStatus) {
                 is PlayerStatus.Prepared, is PlayerStatus.Paused -> {
-                    if (playerStatus is PlayerStatus.Prepared) {
+                    if (playerStatus is PlayerStatus.Prepared)
                         binding.playingTime.text = playerStatus.currentPosition ?: getString(R.string.half_minute)
-                    }
                     changeButtonAppearance(false)
                 }
                 is PlayerStatus.Playing -> {

@@ -21,8 +21,10 @@ class App : Application() {
     private val getThemeFlagUseCase: GetDataUseCase<ThemeFlag?> by inject(named(GET_THEME_FLAG_USE_CASE))
     private val storeThemeFlagUseCase: StoreDataUseCase<ThemeFlag> by inject(named(STORE_THEME_FLAG_USE_CASE))
     private val coroutineScope: CoroutineScope by inject()
+
     override fun onCreate() {
         super.onCreate()
+
         startKoin {
             androidContext(this@App)
 
@@ -51,7 +53,4 @@ class App : Application() {
         )
     }
 
-    companion object {
-        const val PLAYLIST_MAKER = "PLAYLIST_MAKER"
-    }
 }
