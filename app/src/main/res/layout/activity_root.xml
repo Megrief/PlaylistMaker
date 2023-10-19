@@ -33,6 +33,7 @@
         app:itemIconTint="@color/bottom_nav_content_color"
         app:itemTextColor="@color/bottom_nav_content_color"
         app:itemRippleColor="@color/ripple_blue"
+        android:background="?attr/colorOnPrimary"
         app:menu="@menu/nav_menu"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

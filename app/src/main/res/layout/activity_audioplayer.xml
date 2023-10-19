@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:background="?attr/colorOnPrimary"
     tools:context=".ui.audioplayer.AudioplayerActivity">
     <!-- Back -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -113,7 +114,6 @@
                 android:layout_width="@dimen/zero"
                 android:layout_height="84dp"
                 android:background="@drawable/circle_shape"
-                android:backgroundTint="@color/transparent"
                 android:src="@drawable/play_icon"
                 app:layout_constraintBottom_toBottomOf="@id/add_to_media"
                 app:layout_constraintDimensionRatio="w, 1:1"

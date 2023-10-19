@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorOnPrimary"
     tools:context=".ui.media.fragments.PlaylistsFragment">
 
     <TextView
@@ -21,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/medium"
+        android:background="?attr/colorOnPrimary"
         app:layout_constraintTop_toBottomOf="@id/refresh"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,6 +35,7 @@
         android:layout_width="@dimen/image_size"
         android:layout_height="@dimen/image_size"
         android:layout_marginTop="120dp"
+        android:background="@color/transparent"
         android:src="@drawable/nothing_found"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium"
         android:gravity="center"
+        android:background="@color/transparent"
         android:textAppearance="@style/MessageTextStyle"
         android:text="@string/no_created_playlists"
         android:layout_marginHorizontal="@dimen/average"

@@ -31,6 +31,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.ui.settings.SettingsFragment"
-        android:label="SettingsFragment" />
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 
 </navigation>

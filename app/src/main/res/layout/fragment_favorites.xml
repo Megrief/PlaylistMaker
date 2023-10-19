@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorOnPrimary">
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/no_content"
@@ -14,6 +15,7 @@
         android:id="@+id/favourites_list_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorOnPrimary"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -39,6 +41,7 @@
         android:layout_height="@dimen/image_size"
         android:layout_marginTop="120dp"
         android:src="@drawable/nothing_found"
+        android:background="@color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -49,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/medium"
         android:gravity="center"
+        android:background="@color/transparent"
         android:textAppearance="@style/MessageTextStyle"
         android:text="@string/no_saved_media"
         android:layout_marginHorizontal="@dimen/average"
