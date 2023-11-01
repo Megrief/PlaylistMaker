@@ -9,7 +9,7 @@
 
     <TextView
         style="@style/TextButtonOnSearch"
-        android:id="@+id/refresh"
+        android:id="@+id/create_playlist"
         android:layout_marginTop="@dimen/average"
         android:text="@string/add_playlist"
         android:visibility="visible"
@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/medium"
         android:background="?attr/colorOnPrimary"
-        app:layout_constraintTop_toBottomOf="@id/refresh"
+        app:layout_constraintTop_toBottomOf="@id/create_playlist"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

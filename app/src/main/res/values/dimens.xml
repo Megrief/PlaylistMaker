@@ -17,6 +17,7 @@
     <dimen name="menu_button_height">61dp</dimen>
     <dimen name="image_size">120dp</dimen>
 
+    <dimen name="sub_medium_text_size">12sp</dimen>
     <dimen name="almost_medium_text_size">14sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="head_text_size">22sp</dimen>

@@ -1,9 +1,9 @@
 package com.example.playlistmaker.domain.media.entity
 
-import com.example.playlistmaker.domain.entity.Track
-
 data class Playlist(
-    val id: Int,
+    val id: Int = 0,
     val name: String,
-    val trackList: List<Track>
+    val photoFileName: String,
+    val description: String,
+    val trackIdsList: List<Long> = emptyList()
 )

@@ -6,7 +6,7 @@ import com.example.playlistmaker.data.search.network.api.ITunesResponse
 import com.example.playlistmaker.data.search.network.network_client.NetworkClient
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.search.SearchRepository
-import com.example.playlistmaker.utils.TrackConverter.toTrack
+import com.example.playlistmaker.data.util.EntityConverter.toTrack
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

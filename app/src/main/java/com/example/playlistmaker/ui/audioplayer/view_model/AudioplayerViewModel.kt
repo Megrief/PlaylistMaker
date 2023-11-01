@@ -5,8 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.db.use_cases.DeleteItemUseCase
-import com.example.playlistmaker.domain.db.use_cases.GetItemByIdUseCase
+import com.example.playlistmaker.domain.storage.db.use_cases.DeleteItemUseCase
+import com.example.playlistmaker.domain.storage.db.use_cases.GetItemByIdUseCase
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
