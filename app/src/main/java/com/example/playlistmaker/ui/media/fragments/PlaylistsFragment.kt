@@ -4,14 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.ui.main.RootActivity
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -32,14 +33,17 @@ class PlaylistsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.createPlaylist.setOnClickListener {requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = GONE
+        binding.createPlaylist.setOnClickListener {
+            (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
             findNavController().navigate(R.id.action_mediaFragment_to_playlistCreationFragment)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = true
+        with((requireActivity() as RootActivity).binding.bottomNav) {
+            if (isGone) visibility = VISIBLE
+        }
     }
 
 

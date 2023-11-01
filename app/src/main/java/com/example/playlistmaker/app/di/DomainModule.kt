@@ -41,12 +41,10 @@ const val GET_TRACK_BY_ID_USE_CASE = "GetTrackByIdUseCase"
 const val GET_FAVOURITES_USE_CASE = "GetFavouritesUseCase"
 const val STORE_TRACK_IN_DB_USE_CASE = "StoreTrackInDbUseCase"
 const val STORE_PLAYLIST_IN_DB_USE_CASE = "StorePlaylistInDbUseCase"
-const val GET_PLAYLIST_ID_USE_CASE = "GetPlaylistIdUseCase"
 const val GET_PLAYLISTS_USE_CASE = "GetPlaylistsUseCase"
 const val DELETE_PLAYLIST_FROM_DB_USE_CASE = "DeletePlaylistFromDbUseCase"
 
 val domainModule = module {
-
 
     factory {
         GetPhotoByNameUseCase(

@@ -4,15 +4,17 @@ import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.OnBackPressedDispatcher
 import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityAudioplayerBinding
+import com.example.playlistmaker.databinding.FragmentAudioplayerBinding
 import com.example.playlistmaker.domain.entity.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
@@ -20,20 +22,33 @@ import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Locale
 
-class AudioplayerActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityAudioplayerBinding.inflate(LayoutInflater.from(this)) }
+class AudioplayerFragment : Fragment() {
 
+    private var _binding: FragmentAudioplayerBinding? = null
+    private val binding: FragmentAudioplayerBinding
+        get() = _binding!!
+
+    private var onBackPressedDispatcher: OnBackPressedDispatcher? = null
     private val viewModel: AudioplayerViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
+        onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setScreenStateObserver()
 
         setPlayerStatusObserver()
 
-        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher.onBackPressed() }
+        binding.toolbar.setNavigationOnClickListener { onBackPressedDispatcher?.onBackPressed() }
 
         binding.playButton.setOnClickListener { viewModel.playback() }
 
@@ -45,8 +60,14 @@ class AudioplayerActivity : AppCompatActivity() {
         viewModel.stop()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        onBackPressedDispatcher = null
+        _binding = null
+    }
+
     private fun setScreenStateObserver() {
-        viewModel.screenState.observe(this) { screenState ->
+        viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
             when (screenState) {
                 is AudioplayerScreenState.Error -> onBackPressedDispatcher
                 is AudioplayerScreenState.Loading -> {
@@ -61,7 +82,7 @@ class AudioplayerActivity : AppCompatActivity() {
     }
 
     private fun setPlayerStatusObserver() {
-        viewModel.playerStatus.observe(this) { playerStatus ->
+        viewModel.playerStatus.observe(viewLifecycleOwner) { playerStatus ->
             when (playerStatus) {
                 is PlayerStatus.Prepared, is PlayerStatus.Paused -> {
                     if (playerStatus is PlayerStatus.Prepared)
@@ -89,7 +110,7 @@ class AudioplayerActivity : AppCompatActivity() {
             .into(binding.likeButton)
         bind(track)
         if (track.previewUrl.isEmpty()) {
-            Toast.makeText(this, getString(R.string.no_preview), Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.no_preview), Toast.LENGTH_LONG).show()
             binding.playButton.isEnabled = false
         }
     }

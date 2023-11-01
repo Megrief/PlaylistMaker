@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.ui.main.RootActivity
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.example.playlistmaker.ui.search.view_model.SearchScreeenState
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
@@ -62,6 +63,12 @@ class SearchFragment : Fragment() {
         savedValue = savedInstanceState?.getString(SEARCH_BAR_STATE) ?: ""
     }
 
+    override fun onResume() {
+        super.onResume()
+        with((requireActivity() as RootActivity).binding.bottomNav) {
+            if (isGone) visibility = VISIBLE
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -76,6 +83,7 @@ class SearchFragment : Fragment() {
                 false
             ) { track ->
                 viewModel.onTrackClick(track)
+                (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
                 findNavController().navigate(R.id.action_searchFragment_to_audioplayerActivity)
             }
             trackList.adapter = TrackAdapter(onTrackClicked)

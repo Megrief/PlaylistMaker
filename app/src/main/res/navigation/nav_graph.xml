@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_media" >
         <action
             android:id="@+id/action_mediaFragment_to_audioplayerActivity"
-            app:destination="@id/audioplayerActivity" />
+            app:destination="@id/audioplayerFragment" />
         <action
             android:id="@+id/action_mediaFragment_to_playlistCreationFragment"
             app:destination="@id/playlistCreationFragment" />
@@ -24,13 +24,17 @@
         tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_searchFragment_to_audioplayerActivity"
-            app:destination="@id/audioplayerActivity" />
+            app:destination="@id/audioplayerFragment" />
     </fragment>
-    <activity
-        android:id="@+id/audioplayerActivity"
-        android:name="com.example.playlistmaker.ui.audioplayer.AudioplayerActivity"
+    <fragment
+        android:id="@+id/audioplayerFragment"
+        android:name="com.example.playlistmaker.ui.audioplayer.AudioplayerFragment"
         android:label="activity_audioplayer"
-        tools:layout="@layout/activity_audioplayer" />
+        tools:layout="@layout/fragment_audioplayer" >
+        <action
+            android:id="@+id/action_audioplayerFragment_to_playlistCreationFragment"
+            app:destination="@id/playlistCreationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.playlistmaker.ui.settings.SettingsFragment"
