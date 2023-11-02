@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.storage.db.repo_impl
 
 import com.example.playlistmaker.data.storage.db.dao.TrackDbDao
 import com.example.playlistmaker.domain.storage.db.DbRepo
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.data.util.EntityConverter.toTrack
 import com.example.playlistmaker.data.util.EntityConverter.toTrackDb
 import kotlinx.coroutines.flow.Flow

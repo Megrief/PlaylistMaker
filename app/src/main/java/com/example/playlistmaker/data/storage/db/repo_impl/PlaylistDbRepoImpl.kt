@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data.storage.db.repo_impl
 
 import com.example.playlistmaker.data.storage.db.dao.PlaylistDbDao
-import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.storage.db.DbRepo
 import com.example.playlistmaker.data.util.EntityConverter.toPlaylist
 import com.example.playlistmaker.data.util.EntityConverter.toPlaylistDb

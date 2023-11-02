@@ -30,7 +30,7 @@ class ExternalStorageRepoImpl(context: Context) : ExternalStorageRepo<Uri> {
         emit(file?.toUri())
     }
 
-    override fun store(item: Uri): String {
+    override fun store(item: Uri): File {
         val file = File(filePath, generateName())
         if (file.exists()) return store(item)
 
@@ -39,7 +39,7 @@ class ExternalStorageRepoImpl(context: Context) : ExternalStorageRepo<Uri> {
 
         BitmapFactory.decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        return file.name
+        return file
     }
 
     private fun generateName(): String = buildString {

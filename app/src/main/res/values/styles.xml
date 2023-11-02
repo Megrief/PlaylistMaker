@@ -137,11 +137,13 @@
         <item name="android:textSize">@dimen/almost_medium_text_size</item>
     </style>
 
-    <style name="SmallTextOnAudioplayer">
+    <style name="SmallRegularText">
         <item name="fontFamily">@font/ys_display_regular</item>
-        <item name="android:textSize">13sp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textFontWeight">400</item>
+    </style>
+    <style name="SmallTextOnAudioplayer" parent="SmallRegularText">
+        <item name="android:textSize">13sp</item>
         <item name="android:paddingHorizontal">2dp</item>
         <item name="android:background">?attr/colorOnPrimary</item>
         <item name="android:layout_width">wrap_content</item>

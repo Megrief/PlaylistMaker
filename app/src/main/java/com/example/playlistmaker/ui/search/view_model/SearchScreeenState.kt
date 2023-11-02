@@ -1,6 +1,6 @@
 package com.example.playlistmaker.ui.search.view_model
 
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
 
 sealed class SearchScreeenState {
     object Empty : SearchScreeenState()

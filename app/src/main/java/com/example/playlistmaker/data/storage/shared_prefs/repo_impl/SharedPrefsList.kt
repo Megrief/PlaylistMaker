@@ -2,7 +2,7 @@ package com.example.playlistmaker.data.storage.shared_prefs.repo_impl
 
 import android.content.SharedPreferences
 import com.example.playlistmaker.data.storage.shared_prefs.dto.TrackListDto
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow

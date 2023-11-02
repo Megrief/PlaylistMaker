@@ -4,10 +4,11 @@ import com.example.playlistmaker.data.storage.db.dto.TrackDb
 import com.example.playlistmaker.data.search.dto.TrackDto
 import com.example.playlistmaker.data.storage.db.dto.PlaylistDb
 import com.example.playlistmaker.data.storage.db.dto.TrackIdsDto
-import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entities.Playlist
 import com.google.gson.Gson
 import org.koin.java.KoinJavaComponent.getKoin
+import java.io.File
 import java.time.LocalDateTime
 
 object EntityConverter {
@@ -16,7 +17,7 @@ object EntityConverter {
 
     fun Track.toTrackDb(): TrackDb =
         TrackDb(
-            trackId = trackId,
+            trackId = id,
             trackName = trackName,
             artistName = artistName,
             trackTime = trackTime,
@@ -31,7 +32,7 @@ object EntityConverter {
 
     fun TrackDb.toTrack(): Track =
         Track(
-            trackId = trackId,
+            id = trackId,
             trackName = trackName,
             artistName = artistName,
             trackTime = trackTime,
@@ -45,7 +46,7 @@ object EntityConverter {
 
     fun TrackDto.toTrack(): Track =
         Track(
-            trackId = trackId ?: -1,
+            id = trackId ?: -1,
             trackName = trackName ?: "",
             trackTime = trackTime ?: 0L,
             artworkUrl100 = artworkUrl100 ?: "",
@@ -62,7 +63,7 @@ object EntityConverter {
             id = id,
             name = name,
             description = description,
-            photoPath = photoFileName,
+            photoPath = photoFile?.path ?: "",
             trackIdsList = trackIdsList.trackIdsListToJson(),
             addingDate = System.currentTimeMillis()
         )
@@ -72,9 +73,11 @@ object EntityConverter {
             id = id,
             name = name,
             description = description,
-            photoFileName = photoPath,
+            photoFile = getPhotoFile(photoPath),
             trackIdsList = trackIdsList.fromJsonToTrackIdsList()
         )
+
+    private fun getPhotoFile(name: String): File? = if(name.isBlank()) null else File(name)
 
     private fun List<Long>.trackIdsListToJson(): String =
         gson.toJson(TrackIdsDto(this))

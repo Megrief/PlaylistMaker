@@ -1,7 +1,7 @@
 package com.example.playlistmaker.app.di
 
-import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.media.favorites.use_cases_impl.DeleteTrackUseCaseImpl
 import com.example.playlistmaker.domain.media.favorites.use_cases_impl.GetFavoritesUseCaseImpl
 import com.example.playlistmaker.domain.media.favorites.use_cases_impl.GetTrackByIdUseCaseImpl

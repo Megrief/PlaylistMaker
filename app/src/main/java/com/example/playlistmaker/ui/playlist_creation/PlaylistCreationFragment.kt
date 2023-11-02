@@ -18,15 +18,18 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCreationBinding
-import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import java.io.File
 
 class PlaylistCreationFragment : Fragment() {
 
@@ -36,7 +39,7 @@ class PlaylistCreationFragment : Fragment() {
         get() = _binding!!
 
     private var notEmpty: Boolean = false
-    private var photoName: String? = null
+    private var photoFile: File? = null
     private var dialog: AlertDialog? = null
     private var onBackPressedDispatcher: OnBackPressedDispatcher? = null
     private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -48,19 +51,24 @@ class PlaylistCreationFragment : Fragment() {
             }
         }
     }
+
     private val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            Glide.with(binding.root).load(uri).centerCrop().into(binding.photo)
-            photoName = viewModel.storePhoto(uri)
+            val cornerSizeInPx = resources.getDimensionPixelSize(R.dimen.small)
+            Glide.with(binding.root)
+                .load(uri)
+                .transform(CenterCrop(), RoundedCorners(cornerSizeInPx))
+                .into(binding.photo)
+            photoFile = viewModel.storePhoto(uri)
         }
     }
+
     private val permissionRequest = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
         if (isGranted) pickImage()
     }
 
     private var savedName: String = ""
     private var savedDescription: String = ""
-    private var savedPhotoName: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -126,19 +134,18 @@ class PlaylistCreationFragment : Fragment() {
     }
 
     private fun providePlaylist(): Playlist {
-        val photo = photoName ?: ""
         return Playlist(
             name = savedName,
             description = savedDescription,
-            photoFileName = photo
+            photoFile = photoFile
         )
     }
 
     private fun provideDialog(): AlertDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_title))
             .setMessage(getString(R.string.dialog_message_data_will_lost))
-            .setNeutralButton("Отмена") { _, _ -> }
-            .setPositiveButton("Завершить") { _, _ ->
+            .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(getString(R.string.close)) { _, _ ->
                 notEmpty = false
                 onBackPressedCallback.remove()
                 onBackPressedDispatcher?.onBackPressed()

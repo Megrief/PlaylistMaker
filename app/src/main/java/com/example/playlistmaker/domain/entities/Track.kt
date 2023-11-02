@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.entity
+package com.example.playlistmaker.domain.entities
 
 data class Track(
-    val trackId: Long,
+    override val id: Long,
     val trackName: String,
     val artistName: String,
     val trackTime: Long,
@@ -11,4 +11,4 @@ data class Track(
     val releaseDate: String,
     val primaryGenreName: String,
     val previewUrl: String
-)
+) : EntityRoot

@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.storage.shared_prefs_use_cases
 
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 

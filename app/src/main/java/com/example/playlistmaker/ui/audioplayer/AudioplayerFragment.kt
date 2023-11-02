@@ -15,7 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAudioplayerBinding
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
@@ -53,6 +53,11 @@ class AudioplayerFragment : Fragment() {
         binding.playButton.setOnClickListener { viewModel.playback() }
 
         binding.likeButton.setOnClickListener { viewModel.likeback() }
+
+        binding.addToPlaylist.setOnClickListener {
+            //TODO("open bottom sheet with playlists")
+        }
+        // TODO("add bottom sheet with playlists and <create playlist> button")
     }
 
     override fun onPause() {

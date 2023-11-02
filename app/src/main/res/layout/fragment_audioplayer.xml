@@ -99,7 +99,7 @@
 
             <!-- Buttons -->
             <ImageButton
-                android:id="@+id/add_to_media"
+                android:id="@+id/add_to_playlist"
                 android:layout_width="@dimen/zero"
                 android:layout_height="@dimen/image_button_on_audioplayer"
                 android:layout_marginStart="@dimen/small"
@@ -118,11 +118,11 @@
                 android:layout_height="84dp"
                 android:background="@drawable/circle_shape"
                 android:src="@drawable/play_icon"
-                app:layout_constraintBottom_toBottomOf="@id/add_to_media"
+                app:layout_constraintBottom_toBottomOf="@id/add_to_playlist"
                 app:layout_constraintDimensionRatio="w, 1:1"
                 app:layout_constraintEnd_toStartOf="@id/right_border"
                 app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toTopOf="@id/add_to_media" />
+                app:layout_constraintTop_toTopOf="@id/add_to_playlist" />
 
             <ImageButton
                 android:id="@+id/like_button"
@@ -132,10 +132,10 @@
                 android:background="@drawable/circle_shape"
                 android:backgroundTint="@color/transparent_black"
                 android:src="@drawable/not_favourite"
-                app:layout_constraintBottom_toBottomOf="@id/add_to_media"
+                app:layout_constraintBottom_toBottomOf="@id/add_to_playlist"
                 app:layout_constraintDimensionRatio="w, 1:1"
                 app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintTop_toTopOf="@id/add_to_media" />
+                app:layout_constraintTop_toTopOf="@id/add_to_playlist" />
 
             <!-- Available playing time -->
             <TextView

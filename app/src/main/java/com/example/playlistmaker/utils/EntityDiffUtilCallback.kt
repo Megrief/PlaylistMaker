@@ -1,9 +1,9 @@
-package com.example.playlistmaker.ui.search.adapter
+package com.example.playlistmaker.utils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.EntityRoot
 
-class TrackListCallback(private val oldList: List<Track>, private val newList: List<Track>) : DiffUtil.Callback() {
+class EntityDiffUtilCallback(private val oldList: List<EntityRoot>, private val newList: List<EntityRoot>) : DiffUtil.Callback() {
     override fun getOldListSize(): Int = oldList.size
 
     override fun getNewListSize(): Int = newList.size
@@ -13,6 +13,6 @@ class TrackListCallback(private val oldList: List<Track>, private val newList: L
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+        return oldList[oldItemPosition].id == newList[newItemPosition].id
     }
 }

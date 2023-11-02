@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.media.playlists.use_cases_impl
 
-import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.storage.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import kotlinx.coroutines.flow.Flow

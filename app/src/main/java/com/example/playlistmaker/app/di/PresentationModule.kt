@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewModel
+import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
@@ -54,6 +55,12 @@ val presentationModule = module {
         PlaylistCreationViewModel(
             storePhotoUseCase = get(),
             storePlaylistInDb = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+        )
+    }
+
+    viewModel {
+        PlaylistsViewModel(
+            getPlaylistsUseCaseImpl = get(named(GET_PLAYLISTS_USE_CASE))
         )
     }
 

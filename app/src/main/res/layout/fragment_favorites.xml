@@ -12,7 +12,7 @@
         app:constraint_referenced_ids="nothing_found_iv, message_tv" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favourites_list_rv"
+        android:id="@+id/favorites_list_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/colorOnPrimary"

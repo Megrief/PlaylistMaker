@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.TrackCardBinding
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.utils.EntityDiffUtilCallback
 
 class TrackAdapter(private val onTrackClicked: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
     private val _trackList: MutableList<Track> = mutableListOf()
@@ -29,7 +30,7 @@ class TrackAdapter(private val onTrackClicked: (Track) -> Unit) : RecyclerView.A
     }
 
     fun setTrackList(newTrackList: List<Track>) {
-        val diffCallback = TrackListCallback(_trackList, newTrackList)
+        val diffCallback = EntityDiffUtilCallback(_trackList, newTrackList)
         val diffTracks = DiffUtil.calculateDiff(diffCallback)
         _trackList.clear()
         _trackList.addAll(newTrackList)

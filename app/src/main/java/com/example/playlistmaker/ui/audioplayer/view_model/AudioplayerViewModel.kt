@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.storage.db.use_cases.DeleteItemUseCase
 import com.example.playlistmaker.domain.storage.db.use_cases.GetItemByIdUseCase
-import com.example.playlistmaker.domain.entity.Track
+import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
@@ -56,7 +56,7 @@ class AudioplayerViewModel(
                                 _playerStatus.value = PlayerStatus.Prepared(getLength())
                             }
                         )
-                        AudioplayerScreenState.Content(track, inFavourite(track.trackId))
+                        AudioplayerScreenState.Content(track, inFavourite(track.id))
                     } else AudioplayerScreenState.Error
                 )
             }
@@ -95,7 +95,7 @@ class AudioplayerViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             with(_screenState.value as AudioplayerScreenState.Content) {
                 if (inFavourite)
-                    deleteItemUseCase.delete(track.trackId)
+                    deleteItemUseCase.delete(track.id)
                 else
                     storeDataUseCase.store(track)
                 withContext(Dispatchers.Main) {

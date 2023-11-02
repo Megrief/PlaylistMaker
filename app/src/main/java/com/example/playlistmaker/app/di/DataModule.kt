@@ -20,8 +20,8 @@ import com.example.playlistmaker.data.storage.external_storage.ExternalStorageRe
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsList
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsTrack
 import com.example.playlistmaker.domain.storage.db.DbRepo
-import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.domain.media.entity.Playlist
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.search.SearchRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.sharing.SharingRepository
