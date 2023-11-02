@@ -5,15 +5,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.domain.entities.Playlist
+import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.db.use_cases.DeleteItemUseCase
 import com.example.playlistmaker.domain.storage.db.use_cases.GetItemByIdUseCase
-import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -24,6 +26,8 @@ class AudioplayerViewModel(
     private val getItemByIdUseCase: GetItemByIdUseCase<Track>,
     private val deleteItemUseCase: DeleteItemUseCase,
     private val storeDataUseCase: StoreDataUseCase<Track>,
+    private val storePlaylist: StoreDataUseCase<Playlist>,
+    private val getPlaylists: GetDataUseCase<List<Playlist>>,
     private val player: Player
 ) : ViewModel() {
 
@@ -104,6 +108,18 @@ class AudioplayerViewModel(
             }
         }
     }
+
+    suspend fun addToPlaylist(playlist: Playlist): Flow<List<Playlist>> {
+        screenState.value?.run {
+            if (this is AudioplayerScreenState.Content) {
+                val refreshed = playlist.copy(trackIdsList = playlist.trackIdsList + this.track.id)
+                storePlaylist.store(refreshed)
+            }
+        }
+        return getPlaylists.get()
+    }
+
+    suspend fun getPlaylists(): Flow<List<Playlist>> = getPlaylists.get()
 
     private suspend fun inFavourite(id: Long): Boolean = getItemByIdUseCase.get(id).single() != null
 

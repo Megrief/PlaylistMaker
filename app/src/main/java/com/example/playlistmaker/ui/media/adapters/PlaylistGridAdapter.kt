@@ -8,19 +8,19 @@ import com.example.playlistmaker.databinding.PlaylistCardBinding
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.utils.EntityDiffUtilCallback
 
-class PlaylistAdapter(private val onPlaylistClick: (Playlist) -> Unit) : RecyclerView.Adapter<PlaylistViewHolder>() {
+class PlaylistGridAdapter(private val onPlaylistClick: (Playlist) -> Unit) : RecyclerView.Adapter<PlaylistGridViewHolder>() {
 
     val contentList: MutableList<Playlist> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlaylistGridViewHolder {
         val binding = PlaylistCardBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
-        return PlaylistViewHolder(binding)
+        return PlaylistGridViewHolder(binding)
     }
 
     override fun getItemCount(): Int = contentList.size
 
-    override fun onBindViewHolder(holder: PlaylistViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PlaylistGridViewHolder, position: Int) {
         holder.bind(playlist = contentList[position])
         holder.itemView.setOnClickListener {
             onPlaylistClick(contentList[position])

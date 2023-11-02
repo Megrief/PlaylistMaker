@@ -1,247 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:background="?attr/colorOnPrimary"
     tools:context=".ui.audioplayer.AudioplayerFragment">
 
-    <!-- Back -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        style="@style/ToolbarAppearance.WithIcon"
-        android:layout_marginBottom="@dimen/zero"
-        app:title="" />
-
-    <!-- Content -->
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="match_parent"
+        android:background="?attr/colorOnPrimary"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/ToolbarAppearance.WithIcon"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/zero" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <!-- Guidelines -->
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/left_border"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_begin="@dimen/medium" />
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/right_border"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_end="@dimen/medium" />
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/bottom_border"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_end="@dimen/medium" />
+            <include
+                android:id="@+id/content"
+                layout="@layout/audioplayer_content_layout" />
+        </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <!-- Barrier -->
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/track_info_barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="playing_time"
-                app:barrierDirection="bottom" />
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/shadow"
+        android:visibility="gone" />
 
-            <!-- Track cover -->
-            <ImageView
-                android:id="@+id/poster"
-                android:layout_width="@dimen/zero"
-                android:layout_height="@dimen/zero"
-                android:layout_marginHorizontal="@dimen/small"
-                android:layout_marginTop="26dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/placeholder"
-                app:layout_constraintBottom_toTopOf="@id/track_name"
-                app:layout_constraintDimensionRatio="w, 1:1"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:background="@drawable/bottom_sheet_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-            <!-- Track name -->
-            <TextView
-                android:id="@+id/track_name"
-                android:layout_width="@dimen/zero"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/small"
-                android:layout_marginTop="@dimen/medium"
-                android:layout_marginEnd="@dimen/small"
-                android:textAppearance="@style/TextOnAudioplayer"
-                android:textSize="@dimen/head_text_size"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/poster"
-                tools:text="Some track (late 2007)" />
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:src="@drawable/line"
+            android:layout_marginTop="@dimen/small" />
 
-            <!-- Artist's name -->
-            <TextView
-                android:id="@+id/artist_name"
-                android:layout_width="@dimen/zero"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/small"
-                android:layout_marginTop="@dimen/sub_medium"
-                android:layout_marginEnd="@dimen/small"
-                android:textAppearance="@style/TextOnAudioplayer"
-                android:textSize="@dimen/medium_text_size"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/track_name"
-                tools:text="Artist's name" />
+        <TextView
+            android:id="@+id/add_to_playlist_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_marginTop="@dimen/sub_medium"
+            android:textAppearance="@style/HeadTextStyle"
+            android:textSize="19sp"
+            android:textAlignment="center"
+            android:text="@string/add_to_playlist" />
 
-            <!-- Buttons -->
-            <ImageButton
-                android:id="@+id/add_to_playlist"
-                android:layout_width="@dimen/zero"
-                android:layout_height="@dimen/image_button_on_audioplayer"
-                android:layout_marginStart="@dimen/small"
-                android:layout_marginTop="54dp"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="@color/transparent_black"
-                android:src="@drawable/add_to_media"
-                app:layout_constraintDimensionRatio="w, 1:1"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/artist_name"
-                app:tint="@color/white" />
+        <TextView
+            style="@style/TextButtonOnSearch"
+            android:id="@+id/create_playlist"
+            android:layout_marginTop="@dimen/medium"
+            android:text="@string/add_playlist" />
 
-            <ImageButton
-                android:id="@+id/play_button"
-                android:layout_width="@dimen/zero"
-                android:layout_height="84dp"
-                android:background="@drawable/circle_shape"
-                android:src="@drawable/play_icon"
-                app:layout_constraintBottom_toBottomOf="@id/add_to_playlist"
-                app:layout_constraintDimensionRatio="w, 1:1"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toTopOf="@id/add_to_playlist" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlists_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/average"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:reverseLayout="true"
+            android:orientation="vertical" />
 
-            <ImageButton
-                android:id="@+id/like_button"
-                android:layout_width="@dimen/zero"
-                android:layout_height="@dimen/image_button_on_audioplayer"
-                android:layout_marginEnd="@dimen/small"
-                android:background="@drawable/circle_shape"
-                android:backgroundTint="@color/transparent_black"
-                android:src="@drawable/not_favourite"
-                app:layout_constraintBottom_toBottomOf="@id/add_to_playlist"
-                app:layout_constraintDimensionRatio="w, 1:1"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintTop_toTopOf="@id/add_to_playlist" />
+    </LinearLayout>
 
-            <!-- Available playing time -->
-            <TextView
-                android:id="@+id/playing_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextOnAudioplayer"
-                android:textSize="@dimen/almost_medium_text_size"
-                android:textFontWeight="500"
-                android:text="@string/half_minute"
-                app:layout_constraintTop_toBottomOf="@id/play_button"
-                android:layout_marginTop="@dimen/sub_medium"
-                android:layout_marginBottom="@dimen/almost_medium"
-                app:layout_constraintBottom_toTopOf="@id/track_info_barrier"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintEnd_toStartOf="@id/right_border" />
-
-            <!-- Track info. (Small text views) -->
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/track_length_group"
-                style="@style/InfoContainerOnAudioplayer"
-
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/track_info_barrier">
-                <TextView
-                    android:id="@+id/track_length"
-                    style="@style/SmallTextViewOnAudioplayer"
-                    android:text="@string/track_length"
-                    android:textColor="@color/icons_gray" />
-                <TextView
-                    android:id="@+id/track_length_value"
-                    style="@style/SmallTextViewOnAudioplayer.Value"
-                    tools:text="4:33" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/collection_group"
-                style="@style/InfoContainerOnAudioplayer"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/track_length_group">
-                <TextView
-                    android:id="@+id/collection"
-                    style="@style/SmallTextViewOnAudioplayer"
-                    android:text="@string/album" />
-                <TextView
-                    android:id="@+id/collection_value"
-                    style="@style/SmallTextViewOnAudioplayer.Value"
-                    tools:text="Very very long name for collection. Posting date hundred years ago" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/release_year_group"
-                style="@style/InfoContainerOnAudioplayer"
-
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/collection_group">
-                <TextView
-                    android:id="@+id/release_year"
-                    style="@style/SmallTextViewOnAudioplayer"
-                    android:text="@string/release_year"/>
-                <TextView
-                    android:id="@+id/release_year_value"
-                    style="@style/SmallTextViewOnAudioplayer.Value"
-                    tools:text="1984" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/genre_group"
-                style="@style/InfoContainerOnAudioplayer"
-
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/release_year_group">
-                <TextView
-                    android:id="@+id/genre"
-                    style="@style/SmallTextViewOnAudioplayer"
-                    android:text="@string/genre"
-                    android:textColor="@color/icons_gray" />
-                <TextView
-                    android:id="@+id/genre_value"
-                    style="@style/SmallTextViewOnAudioplayer.Value"
-                    tools:text="Rotsk" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:id="@+id/country_group"
-                style="@style/InfoContainerOnAudioplayer"
-
-                app:layout_constraintBottom_toTopOf="@id/bottom_border"
-                app:layout_constraintEnd_toStartOf="@id/right_border"
-                app:layout_constraintStart_toEndOf="@id/left_border"
-                app:layout_constraintTop_toBottomOf="@id/genre_group">
-                <TextView
-                    android:id="@+id/country"
-                    style="@style/SmallTextViewOnAudioplayer"
-                    android:text="@string/country"
-                    android:textColor="@color/icons_gray" />
-                <TextView
-                    android:id="@+id/country_value"
-                    style="@style/SmallTextViewOnAudioplayer.Value"
-                    tools:text="Persia" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

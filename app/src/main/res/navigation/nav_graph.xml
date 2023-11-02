@@ -11,7 +11,7 @@
         android:label="fragment_media"
         tools:layout="@layout/fragment_media" >
         <action
-            android:id="@+id/action_mediaFragment_to_audioplayerActivity"
+            android:id="@+id/action_mediaFragment_to_audioplayerFragment"
             app:destination="@id/audioplayerFragment" />
         <action
             android:id="@+id/action_mediaFragment_to_playlistCreationFragment"
@@ -23,7 +23,7 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" >
         <action
-            android:id="@+id/action_searchFragment_to_audioplayerActivity"
+            android:id="@+id/action_searchFragment_to_audioplayerFragment"
             app:destination="@id/audioplayerFragment" />
     </fragment>
     <fragment

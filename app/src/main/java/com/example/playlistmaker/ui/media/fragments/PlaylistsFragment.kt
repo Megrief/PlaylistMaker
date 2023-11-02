@@ -16,7 +16,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.ui.main.RootActivity
-import com.example.playlistmaker.ui.media.adapters.PlaylistAdapter
+import com.example.playlistmaker.ui.media.adapters.PlaylistGridAdapter
 import com.example.playlistmaker.ui.media.fragments.screen_states.MediaScreenState
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.search.SearchFragment
@@ -60,7 +60,7 @@ class PlaylistsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.checkContent((binding.playlistsRv.adapter as PlaylistAdapter).contentList)
+        viewModel.checkContent((binding.playlistsRv.adapter as PlaylistGridAdapter).contentList)
         with((requireActivity() as RootActivity).binding.bottomNav) {
             if (isGone) visibility = VISIBLE
         }
@@ -74,7 +74,7 @@ class PlaylistsFragment : Fragment() {
     private fun configurePlaylistsRv() {
         with(binding.playlistsRv) {
             layoutManager = GridLayoutManager(requireContext(), 2)
-            adapter = PlaylistAdapter(onPlaylistClick)
+            adapter = PlaylistGridAdapter(onPlaylistClick)
         }
     }
 
@@ -101,7 +101,7 @@ class PlaylistsFragment : Fragment() {
                     val playlistsList = screenState.content.mapNotNull {
                         try { it as Playlist } catch (_: ClassCastException) { null }
                     }
-                    (playlistsRv.adapter as PlaylistAdapter).setContent(playlistsList)
+                    (playlistsRv.adapter as PlaylistGridAdapter).setContent(playlistsList)
                     playlistsRv.visibility = VISIBLE
                     createPlaylist.visibility = VISIBLE
                 }

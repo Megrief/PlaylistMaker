@@ -91,7 +91,7 @@ class FavoritesFragment : Fragment() {
         ) { track ->
             viewModel.onTrackClick(track)
             (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
-            findNavController().navigate(R.id.action_mediaFragment_to_audioplayerActivity)
+            findNavController().navigate(R.id.action_mediaFragment_to_audioplayerFragment)
         }
         binding.favoritesListRv.adapter = TrackAdapter(onTrackClicked)
     }
