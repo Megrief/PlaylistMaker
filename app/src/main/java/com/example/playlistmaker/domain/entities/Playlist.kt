@@ -7,5 +7,5 @@ data class Playlist(
     val name: String,
     val photoFile: File?,
     val description: String,
-    val trackIdsList: List<Long> = emptyList()
+    val trackIdsList: MutableList<Long> = mutableListOf()
 ) : EntityRoot

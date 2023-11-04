@@ -16,9 +16,10 @@ interface PlaylistDbDao {
     @Delete(entity = PlaylistDb::class)
     fun delete(playlistDb: PlaylistDb)
 
-    @Query("SELECT * FROM playlists_table ORDER BY addingDate DESC")
+    @Query("SELECT * FROM playlists_table")
     fun getAll(): List<PlaylistDb>
 
     @Query("SELECT * FROM playlists_table WHERE id = :id")
     fun getById(id: Long): PlaylistDb?
+
 }

@@ -25,7 +25,7 @@ class PlaylistDbRepoImpl(private val playlistDbDao: PlaylistDbDao) : DbRepo<Play
         emit(playlistDb?.toPlaylist())
     }
 
-    override fun get(): Flow<Playlist> = flow {
+    override fun get(): Flow<Playlist?> = flow {
         playlistDbDao.getAll().forEach {
             emit(it.toPlaylist())
         }

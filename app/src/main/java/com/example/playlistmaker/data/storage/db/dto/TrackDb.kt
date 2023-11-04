@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo.Companion.INTEGER
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "favourite_tracks_table")
+@Entity(tableName = "favorite_tracks_table")
 data class TrackDb(
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "trackId", typeAffinity = INTEGER)

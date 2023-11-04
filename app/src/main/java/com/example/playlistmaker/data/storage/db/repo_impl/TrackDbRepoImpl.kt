@@ -27,7 +27,7 @@ class TrackDbRepoImpl(
         trackDbDao.store(trackDb)
     }
 
-    override fun get(): Flow<Track> = flow {
+    override fun get(): Flow<Track?> = flow {
         trackDbDao.getAll().forEach { trackDb ->
             emit(trackDb.toTrack())
         }

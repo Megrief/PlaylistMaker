@@ -79,10 +79,10 @@ object EntityConverter {
 
     private fun getPhotoFile(name: String): File? = if(name.isBlank()) null else File(name)
 
-    private fun List<Long>.trackIdsListToJson(): String =
+    private fun MutableList<Long>.trackIdsListToJson(): String =
         gson.toJson(TrackIdsDto(this))
 
-    private fun String.fromJsonToTrackIdsList(): List<Long> =
+    private fun String.fromJsonToTrackIdsList(): MutableList<Long> =
         gson.fromJson(this, TrackIdsDto::class.java).ids
 
     private fun getYear(dateString: String) =

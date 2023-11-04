@@ -7,7 +7,7 @@ import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
 import com.example.playlistmaker.domain.sharing.SharingRepository
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
+import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 

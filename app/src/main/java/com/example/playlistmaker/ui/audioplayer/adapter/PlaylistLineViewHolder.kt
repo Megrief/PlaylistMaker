@@ -9,7 +9,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlaylistLineBinding
 import com.example.playlistmaker.domain.entities.Playlist
 
-class PlaylistLinearViewHolder(private val binding: PlaylistLineBinding) : RecyclerView.ViewHolder(binding.root) {
+class PlaylistLineViewHolder(private val binding: PlaylistLineBinding) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(playlist: Playlist) {
         with(binding) {

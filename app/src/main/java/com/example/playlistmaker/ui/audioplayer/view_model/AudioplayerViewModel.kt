@@ -60,7 +60,7 @@ class AudioplayerViewModel(
                                 _playerStatus.value = PlayerStatus.Prepared(getLength())
                             }
                         )
-                        AudioplayerScreenState.Content(track, inFavourite(track.id))
+                        AudioplayerScreenState.Content(track, inFavourite(track.id), getPlaylists.get().single())
                     } else AudioplayerScreenState.Error
                 )
             }
@@ -109,14 +109,23 @@ class AudioplayerViewModel(
         }
     }
 
-    suspend fun addToPlaylist(playlist: Playlist): Flow<List<Playlist>> {
-        screenState.value?.run {
-            if (this is AudioplayerScreenState.Content) {
-                val refreshed = playlist.copy(trackIdsList = playlist.trackIdsList + this.track.id)
-                storePlaylist.store(refreshed)
+    fun addToPlaylist(playlist: Playlist, onAddingCallback: () -> Unit, onErrorCallback: () -> Unit) {
+        val content: AudioplayerScreenState.Content? = (screenState.value as? AudioplayerScreenState.Content)
+        val track = content?.track
+        track?.run {
+            if (playlist.trackIdsList.contains(id)) {
+                onErrorCallback()
+            } else {
+                playlist.trackIdsList.add(id)
+                viewModelScope.launch(Dispatchers.IO) {
+                    storePlaylist.store(playlist)
+                    _screenState.postValue(
+                        content.copy(playlists = getPlaylists.get().single())
+                    )
+                }
+                onAddingCallback()
             }
         }
-        return getPlaylists.get()
     }
 
     suspend fun getPlaylists(): Flow<List<Playlist>> = getPlaylists.get()

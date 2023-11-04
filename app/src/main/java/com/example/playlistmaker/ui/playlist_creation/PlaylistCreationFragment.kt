@@ -3,8 +3,10 @@ package com.example.playlistmaker.ui.playlist_creation
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +16,7 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -22,24 +25,21 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCreationBinding
-import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import java.io.File
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistCreationFragment : Fragment() {
 
-    private val viewModel: PlaylistCreationViewModel by inject()
+    private val viewModel: PlaylistCreationViewModel by viewModel()
     private var _binding: FragmentPlaylistCreationBinding? = null
     private val binding: FragmentPlaylistCreationBinding
         get() = _binding!!
 
     private var notEmpty: Boolean = false
-    private var photoFile: File? = null
     private var dialog: AlertDialog? = null
     private var onBackPressedDispatcher: OnBackPressedDispatcher? = null
     private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -54,12 +54,8 @@ class PlaylistCreationFragment : Fragment() {
 
     private val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            val cornerSizeInPx = resources.getDimensionPixelSize(R.dimen.small)
-            Glide.with(binding.root)
-                .load(uri)
-                .transform(CenterCrop(), RoundedCorners(cornerSizeInPx))
-                .into(binding.photo)
-            photoFile = viewModel.storePhoto(uri)
+            postPhoto(uri)
+            viewModel.storePhoto(uri)
         }
     }
 
@@ -84,6 +80,7 @@ class PlaylistCreationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog = provideDialog()
+        setObserver()
         configureNameInputField()
         configureDescriptionInputField()
         setOnBackPressedDispatcher()
@@ -101,6 +98,27 @@ class PlaylistCreationFragment : Fragment() {
         dialog = null
     }
 
+    override fun onPause() {
+        super.onPause()
+        viewModel.saveState(name = savedName, description = savedDescription)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+    }
+
+    private fun setObserver() {
+        viewModel.screenState.observe(viewLifecycleOwner) {
+            with(binding) {
+                playlistNameEt.setText(it.playlistName)
+                playlistDescriptionEt.setText(it.playlistDescription)
+                postPhoto(it.playlistPhoto?.toUri())
+                Log.d("AAA", "State refreshed")
+            }
+        }
+    }
+
     private fun configurePhotoImageView() {
 
         binding.photo.setOnClickListener {
@@ -116,6 +134,15 @@ class PlaylistCreationFragment : Fragment() {
         }
     }
 
+    private fun postPhoto(uri: Uri?) {
+        val cornerSizeInPx = resources.getDimensionPixelSize(R.dimen.small)
+        Glide.with(binding.root)
+            .load(uri)
+            .placeholder(R.drawable.playlist_photo_placeholder)
+            .transform(CenterCrop(), RoundedCorners(cornerSizeInPx))
+            .into(binding.photo)
+    }
+
     private fun pickImage() {
         photoPicker.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
@@ -124,7 +151,7 @@ class PlaylistCreationFragment : Fragment() {
         with(binding) {
             createButton.setOnClickListener {
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.storePlaylist(providePlaylist())
+                    viewModel.storePlaylist()
                 }
                 Toast.makeText(requireContext(), "Плейлист $savedName создан", Toast.LENGTH_SHORT).show()
                 notEmpty = false
@@ -133,13 +160,7 @@ class PlaylistCreationFragment : Fragment() {
         }
     }
 
-    private fun providePlaylist(): Playlist {
-        return Playlist(
-            name = savedName,
-            description = savedDescription,
-            photoFile = photoFile
-        )
-    }
+
 
     private fun provideDialog(): AlertDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_title))

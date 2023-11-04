@@ -7,7 +7,7 @@ import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewMod
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
+import com.example.playlistmaker.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

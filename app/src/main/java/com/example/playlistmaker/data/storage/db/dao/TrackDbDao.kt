@@ -16,10 +16,10 @@ interface TrackDbDao {
     @Delete(entity = TrackDb::class)
     fun delete(trackDb: TrackDb)
 
-    @Query("SELECT * FROM favourite_tracks_table ORDER BY addingDate DESC")
+    @Query("SELECT * FROM favorite_tracks_table ORDER BY addingDate DESC")
     fun getAll(): List<TrackDb>
 
-    @Query("SELECT * FROM favourite_tracks_table WHERE trackId = :id")
+    @Query("SELECT * FROM favorite_tracks_table WHERE trackId = :id")
     fun getById(id: Long): TrackDb?
 
 }

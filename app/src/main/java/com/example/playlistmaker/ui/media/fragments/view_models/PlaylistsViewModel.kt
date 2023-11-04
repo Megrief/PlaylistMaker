@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.entities.EntityRoot
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
 import com.example.playlistmaker.ui.media.fragments.screen_states.MediaScreenState
+import com.example.playlistmaker.utils.isEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,7 +22,7 @@ class PlaylistsViewModel(
     fun checkContent(list: List<Playlist>) {
         viewModelScope.launch(Dispatchers.IO) {
             getPlaylistsUseCaseImpl.get().collect { playlists ->
-                if (!isEquals(list, playlists)) {
+                if (!isEquals(list, playlists) || playlists.isEmpty()) {
                     if (playlists.isEmpty()) _screenState.postValue(MediaScreenState.Empty)
                     else _screenState.postValue(MediaScreenState.Content(playlists))
                 }
@@ -30,14 +30,4 @@ class PlaylistsViewModel(
         }
     }
 
-    private fun isEquals(oldList: List<EntityRoot>, newList: List<EntityRoot>): Boolean {
-        return if (oldList.size != newList.size) {
-            false
-        } else {
-            for (index in oldList.indices) {
-                if (oldList[index].id != newList[index].id) return false
-            }
-            true
-        }
-    }
 }

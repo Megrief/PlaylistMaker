@@ -20,11 +20,13 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentAudioplayerBinding
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.ui.audioplayer.adapter.PlaylistLineAdapter
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
+import com.example.playlistmaker.utils.isEquals
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import kotlinx.coroutines.Dispatchers
@@ -99,7 +101,11 @@ class AudioplayerFragment : Fragment() {
                         lifecycleScope.launch(Dispatchers.IO) {
                             val list = viewModel.getPlaylists().single()
                             withContext(Dispatchers.Main) {
-                                (binding.playlistsList.adapter as PlaylistLineAdapter).setContent(list)
+                                (binding.playlistsList.adapter as? PlaylistLineAdapter)?.run {
+                                    if(!isEquals(contentList, list)) {
+                                        setContent(list)
+                                    }
+                                }
                             }
                         }
                     }
@@ -107,7 +113,9 @@ class AudioplayerFragment : Fragment() {
                 }
             }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.shadow.visibility = VISIBLE
+            }
         }
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -117,18 +125,25 @@ class AudioplayerFragment : Fragment() {
     private fun configureBottomSheetContent() {
         binding.createPlaylist.setOnClickListener {
             findNavController().navigate(R.id.action_audioplayerFragment_to_playlistCreationFragment)
+
         }
-        binding.playlistsList.adapter = PlaylistLineAdapter {
-            lifecycleScope.launch(Dispatchers.IO) {
-                viewModel.addToPlaylist(it).also {
-                    val list = it.single()
-                    withContext(Dispatchers.Main) {
-                        (binding.playlistsList.adapter as PlaylistLineAdapter).setContent(list)
-                        // TODO("if track is in playlist already don't add this")
-                        // TODO("don't sort playlists by time")
-                    }
-                }
+        binding.playlistsList.adapter = PlaylistLineAdapter { playlist ->
+            val onAdding: () -> Unit = {
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.added_to_playlist) + " " + playlist.name,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+            val onError: () -> Unit = {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.already_added) + " " + playlist.name,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            viewModel.addToPlaylist(playlist, onAdding, onError)
         }
     }
 
@@ -140,9 +155,8 @@ class AudioplayerFragment : Fragment() {
                     binding.content.likeButton.isEnabled = false
                     binding.content.playButton.isEnabled = false
                 }
-                is AudioplayerScreenState.Content -> {
-                    onSuccess(screenState.track, screenState.inFavourite)
-                }
+                is AudioplayerScreenState.Content ->
+                    onSuccess(screenState.track, screenState.inFavourite, screenState.playlists)
             }
         }
     }
@@ -169,7 +183,9 @@ class AudioplayerFragment : Fragment() {
         binding.content.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }
 
-    private fun onSuccess(track: Track, inFavourite: Boolean) {
+
+    private fun onSuccess(track: Track, inFavourite: Boolean, playlists: List<Playlist>) {
+        (binding.playlistsList.adapter as? PlaylistLineAdapter)?.setContent(playlists)
         with(binding.content) {
             playButton.isEnabled = true
             likeButton.isEnabled = true
