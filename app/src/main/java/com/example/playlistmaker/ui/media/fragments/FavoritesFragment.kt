@@ -50,9 +50,7 @@ class FavoritesFragment : Fragment() {
                     binding.noContent.visibility = VISIBLE
                 }
                 is MediaScreenState.Content -> with(binding) {
-                    val trackList = screenState.content.mapNotNull {
-                        try { it as Track } catch (_: ClassCastException) { null }
-                    }
+                    val trackList = screenState.content.mapNotNull { it as? Track }
                     (favoritesListRv.adapter as TrackAdapter).setTrackList(trackList)
                     favoritesListRv.visibility = VISIBLE
                 }

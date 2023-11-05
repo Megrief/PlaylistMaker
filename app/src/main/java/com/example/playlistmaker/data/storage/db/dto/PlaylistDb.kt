@@ -11,5 +11,4 @@ data class PlaylistDb(
     val description: String,
     val photoPath: String,
     val trackIdsList: String,
-    val addingDate: Long
 )

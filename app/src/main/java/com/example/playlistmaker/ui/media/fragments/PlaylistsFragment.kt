@@ -35,10 +35,6 @@ class PlaylistsFragment : Fragment() {
         lifecycleScope,
         false
     ) { playlist ->
-        // call Method from viewModel to store Playlist in sharedPreference
-        // or to store playlist's id.
-        // navigate to PlaylistFragment (now created)
-//        (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
         Toast.makeText(requireContext(), "Clicked!", Toast.LENGTH_SHORT).show()
     }
 
@@ -55,7 +51,7 @@ class PlaylistsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         configureCreateButton()
         configurePlaylistsRv()
-        observeScreenState()
+        setScreenStateObserver()
     }
 
     override fun onResume() {
@@ -85,7 +81,7 @@ class PlaylistsFragment : Fragment() {
         }
     }
 
-    private fun observeScreenState() {
+    private fun setScreenStateObserver() {
         viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
             hideAll()
             when (screenState) {
@@ -98,9 +94,7 @@ class PlaylistsFragment : Fragment() {
                     createPlaylist.visibility = VISIBLE
                 }
                 is MediaScreenState.Content -> with(binding) {
-                    val playlistsList = screenState.content.mapNotNull {
-                        try { it as Playlist } catch (_: ClassCastException) { null }
-                    }
+                    val playlistsList = screenState.content.mapNotNull { it as? Playlist }
                     (playlistsRv.adapter as PlaylistGridAdapter).setContent(playlistsList)
                     playlistsRv.visibility = VISIBLE
                     createPlaylist.visibility = VISIBLE

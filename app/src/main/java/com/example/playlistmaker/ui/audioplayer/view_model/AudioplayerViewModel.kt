@@ -28,6 +28,8 @@ class AudioplayerViewModel(
     private val storeDataUseCase: StoreDataUseCase<Track>,
     private val storePlaylist: StoreDataUseCase<Playlist>,
     private val getPlaylists: GetDataUseCase<List<Playlist>>,
+    private val storeTrackInPlaylistDb: StoreDataUseCase<Track>,
+    private val getTrackInPlaylistById: GetItemByIdUseCase<Track>,
     private val player: Player
 ) : ViewModel() {
 
@@ -38,6 +40,10 @@ class AudioplayerViewModel(
     private val _playerStatus = MutableLiveData<PlayerStatus>(PlayerStatus.Default)
     val playerStatus: LiveData<PlayerStatus>
         get() = _playerStatus
+
+    private val _trackInPlaylist: MutableLiveData<Pair<String, Boolean>?> = MutableLiveData(null)
+    val trackInPlaylist: LiveData<Pair<String, Boolean>?>
+        get() = _trackInPlaylist
 
     private var playingTimeCounter: Job? = null
         set(value) {
@@ -109,21 +115,23 @@ class AudioplayerViewModel(
         }
     }
 
-    fun addToPlaylist(playlist: Playlist, onAddingCallback: () -> Unit, onErrorCallback: () -> Unit) {
+    fun addToPlaylist(playlist: Playlist) {
         val content: AudioplayerScreenState.Content? = (screenState.value as? AudioplayerScreenState.Content)
         val track = content?.track
         track?.run {
             if (playlist.trackIdsList.contains(id)) {
-                onErrorCallback()
+                _trackInPlaylist.postValue(playlist.name to false)
             } else {
                 playlist.trackIdsList.add(id)
                 viewModelScope.launch(Dispatchers.IO) {
+                    if (getTrackInPlaylistById.get(id).single() == null )
+                        storeTrackInPlaylistDb.store(track)
                     storePlaylist.store(playlist)
                     _screenState.postValue(
                         content.copy(playlists = getPlaylists.get().single())
                     )
                 }
-                onAddingCallback()
+                _trackInPlaylist.postValue(playlist.name to true)
             }
         }
     }

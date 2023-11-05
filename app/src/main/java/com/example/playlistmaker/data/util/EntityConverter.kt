@@ -4,6 +4,7 @@ import com.example.playlistmaker.data.storage.db.dto.TrackDb
 import com.example.playlistmaker.data.search.dto.TrackDto
 import com.example.playlistmaker.data.storage.db.dto.PlaylistDb
 import com.example.playlistmaker.data.storage.db.dto.TrackIdsDto
+import com.example.playlistmaker.data.storage.db.dto.TrackInPlaylistDb
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.entities.Playlist
 import com.google.gson.Gson
@@ -30,7 +31,34 @@ object EntityConverter {
             addingDate = System.currentTimeMillis()
         )
 
+    fun Track.toTrackInPlaylist(): TrackInPlaylistDb =
+        TrackInPlaylistDb(
+            trackId = id,
+            trackName = trackName,
+            artistName = artistName,
+            trackTime = trackTime,
+            artworkUrl100 = artworkUrl100,
+            collectionName = collectionName,
+            country = country,
+            releaseDate = releaseDate,
+            primaryGenreName = primaryGenreName,
+            previewUrl = previewUrl,
+        )
     fun TrackDb.toTrack(): Track =
+        Track(
+            id = trackId,
+            trackName = trackName,
+            artistName = artistName,
+            trackTime = trackTime,
+            artworkUrl100 = artworkUrl100,
+            collectionName = collectionName,
+            country = country,
+            releaseDate = releaseDate,
+            primaryGenreName = primaryGenreName,
+            previewUrl = previewUrl
+        )
+
+    fun TrackInPlaylistDb.toTrack(): Track =
         Track(
             id = trackId,
             trackName = trackName,
@@ -64,8 +92,7 @@ object EntityConverter {
             name = name,
             description = description,
             photoPath = photoFile?.path ?: "",
-            trackIdsList = trackIdsList.trackIdsListToJson(),
-            addingDate = System.currentTimeMillis()
+            trackIdsList = trackIdsList.trackIdsListToJson()
         )
 
     fun PlaylistDb.toPlaylist(): Playlist =

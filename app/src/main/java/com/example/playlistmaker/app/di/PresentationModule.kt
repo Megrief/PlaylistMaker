@@ -24,6 +24,8 @@ val presentationModule = module {
             storeDataUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
             storePlaylist = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
             getPlaylists = get(named(GET_PLAYLISTS_USE_CASE)),
+            storeTrackInPlaylistDb = get(named(STORE_TRACK_IN_PLAYLIST_DB)),
+            getTrackInPlaylistById = get(named(GET_TRACK_IN_PLAYLIST_BY_ID)),
             player = get()
         )
     }

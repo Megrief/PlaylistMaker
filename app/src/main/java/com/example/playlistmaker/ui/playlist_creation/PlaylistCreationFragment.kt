@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,18 +102,12 @@ class PlaylistCreationFragment : Fragment() {
         viewModel.saveState(name = savedName, description = savedDescription)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
-
     private fun setObserver() {
         viewModel.screenState.observe(viewLifecycleOwner) {
             with(binding) {
                 playlistNameEt.setText(it.playlistName)
                 playlistDescriptionEt.setText(it.playlistDescription)
                 postPhoto(it.playlistPhoto?.toUri())
-                Log.d("AAA", "State refreshed")
             }
         }
     }
@@ -150,6 +143,7 @@ class PlaylistCreationFragment : Fragment() {
     private fun configureCreateButton() {
         with(binding) {
             createButton.setOnClickListener {
+                viewModel.saveState(name = savedName, description = savedDescription)
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.storePlaylist()
                 }
@@ -159,8 +153,6 @@ class PlaylistCreationFragment : Fragment() {
             }
         }
     }
-
-
 
     private fun provideDialog(): AlertDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_title))
@@ -184,6 +176,7 @@ class PlaylistCreationFragment : Fragment() {
             notEmpty = !text.isNullOrBlank()
             savedName = text.toString()
         }
+
     }
 
     private fun configureDescriptionInputField() {

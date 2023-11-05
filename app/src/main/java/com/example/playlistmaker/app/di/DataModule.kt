@@ -16,6 +16,7 @@ import com.example.playlistmaker.data.sharing.external_navigator.ExternalNavigat
 import com.example.playlistmaker.data.sharing.external_navigator.impl.ExternalNavigatorImpl
 import com.example.playlistmaker.data.sharing.repo_impl.SharingRepoImpl
 import com.example.playlistmaker.data.storage.db.repo_impl.PlaylistDbRepoImpl
+import com.example.playlistmaker.data.storage.db.repo_impl.TrackInPlaylistDbRepoImpl
 import com.example.playlistmaker.data.storage.external_storage.ExternalStorageRepoImpl
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsList
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsTrack
@@ -42,6 +43,7 @@ const val DB_REPO_TRACK = "DbRepoTrack"
 const val DB_REPO_PLAYLIST = "DbRepoPlaylist"
 const val PLAYLIST_MAKER = "PLAYLIST_MAKER"
 const val EXTERNAL_STORAGE_REPO_PHOTO = "ExternalStorageRepoPhoto"
+const val DB_REPO_TRACK_IN_PLAYLIST = "DbRepoTrackInPlaylist"
 
 val dataModule = module {
 
@@ -63,8 +65,19 @@ val dataModule = module {
         appDb.playlistDbDao
     }
 
+    factory {
+        val appDb: AppDb = get()
+        appDb.trackInPlaylistDao
+    }
+
     single<DbRepo<Playlist>>(named(DB_REPO_PLAYLIST)) {
         PlaylistDbRepoImpl(playlistDbDao = get())
+    }
+
+    single<DbRepo<Track>>(named(DB_REPO_TRACK_IN_PLAYLIST)) {
+        TrackInPlaylistDbRepoImpl(
+            trackInPlaylistDbDao = get()
+        )
     }
 
     single<DbRepo<Track>>(named(DB_REPO_TRACK)) {

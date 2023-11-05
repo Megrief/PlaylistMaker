@@ -30,6 +30,7 @@ import com.example.playlistmaker.utils.isEquals
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,6 +62,7 @@ class AudioplayerFragment : Fragment() {
 
         setScreenStateObserver()
         setPlayerStatusObserver()
+        setOnTrackInPlaylistObserver()
         configureBottomSheet()
         configureBottomSheetContent()
 
@@ -84,6 +86,31 @@ class AudioplayerFragment : Fragment() {
         super.onDestroyView()
         onBackPressedDispatcher = null
         _binding = null
+    }
+
+    private fun setOnTrackInPlaylistObserver() {
+        viewModel.trackInPlaylist.observe(viewLifecycleOwner) { status ->
+
+            when (status?.second) {
+                true -> {
+                    bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.added_to_playlist) + " " + status.first,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                false -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.already_added) + " " + status.first,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> { }
+            }
+
+        }
     }
 
     private fun configureBottomSheet() {
@@ -113,9 +140,7 @@ class AudioplayerFragment : Fragment() {
                 }
             }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                binding.shadow.visibility = VISIBLE
-            }
+            override fun onSlide(bottomSheet: View, slideOffset: Float) { }
         }
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
@@ -124,26 +149,14 @@ class AudioplayerFragment : Fragment() {
 
     private fun configureBottomSheetContent() {
         binding.createPlaylist.setOnClickListener {
-            findNavController().navigate(R.id.action_audioplayerFragment_to_playlistCreationFragment)
-
+            lifecycleScope.launch {
+                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
+                delay(150)
+                findNavController().navigate(R.id.action_audioplayerFragment_to_playlistCreationFragment)
+            }
         }
         binding.playlistsList.adapter = PlaylistLineAdapter { playlist ->
-            val onAdding: () -> Unit = {
-                bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.added_to_playlist) + " " + playlist.name,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            val onError: () -> Unit = {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.already_added) + " " + playlist.name,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            viewModel.addToPlaylist(playlist, onAdding, onError)
+            viewModel.addToPlaylist(playlist)
         }
     }
 
@@ -182,7 +195,6 @@ class AudioplayerFragment : Fragment() {
     private fun changeButtonAppearance(isPlaying: Boolean) {
         binding.content.playButton.setImageResource(if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon)
     }
-
 
     private fun onSuccess(track: Track, inFavourite: Boolean, playlists: List<Playlist>) {
         (binding.playlistsList.adapter as? PlaylistLineAdapter)?.setContent(playlists)

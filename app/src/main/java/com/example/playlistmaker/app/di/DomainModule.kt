@@ -43,6 +43,9 @@ const val STORE_TRACK_IN_DB_USE_CASE = "StoreTrackInDbUseCase"
 const val STORE_PLAYLIST_IN_DB_USE_CASE = "StorePlaylistInDbUseCase"
 const val GET_PLAYLISTS_USE_CASE = "GetPlaylistsUseCase"
 const val DELETE_PLAYLIST_FROM_DB_USE_CASE = "DeletePlaylistFromDbUseCase"
+const val GET_TRACK_IN_PLAYLIST_BY_ID = "GetTRackInPlaylistById"
+const val DELETE_TRACK_IN_PLAYLIST = "DeleteTrackInPlaylist"
+const val STORE_TRACK_IN_PLAYLIST_DB = "StoreTrackInPlaylistDb"
 
 val domainModule = module {
 
@@ -64,9 +67,21 @@ val domainModule = module {
         )
     }
 
+    factory<DeleteItemUseCase>(named(DELETE_TRACK_IN_PLAYLIST)) {
+        DeleteTrackUseCaseImpl(
+            repository = get(named(DB_REPO_TRACK_IN_PLAYLIST))
+        )
+    }
+
     factory<GetItemByIdUseCase<Track>>(named(GET_TRACK_BY_ID_USE_CASE)) {
         GetTrackByIdUseCaseImpl(
             repository = get(named(DB_REPO_TRACK))
+        )
+    }
+
+    factory<GetItemByIdUseCase<Track>>(named(GET_TRACK_IN_PLAYLIST_BY_ID)) {
+        GetTrackByIdUseCaseImpl(
+            repository = get(named(DB_REPO_TRACK_IN_PLAYLIST))
         )
     }
 
@@ -76,6 +91,7 @@ val domainModule = module {
             repository = repository
         )
     }
+
     factory<GetDataUseCase<List<Track>>>(named(GET_FAVOURITES_USE_CASE)) {
         val repository: DbRepo<Track> = get(named(DB_REPO_TRACK))
         GetFavoritesUseCaseImpl(
@@ -92,6 +108,13 @@ val domainModule = module {
 
     factory<StoreDataUseCase<Track>>(named(STORE_TRACK_IN_DB_USE_CASE)) {
         val repository: DbRepo<Track> = get(named(DB_REPO_TRACK))
+        StoreTrackInDbUseCaseImpl(
+            repository = repository
+        )
+    }
+
+    factory<StoreDataUseCase<Track>>(named(STORE_TRACK_IN_PLAYLIST_DB)) {
+        val repository: DbRepo<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
         StoreTrackInDbUseCaseImpl(
             repository = repository
         )
