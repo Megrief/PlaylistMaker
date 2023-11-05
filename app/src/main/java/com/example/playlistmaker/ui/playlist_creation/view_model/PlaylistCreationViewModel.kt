@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.playlist_creation.view_model
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,14 +15,13 @@ class PlaylistCreationViewModel(
     private val storePhotoUseCase: StorePhotoUseCase,
 ) : ViewModel() {
 
-    private val _screenState: MutableLiveData<PlaylistCreationScreenState> = MutableLiveData(PlaylistCreationScreenState("", "", null))
+    private val _screenState: MutableLiveData<PlaylistCreationScreenState> = MutableLiveData(PlaylistCreationScreenState("", "", null, false))
 
     val screenState: LiveData<PlaylistCreationScreenState>
         get() = _screenState
 
-    fun saveState(name: String, description: String) {
-        _screenState.value = screenState.value?.copy(playlistName = name, playlistDescription = description)
-        Log.wtf("AAA", screenState.value?.playlistName + " " + screenState.value?.playlistDescription)
+    fun saveState(name: String, description: String, notEmpty: Boolean) {
+        _screenState.value = screenState.value?.copy(playlistName = name, playlistDescription = description, notEmpty = notEmpty)
     }
 
     fun storePhoto(uri: Uri): File {

@@ -5,5 +5,6 @@ import java.io.File
 data class PlaylistCreationScreenState(
     val playlistName: String,
     val playlistDescription: String,
-    val playlistPhoto: File?
+    val playlistPhoto: File?,
+    val notEmpty: Boolean
 )

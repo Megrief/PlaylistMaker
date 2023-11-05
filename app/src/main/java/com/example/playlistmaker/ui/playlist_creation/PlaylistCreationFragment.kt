@@ -38,13 +38,13 @@ class PlaylistCreationFragment : Fragment() {
     private val binding: FragmentPlaylistCreationBinding
         get() = _binding!!
 
-    private var notEmpty: Boolean = false
+    private var photoNotEmpty: Boolean = false
     private var dialog: AlertDialog? = null
     private var onBackPressedDispatcher: OnBackPressedDispatcher? = null
     private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
 
         override fun handleOnBackPressed() {
-            if (notEmpty) dialog?.show() else {
+            if (notEmpty()) dialog?.show() else {
                 remove()
                 onBackPressedDispatcher?.onBackPressed()
             }
@@ -55,6 +55,7 @@ class PlaylistCreationFragment : Fragment() {
         if (uri != null) {
             postPhoto(uri)
             viewModel.storePhoto(uri)
+            photoNotEmpty = true
         }
     }
 
@@ -99,7 +100,7 @@ class PlaylistCreationFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.saveState(name = savedName, description = savedDescription)
+        viewModel.saveState(name = savedName, description = savedDescription, notEmpty = photoNotEmpty)
     }
 
     private fun setObserver() {
@@ -143,23 +144,27 @@ class PlaylistCreationFragment : Fragment() {
     private fun configureCreateButton() {
         with(binding) {
             createButton.setOnClickListener {
-                viewModel.saveState(name = savedName, description = savedDescription)
+                viewModel.saveState(name = savedName, description = savedDescription, notEmpty = photoNotEmpty)
                 lifecycleScope.launch(Dispatchers.IO) {
                     viewModel.storePlaylist()
                 }
                 Toast.makeText(requireContext(), "Плейлист $savedName создан", Toast.LENGTH_SHORT).show()
-                notEmpty = false
+                onBackPressedCallback.remove()
                 onBackPressedDispatcher?.onBackPressed()
             }
         }
     }
+
+    private fun notEmpty(): Boolean = savedName.isNotEmpty()
+                || savedDescription.isNotEmpty()
+                || photoNotEmpty
 
     private fun provideDialog(): AlertDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_title))
             .setMessage(getString(R.string.dialog_message_data_will_lost))
             .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.close)) { _, _ ->
-                notEmpty = false
+                photoNotEmpty = false
                 onBackPressedCallback.remove()
                 onBackPressedDispatcher?.onBackPressed()
             }.create()
@@ -173,16 +178,13 @@ class PlaylistCreationFragment : Fragment() {
         binding.playlistNameEt.doOnTextChanged { text, _, _, _ ->
             onColorChanged(text.isNullOrBlank(), binding.playlistName)
             binding.createButton.isEnabled = !text.isNullOrBlank()
-            notEmpty = !text.isNullOrBlank()
             savedName = text.toString()
         }
-
     }
 
     private fun configureDescriptionInputField() {
         binding.playlistDescriptionEt.doOnTextChanged { text, _, _, _ ->
             onColorChanged(text.isNullOrBlank(), binding.playlistDescription)
-            notEmpty = !text.isNullOrBlank()
             savedDescription = text.toString()
         }
     }
