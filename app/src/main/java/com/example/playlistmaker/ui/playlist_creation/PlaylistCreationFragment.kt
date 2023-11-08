@@ -16,6 +16,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCreationBinding
+import com.example.playlistmaker.ui.main.RootActivity
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
@@ -88,6 +90,13 @@ class PlaylistCreationFragment : Fragment() {
         configureCreateButton()
         binding.toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher?.onBackPressed()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        with((requireActivity() as RootActivity).binding.bottomNav) {
+            if (isVisible) visibility = View.GONE
         }
     }
 

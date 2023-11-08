@@ -69,6 +69,7 @@ class SearchFragment : Fragment() {
             if (isGone) visibility = VISIBLE
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

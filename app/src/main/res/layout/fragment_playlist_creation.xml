@@ -47,7 +47,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/playlist_name"
             android:layout_width="@dimen/zero"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_bottom"
             android:hint="@string/playlist_name"
             android:textColorHint="?attr/colorOnSecondary"
@@ -69,13 +69,15 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/playlist_name_et"
+                android:singleLine="true"
+                android:maxLength="40"
                 style="@style/InputFieldOnPlaylistCreation" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/playlist_description"
             android:layout_width="@dimen/zero"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/sub_medium"
             android:hint="@string/playlist_description"
             android:textColorHint="?attr/colorOnSecondary"
@@ -96,9 +98,10 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/playlist_description_et"
+                android:singleLine="true"
+                android:maxLength="40"
                 style="@style/InputFieldOnPlaylistCreation"/>
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/create_button"

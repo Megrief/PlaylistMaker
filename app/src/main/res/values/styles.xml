@@ -154,14 +154,14 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:paddingVertical">@dimen/medium</item>
-        <item name="android:maxLength">40</item>
-        <item name="android:maxLines">1</item>
         <item name="android:textAppearance">@style/TextAppearanceOnPlaylistCreation</item>
         <item name="android:textSize">@dimen/medium_text_size</item>
     </style>
+
     <style name="TextAppearanceOnPlaylistCreation" parent="SmallTextOnAudioplayer">
         <item name="android:textSize">13sp</item>
     </style>
+
     <style name="GroupOnAudioplayer">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

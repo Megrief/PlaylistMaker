@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedDispatcher
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -26,6 +27,7 @@ import com.example.playlistmaker.ui.audioplayer.adapter.PlaylistLineAdapter
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerScreenState
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
+import com.example.playlistmaker.ui.main.RootActivity
 import com.example.playlistmaker.utils.isEquals
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
@@ -82,6 +84,13 @@ class AudioplayerFragment : Fragment() {
         viewModel.stop()
     }
 
+    override fun onResume() {
+        super.onResume()
+        with((requireActivity() as RootActivity).binding.bottomNav) {
+            if (isVisible) visibility = GONE
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         onBackPressedDispatcher = null
@@ -99,6 +108,7 @@ class AudioplayerFragment : Fragment() {
                         getString(R.string.added_to_playlist) + " " + status.first,
                         Toast.LENGTH_SHORT
                     ).show()
+                    viewModel.cleanState()
                 }
                 false -> {
                     Toast.makeText(
@@ -106,6 +116,7 @@ class AudioplayerFragment : Fragment() {
                         getString(R.string.already_added) + " " + status.first,
                         Toast.LENGTH_SHORT
                     ).show()
+                    viewModel.cleanState()
                 }
                 else -> { }
             }

@@ -115,6 +115,11 @@ class AudioplayerViewModel(
         }
     }
 
+    fun cleanState() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _trackInPlaylist.postValue(null)
+        }
+    }
     fun addToPlaylist(playlist: Playlist) {
         val content: AudioplayerScreenState.Content? = (screenState.value as? AudioplayerScreenState.Content)
         val track = content?.track

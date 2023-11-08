@@ -76,7 +76,6 @@ class PlaylistsFragment : Fragment() {
 
     private fun configureCreateButton() {
         binding.createPlaylist.setOnClickListener {
-            (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
             findNavController().navigate(R.id.action_mediaFragment_to_playlistCreationFragment)
         }
     }
