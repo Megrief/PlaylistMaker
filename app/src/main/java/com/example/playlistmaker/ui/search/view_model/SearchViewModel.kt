@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.search.SearchUseCase
-import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchUseCase: SearchUseCase,
-    private val storeTrackUseCase: StoreDataUseCase<Track>,
-    private val storeTrackListUseCase: StoreDataUseCase<List<Track>>,
-    private val getTrackListUseCase: GetDataUseCase<List<Track>>
+    private val storeTrackUseCase: StoreItemUseCase<Track>,
+    private val storeTrackListUseCase: StoreItemUseCase<List<Track>>,
+    private val getTrackListUseCase: GetItemUseCase<List<Track>>
 ) : ViewModel() {
 
     private val _searchScreenState = MutableLiveData<SearchScreeenState>(SearchScreeenState.Empty)
@@ -56,7 +56,7 @@ class SearchViewModel(
     fun showHistory() {
         viewModelScope.launch {
             getTrackListUseCase.get().collect { history ->
-                if (history.isNotEmpty()) {
+                if (history?.isNotEmpty() == true) {
                     _searchScreenState.postValue(SearchScreeenState.SearchHistory(history))
                 } else _searchScreenState.postValue(SearchScreeenState.Empty)
             }
@@ -68,7 +68,7 @@ class SearchViewModel(
             storeTrackUseCase.store(track)
 
             getTrackListUseCase.get().collect { history ->
-                with(history.toMutableList()) {
+                history?.toMutableList()?.run {
                     remove(track)
                     add(0, track)
                     if (size > 10) removeLast()

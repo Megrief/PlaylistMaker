@@ -15,7 +15,6 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -25,12 +24,14 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistCreationBinding
+import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.ui.main.RootActivity
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistCreationFragment : Fragment() {
@@ -40,7 +41,6 @@ class PlaylistCreationFragment : Fragment() {
     private val binding: FragmentPlaylistCreationBinding
         get() = _binding!!
 
-    private var photoNotEmpty: Boolean = false
     private var dialog: AlertDialog? = null
     private var onBackPressedDispatcher: OnBackPressedDispatcher? = null
     private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -55,9 +55,9 @@ class PlaylistCreationFragment : Fragment() {
 
     private val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            postPhoto(uri)
-            viewModel.storePhoto(uri)
-            photoNotEmpty = true
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.storePhoto(uri)
+            }
         }
     }
 
@@ -67,6 +67,14 @@ class PlaylistCreationFragment : Fragment() {
 
     private var savedName: String = ""
     private var savedDescription: String = ""
+    private var savedPhotoId: Long = 0L
+        set(value) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                field = value
+                val uri = viewModel.getPhotoById(field)
+                postPhoto(uri)
+            }
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -109,7 +117,13 @@ class PlaylistCreationFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        viewModel.saveState(name = savedName, description = savedDescription, notEmpty = photoNotEmpty)
+        lifecycleScope.launch(Dispatchers.IO) {
+            viewModel.saveState(
+                name = savedName,
+                description = savedDescription,
+                photoId = savedPhotoId
+            )
+        }
     }
 
     private fun setObserver() {
@@ -117,7 +131,7 @@ class PlaylistCreationFragment : Fragment() {
             with(binding) {
                 playlistNameEt.setText(it.playlistName)
                 playlistDescriptionEt.setText(it.playlistDescription)
-                postPhoto(it.playlistPhoto?.toUri())
+                savedPhotoId = it.playlistPhotoId
             }
         }
     }
@@ -137,13 +151,15 @@ class PlaylistCreationFragment : Fragment() {
         }
     }
 
-    private fun postPhoto(uri: Uri?) {
+    private suspend fun postPhoto(uri: Uri?) {
         val cornerSizeInPx = resources.getDimensionPixelSize(R.dimen.small)
-        Glide.with(binding.root)
-            .load(uri)
-            .placeholder(R.drawable.playlist_photo_placeholder)
-            .transform(CenterCrop(), RoundedCorners(cornerSizeInPx))
-            .into(binding.photo)
+        withContext(Dispatchers.Main) {
+            Glide.with(binding.root)
+                .load(uri)
+                .placeholder(R.drawable.playlist_photo_placeholder)
+                .transform(CenterCrop(), RoundedCorners(cornerSizeInPx))
+                .into(binding.photo)
+        }
     }
 
     private fun pickImage() {
@@ -153,9 +169,13 @@ class PlaylistCreationFragment : Fragment() {
     private fun configureCreateButton() {
         with(binding) {
             createButton.setOnClickListener {
-                viewModel.saveState(name = savedName, description = savedDescription, notEmpty = photoNotEmpty)
+                val playlist = Playlist(
+                    name = savedName,
+                    description = savedDescription,
+                    photoId = savedPhotoId
+                )
                 lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.storePlaylist()
+                    viewModel.storePlaylist(playlist)
                 }
                 Toast.makeText(requireContext(), "Плейлист $savedName создан", Toast.LENGTH_SHORT).show()
                 onBackPressedCallback.remove()
@@ -166,14 +186,13 @@ class PlaylistCreationFragment : Fragment() {
 
     private fun notEmpty(): Boolean = savedName.isNotEmpty()
                 || savedDescription.isNotEmpty()
-                || photoNotEmpty
+                || savedPhotoId != 0L
 
     private fun provideDialog(): AlertDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.dialog_title))
             .setMessage(getString(R.string.dialog_message_data_will_lost))
             .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
             .setPositiveButton(getString(R.string.close)) { _, _ ->
-                photoNotEmpty = false
                 onBackPressedCallback.remove()
                 onBackPressedDispatcher?.onBackPressed()
             }.create()

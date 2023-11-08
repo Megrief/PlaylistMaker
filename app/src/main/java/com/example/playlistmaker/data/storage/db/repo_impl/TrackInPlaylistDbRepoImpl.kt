@@ -4,17 +4,16 @@ import com.example.playlistmaker.data.storage.db.dao.TrackInPlaylistsDao
 import com.example.playlistmaker.data.util.EntityConverter.toTrack
 import com.example.playlistmaker.data.util.EntityConverter.toTrackInPlaylist
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.domain.storage.db.DbRepo
+import com.example.playlistmaker.domain.storage.repos.DbManagerRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class TrackInPlaylistDbRepoImpl(
     private val trackInPlaylistDbDao: TrackInPlaylistsDao
-) : DbRepo<Track> {
+) : DbManagerRepo<Track> {
 
-    override fun delete(id: Long) {
-        val trackDb = this.trackInPlaylistDbDao.getById(id)
-        if (trackDb != null) this.trackInPlaylistDbDao.delete(trackDb)
+    override fun delete(item: Track) {
+        trackInPlaylistDbDao.delete(item.toTrackInPlaylist())
     }
 
     override fun getById(id: Long): Flow<Track?> = flow {
@@ -22,9 +21,10 @@ class TrackInPlaylistDbRepoImpl(
         emit(trackDb?.toTrack())
     }
 
-    override fun store(item: Track) {
+    override fun store(item: Track): Boolean {
         val trackDb = item.toTrackInPlaylist()
-        this.trackInPlaylistDbDao.store(trackDb)
+        trackInPlaylistDbDao.store(trackDb)
+        return true
     }
 
     override fun get(): Flow<Track?> = flow {

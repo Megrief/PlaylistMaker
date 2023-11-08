@@ -9,7 +9,6 @@ import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.entities.Playlist
 import com.google.gson.Gson
 import org.koin.java.KoinJavaComponent.getKoin
-import java.io.File
 import java.time.LocalDateTime
 
 object EntityConverter {
@@ -91,7 +90,7 @@ object EntityConverter {
             id = id,
             name = name,
             description = description,
-            photoPath = photoFile?.path ?: "",
+            photoId = photoId,
             trackIdsList = trackIdsList.trackIdsListToJson()
         )
 
@@ -100,11 +99,9 @@ object EntityConverter {
             id = id,
             name = name,
             description = description,
-            photoFile = getPhotoFile(photoPath),
+            photoId = photoId,
             trackIdsList = trackIdsList.fromJsonToTrackIdsList()
         )
-
-    private fun getPhotoFile(name: String): File? = if(name.isBlank()) null else File(name)
 
     private fun MutableList<Long>.trackIdsListToJson(): String =
         gson.toJson(TrackIdsDto(this))

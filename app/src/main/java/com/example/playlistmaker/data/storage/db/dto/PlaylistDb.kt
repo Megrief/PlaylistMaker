@@ -9,6 +9,6 @@ data class PlaylistDb(
     val id: Long,
     val name: String,
     val description: String,
-    val photoPath: String,
+    val photoId: Long,
     val trackIdsList: String,
 )

@@ -8,8 +8,8 @@ import com.example.playlistmaker.app.di.dataModule
 import com.example.playlistmaker.app.di.domainModule
 import com.example.playlistmaker.app.di.presentationModule
 import com.example.playlistmaker.domain.settings.entity.ThemeFlag
-import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -18,8 +18,8 @@ import org.koin.core.context.startKoin
 import org.koin.core.qualifier.named
 
 class App : Application() {
-    private val getThemeFlagUseCase: GetDataUseCase<ThemeFlag?> by inject(named(GET_THEME_FLAG_USE_CASE))
-    private val storeThemeFlagUseCase: StoreDataUseCase<ThemeFlag> by inject(named(STORE_THEME_FLAG_USE_CASE))
+    private val getThemeFlagUseCase: GetItemUseCase<ThemeFlag?> by inject(named(GET_THEME_FLAG_USE_CASE))
+    private val storeThemeFlagUseCase: StoreItemUseCase<ThemeFlag> by inject(named(STORE_THEME_FLAG_USE_CASE))
     private val coroutineScope: CoroutineScope by inject()
 
     override fun onCreate() {

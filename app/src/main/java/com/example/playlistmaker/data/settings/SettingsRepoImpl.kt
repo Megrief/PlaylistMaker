@@ -18,11 +18,10 @@ class SettingsRepoImpl(
         (context as App).switchTheme(checked)
     }
 
-    override fun store(item: ThemeFlag?) {
-        gson.toJson(item, ThemeFlag::class.java).also { themeFlagJson ->
-            sharedPrefs.edit().putString(THEME, themeFlagJson).apply()
+    override fun store(item: ThemeFlag?): Boolean =
+        gson.toJson(item, ThemeFlag::class.java).let { themeFlagJson ->
+            sharedPrefs.edit().putString(THEME, themeFlagJson).commit()
         }
-    }
 
     override fun get(): Flow<ThemeFlag?> {
         return flow {

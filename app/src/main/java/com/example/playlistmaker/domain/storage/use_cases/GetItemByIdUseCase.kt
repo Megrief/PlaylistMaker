@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.storage.db.use_cases
+package com.example.playlistmaker.domain.storage.use_cases
 
 import kotlinx.coroutines.flow.Flow
 

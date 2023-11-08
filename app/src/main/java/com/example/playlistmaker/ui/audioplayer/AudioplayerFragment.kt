@@ -140,7 +140,7 @@ class AudioplayerFragment : Fragment() {
                             val list = viewModel.getPlaylists().single()
                             withContext(Dispatchers.Main) {
                                 (binding.playlistsList.adapter as? PlaylistLineAdapter)?.run {
-                                    if(!isEquals(contentList, list)) {
+                                    if(list != null && !isEquals(contentList, list)) {
                                         setContent(list)
                                     }
                                 }

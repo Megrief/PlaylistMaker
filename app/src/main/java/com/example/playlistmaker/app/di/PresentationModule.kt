@@ -18,10 +18,10 @@ val presentationModule = module {
 
     viewModel {
         AudioplayerViewModel(
-            getDataUseCase = get(named(GET_TRACK_USE_CASE)),
+            getItemUseCase = get(named(GET_TRACK_USE_CASE)),
             getItemByIdUseCase = get(named(GET_TRACK_BY_ID_USE_CASE)),
             deleteItemUseCase = get(named(DELETE_TRACK_USE_CASE)),
-            storeDataUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
+            storeItemUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
             storePlaylist = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
             getPlaylists = get(named(GET_PLAYLISTS_USE_CASE)),
             storeTrackInPlaylistDb = get(named(STORE_TRACK_IN_PLAYLIST_DB)),
@@ -57,8 +57,10 @@ val presentationModule = module {
 
     viewModel {
         PlaylistCreationViewModel(
-            storePhotoUseCase = get(),
+            storePhotoUseCaseImpl = get(named(STORE_PHOTO_USE_CASE)),
             storePlaylistInDb = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
+            getPhotoIdUseCase = get(named(GET_PHOTO_ID_USE_CASE))
         )
     }
 
