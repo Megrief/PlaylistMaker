@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
 import com.example.playlistmaker.ui.media.fragments.screen_states.MediaScreenState
-import com.example.playlistmaker.utils.isEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -22,9 +21,19 @@ class PlaylistsViewModel(
     fun checkContent(list: List<Playlist>) {
         viewModelScope.launch(Dispatchers.IO) {
             getPlaylistsUseCaseImpl.get().collect { playlists ->
-                if (playlists != null && (!isEquals(list, playlists) || playlists.isEmpty())) {
-                    if (playlists.isEmpty()) _screenState.postValue(MediaScreenState.Empty)
-                    else _screenState.postValue(MediaScreenState.Content(playlists))
+                when {
+                    playlists == null -> { }
+                    playlists.isEmpty() -> _screenState.postValue(MediaScreenState.Empty)
+                    list.size != playlists.size -> _screenState.postValue(MediaScreenState.Content(playlists))
+                    else -> {
+                        for (ind in playlists.indices) {
+                            if (playlists[ind].trackIdsList.size != list[ind].trackIdsList.size
+                                    || playlists[ind].id != list[ind].id) {
+                                _screenState.postValue(MediaScreenState.Content(playlists))
+                                break
+                            }
+                        }
+                    }
                 }
             }
         }
