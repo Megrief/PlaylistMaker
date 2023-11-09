@@ -134,7 +134,7 @@ val dataModule = module {
     single<ExternalStorageManagerRepoData<Uri>>(named(EXTERNAL_STORAGE_REPO_PHOTO)) {
         ExternalStorageRepoImplData(
             context = androidContext(),
-            storeIdUseCase = get(named(STORE_PHOTO_ID_USE_CASE))
+            storeIdUseCase = get(named(STORE_ID_USE_CASE))
         )
     }
 

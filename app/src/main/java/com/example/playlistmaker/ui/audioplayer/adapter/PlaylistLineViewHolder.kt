@@ -10,6 +10,7 @@ import com.example.playlistmaker.app.di.GET_PHOTO_BY_ID_USE_CASE
 import com.example.playlistmaker.databinding.PlaylistLineBinding
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.storage.use_cases.GetItemByIdUseCase
+import com.example.playlistmaker.utils.getCorrectTracks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.single
@@ -35,20 +36,10 @@ class PlaylistLineViewHolder(private val binding: PlaylistLineBinding) : Recycle
                         .into(playlistPhoto)
                     playlistName.text = playlist.name
                     val size = playlist.trackIdsList.size.toString()
-                    val text = size + " " + getCorrect(size)
+                    val text = size + " " + getCorrectTracks(size)
                     playlistSize.text = text
                 }
             }
-        }
-    }
-
-    private fun getCorrect(num: String): String {
-        return when {
-            num.last() == '1'
-                    && if (num.length > 1) num[num.lastIndex - 1] != '1' else true -> "трек"
-            num.last() in '2'..'4'
-                    && if (num.length > 1) num[num.lastIndex - 1] != '1' else true -> "трека"
-            else -> "треков"
         }
     }
 

@@ -35,6 +35,8 @@ class PlaylistsFragment : Fragment() {
         lifecycleScope,
         false
     ) { playlist ->
+        viewModel.storePlaylistsId(playlist.id)
+        findNavController().navigate(R.id.action_mediaFragment_to_playlistPageFragment)
         Toast.makeText(requireContext(), "Clicked!", Toast.LENGTH_SHORT).show()
     }
 

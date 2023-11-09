@@ -12,6 +12,7 @@ import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import com.example.playlistmaker.ui.playlist_creation.screen_state.PlaylistCreationScreenState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 
 class PlaylistCreationViewModel(
@@ -37,12 +38,11 @@ class PlaylistCreationViewModel(
         )
     }
 
-
     fun storePhoto(uri: Uri) {
         storePhotoUseCaseImpl.store(uri)
         viewModelScope.launch(Dispatchers.IO) {
             _screenState.postValue(screenState.value?.copy(
-                playlistPhotoId = getPhotoIdUseCase.get().single() ?: -1L
+                playlistPhotoId = getPhotoIdUseCase.get().singleOrNull() ?: 0L
             ))
         }
     }

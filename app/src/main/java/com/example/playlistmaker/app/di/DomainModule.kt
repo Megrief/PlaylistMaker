@@ -55,8 +55,8 @@ const val GET_TRACK_IN_PLAYLIST_BY_ID = "GetTRackInPlaylistById"
 const val DELETE_TRACK_IN_PLAYLIST = "DeleteTrackInPlaylist"
 const val STORE_TRACK_IN_PLAYLIST_DB = "StoreTrackInPlaylistDb"
 const val GET_PHOTO_BY_ID_USE_CASE = "GetPhotoByIdUseCase"
-const val GET_PHOTO_ID_USE_CASE = "GetPhotoIdUseCase"
-const val STORE_PHOTO_ID_USE_CASE = "StorePhotoIdUseCase"
+const val GET_ID_USE_CASE = "GetIdUseCase"
+const val STORE_ID_USE_CASE = "StoreIdUseCase"
 const val GET_PLAYLIST_BY_ID_USE_CASE = "GetPlaylistByIdUseCase"
 
 val domainModule = module {
@@ -69,14 +69,14 @@ val domainModule = module {
         )
     }
 
-    factory<GetItemUseCase<Long>>(named(GET_PHOTO_ID_USE_CASE)) {
+    factory<GetItemUseCase<Long>>(named(GET_ID_USE_CASE)) {
         val repository: StorageManagerRepo<Long> = get(named(SHARED_PREFS_ID))
         GetPhotoIdUseCase(
             repository = repository
         )
     }
 
-    factory<StoreItemUseCase<Long>>(named(STORE_PHOTO_ID_USE_CASE)) {
+    factory<StoreItemUseCase<Long>>(named(STORE_ID_USE_CASE)) {
         val repository: StorageManagerRepo<Long> = get(named(SHARED_PREFS_ID))
         StorePhotoIdUseCase(
             repository = repository

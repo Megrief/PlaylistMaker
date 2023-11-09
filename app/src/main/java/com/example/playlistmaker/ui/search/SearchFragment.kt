@@ -84,7 +84,7 @@ class SearchFragment : Fragment() {
                 false
             ) { track ->
                 viewModel.onTrackClick(track)
-                (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
+//                (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
                 findNavController().navigate(R.id.action_searchFragment_to_audioplayerFragment)
             }
             trackList.adapter = TrackAdapter(onTrackClicked)
