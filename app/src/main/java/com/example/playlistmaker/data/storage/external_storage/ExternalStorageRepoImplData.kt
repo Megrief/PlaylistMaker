@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
 import androidx.core.net.toUri
-import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepo
+import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepoData
 import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,10 +14,10 @@ import java.io.File
 import java.io.FileOutputStream
 import kotlin.random.Random
 
-class ExternalStorageRepoImpl(
+class ExternalStorageRepoImplData(
     context: Context,
     private val storeIdUseCase: StoreItemUseCase<Long>
-) : ExternalStorageManagerRepo<Uri> {
+) : ExternalStorageManagerRepoData<Uri> {
     private val contentResolver = context.contentResolver
     private val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playlist_maker")
     private val endOfName = "_image.jpg"

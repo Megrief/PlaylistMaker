@@ -4,13 +4,13 @@ import com.example.playlistmaker.data.storage.db.dao.TrackDbDao
 import com.example.playlistmaker.data.util.EntityConverter.toTrack
 import com.example.playlistmaker.data.util.EntityConverter.toTrackDb
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.domain.storage.repos.DbManagerRepo
+import com.example.playlistmaker.domain.storage.repos.DbManagerRepoData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class TrackDbRepoImpl(
+class TrackDbRepoImplData(
     private val trackDbDao: TrackDbDao,
-) : DbManagerRepo<Track> {
+) : DbManagerRepoData<Track> {
 
     override fun delete(item: Track) {
         trackDbDao.delete(item.toTrackDb())

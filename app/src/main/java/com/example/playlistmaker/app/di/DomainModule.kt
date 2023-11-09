@@ -20,8 +20,8 @@ import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.GetThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.StoreThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
-import com.example.playlistmaker.domain.storage.repos.DbManagerRepo
-import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepo
+import com.example.playlistmaker.domain.storage.repos.DbManagerRepoData
+import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepoData
 import com.example.playlistmaker.domain.storage.repos.StorageManagerRepo
 import com.example.playlistmaker.domain.storage.shared_prefs_use_cases.GetPhotoIdUseCase
 import com.example.playlistmaker.domain.storage.shared_prefs_use_cases.GetTrackListUseCase
@@ -63,7 +63,7 @@ val domainModule = module {
 
 
     factory<GetItemByIdUseCase<Uri>>(named(GET_PHOTO_BY_ID_USE_CASE)) {
-        val repository: ExternalStorageManagerRepo<Uri> = get(named(EXTERNAL_STORAGE_REPO_PHOTO))
+        val repository: ExternalStorageManagerRepoData<Uri> = get(named(EXTERNAL_STORAGE_REPO_PHOTO))
         GetPhotoByIdUseCaseImpl(
             repository = repository
         )
@@ -84,82 +84,82 @@ val domainModule = module {
     }
 
     factory<StoreItemUseCase<Uri>>(named(STORE_PHOTO_USE_CASE)) {
-        val repository:  ExternalStorageManagerRepo<Uri> = get(named(EXTERNAL_STORAGE_REPO_PHOTO))
+        val repository:  ExternalStorageManagerRepoData<Uri> = get(named(EXTERNAL_STORAGE_REPO_PHOTO))
         StorePhotoUseCaseImpl(
             repository = repository
         )
     }
 
     factory<DeleteItemUseCase<Playlist>>(named(DELETE_PLAYLIST_USE_CASE)) {
-        val repository: DbManagerRepo<Playlist> = get(named(DB_REPO_PLAYLIST))
+        val repository: DbManagerRepoData<Playlist> = get(named(DB_REPO_PLAYLIST))
         DeletePlaylistUseCase(
             repository = repository
         )
     }
     factory<DeleteItemUseCase<Track>>(named(DELETE_TRACK_USE_CASE)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK))
         DeleteTrackUseCaseImpl(
             repository = repository
         )
     }
 
     factory<DeleteItemUseCase<Track>>(named(DELETE_TRACK_IN_PLAYLIST)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
         DeleteTrackUseCaseImpl(
             repository = repository
         )
     }
 
     factory<GetItemByIdUseCase<Playlist>>(named(GET_PLAYLIST_BY_ID_USE_CASE)) {
-        val repository: DbManagerRepo<Playlist> = get(named(DB_REPO_PLAYLIST))
+        val repository: DbManagerRepoData<Playlist> = get(named(DB_REPO_PLAYLIST))
         GetPlaylistByIdUseCase(
             repository = repository
         )
     }
     factory<GetItemByIdUseCase<Track>>(named(GET_TRACK_BY_ID_USE_CASE)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK))
         GetTrackByIdUseCaseImpl(
             repository = repository
         )
     }
 
     factory<GetItemByIdUseCase<Track>>(named(GET_TRACK_IN_PLAYLIST_BY_ID)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
         GetTrackByIdUseCaseImpl(
             repository = repository
         )
     }
 
     factory<GetItemUseCase<List<Playlist>>>(named(GET_PLAYLISTS_USE_CASE)) {
-        val repository: DbManagerRepo<Playlist> = get(named(DB_REPO_PLAYLIST))
+        val repository: DbManagerRepoData<Playlist> = get(named(DB_REPO_PLAYLIST))
         GetPlaylistsUseCaseImpl(
             repository = repository
         )
     }
 
     factory<GetItemUseCase<List<Track>>>(named(GET_FAVOURITES_USE_CASE)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK))
         GetFavoritesUseCaseImpl(
             repository = repository
         )
     }
 
     factory<StoreItemUseCase<Playlist>>(named(STORE_PLAYLIST_IN_DB_USE_CASE)) {
-        val repository: DbManagerRepo<Playlist> = get(named(DB_REPO_PLAYLIST))
+        val repository: DbManagerRepoData<Playlist> = get(named(DB_REPO_PLAYLIST))
         StorePlaylistInDbUseCaseImpl(
             repository = repository
         )
     }
 
     factory<StoreItemUseCase<Track>>(named(STORE_TRACK_IN_DB_USE_CASE)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK))
         StoreTrackInDbUseCaseImpl(
             repository = repository
         )
     }
 
     factory<StoreItemUseCase<Track>>(named(STORE_TRACK_IN_PLAYLIST_DB)) {
-        val repository: DbManagerRepo<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
+        val repository: DbManagerRepoData<Track> = get(named(DB_REPO_TRACK_IN_PLAYLIST))
         StoreTrackInDbUseCaseImpl(
             repository = repository
         )

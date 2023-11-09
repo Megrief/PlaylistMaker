@@ -14,10 +14,10 @@ import com.example.playlistmaker.data.sharing.external_navigator.ExternalNavigat
 import com.example.playlistmaker.data.sharing.external_navigator.impl.ExternalNavigatorImpl
 import com.example.playlistmaker.data.sharing.repo_impl.SharingRepoImpl
 import com.example.playlistmaker.data.storage.db.AppDb
-import com.example.playlistmaker.data.storage.db.repo_impl.PlaylistDbRepoImpl
-import com.example.playlistmaker.data.storage.db.repo_impl.TrackDbRepoImpl
-import com.example.playlistmaker.data.storage.db.repo_impl.TrackInPlaylistDbRepoImpl
-import com.example.playlistmaker.data.storage.external_storage.ExternalStorageRepoImpl
+import com.example.playlistmaker.data.storage.db.repo_impl.PlaylistDbRepoImplData
+import com.example.playlistmaker.data.storage.db.repo_impl.TrackDbRepoImplData
+import com.example.playlistmaker.data.storage.db.repo_impl.TrackInPlaylistDbRepoImplData
+import com.example.playlistmaker.data.storage.external_storage.ExternalStorageRepoImplData
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsId
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsList
 import com.example.playlistmaker.data.storage.shared_prefs.repo_impl.SharedPrefsTrack
@@ -26,8 +26,8 @@ import com.example.playlistmaker.domain.entities.Track
 import com.example.playlistmaker.domain.search.SearchRepository
 import com.example.playlistmaker.domain.settings.SettingsRepository
 import com.example.playlistmaker.domain.sharing.SharingRepository
-import com.example.playlistmaker.domain.storage.repos.DbManagerRepo
-import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepo
+import com.example.playlistmaker.domain.storage.repos.DbManagerRepoData
+import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepoData
 import com.example.playlistmaker.domain.storage.repos.StorageManagerRepo
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
@@ -77,18 +77,18 @@ val dataModule = module {
             sharedPrefs = get()
         )
     }
-    single<DbManagerRepo<Playlist>>(named(DB_REPO_PLAYLIST)) {
-        PlaylistDbRepoImpl(playlistDbDao = get())
+    single<DbManagerRepoData<Playlist>>(named(DB_REPO_PLAYLIST)) {
+        PlaylistDbRepoImplData(playlistDbDao = get())
     }
 
-    single<DbManagerRepo<Track>>(named(DB_REPO_TRACK_IN_PLAYLIST)) {
-        TrackInPlaylistDbRepoImpl(
+    single<DbManagerRepoData<Track>>(named(DB_REPO_TRACK_IN_PLAYLIST)) {
+        TrackInPlaylistDbRepoImplData(
             trackInPlaylistDbDao = get()
         )
     }
 
-    single<DbManagerRepo<Track>>(named(DB_REPO_TRACK)) {
-        TrackDbRepoImpl(trackDbDao = get())
+    single<DbManagerRepoData<Track>>(named(DB_REPO_TRACK)) {
+        TrackDbRepoImplData(trackDbDao = get())
     }
 
     single<NetworkClient> {
@@ -131,8 +131,8 @@ val dataModule = module {
         androidContext().getSharedPreferences(PLAYLIST_MAKER, Context.MODE_PRIVATE)
     }
 
-    single<ExternalStorageManagerRepo<Uri>>(named(EXTERNAL_STORAGE_REPO_PHOTO)) {
-        ExternalStorageRepoImpl(
+    single<ExternalStorageManagerRepoData<Uri>>(named(EXTERNAL_STORAGE_REPO_PHOTO)) {
+        ExternalStorageRepoImplData(
             context = androidContext(),
             storeIdUseCase = get(named(STORE_PHOTO_ID_USE_CASE))
         )
