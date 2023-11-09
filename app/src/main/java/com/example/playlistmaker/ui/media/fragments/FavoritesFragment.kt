@@ -1,18 +1,20 @@
 package com.example.playlistmaker.ui.media.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
-import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.ui.media.fragments.screen_states.FavoritesScreenState
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.ui.main.RootActivity
+import com.example.playlistmaker.ui.media.fragments.screen_states.MediaScreenState
 import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewModel
 import com.example.playlistmaker.ui.search.SearchFragment
 import com.example.playlistmaker.ui.search.adapter.TrackAdapter
@@ -39,16 +41,18 @@ class FavoritesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setAdapter()
         viewModel.screenState.observe(viewLifecycleOwner) { screenState ->
+            hide()
             when (screenState) {
-                is FavoritesScreenState.Loading -> with(binding) {
-                    hide()
+                is MediaScreenState.Loading -> with(binding) {
                     loading.visibility = VISIBLE
                 }
-                is FavoritesScreenState.Content -> with(binding) {
-                    hide()
-                    (favouritesListRv.adapter as TrackAdapter).setTrackList(screenState.content)
-                    if (screenState.content.isEmpty()) noContent.visibility = VISIBLE
-                    else favouritesListRv.visibility = VISIBLE
+                is MediaScreenState.Empty -> {
+                    binding.noContent.visibility = VISIBLE
+                }
+                is MediaScreenState.Content -> with(binding) {
+                    val trackList = screenState.content.mapNotNull { it as? Track }
+                    (favoritesListRv.adapter as TrackAdapter).setTrackList(trackList)
+                    favoritesListRv.visibility = VISIBLE
                 }
             }
         }
@@ -56,12 +60,15 @@ class FavoritesFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.checkContent((binding.favouritesListRv.adapter as TrackAdapter).trackList)
+        viewModel.checkContent((binding.favoritesListRv.adapter as TrackAdapter).trackList)
+        with((requireActivity() as RootActivity).binding.bottomNav) {
+            if (isGone) visibility = VISIBLE
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.favouritesListRv.adapter = null
+        binding.favoritesListRv.adapter = null
         _binding = null
 
     }
@@ -69,7 +76,7 @@ class FavoritesFragment : Fragment() {
     private fun hide() {
         with(binding) {
             noContent.visibility = GONE
-            favouritesListRv.visibility = GONE
+            favoritesListRv.visibility = GONE
             loading.visibility = GONE
         }
     }
@@ -81,8 +88,9 @@ class FavoritesFragment : Fragment() {
             false
         ) { track ->
             viewModel.onTrackClick(track)
-            findNavController().navigate(R.id.action_mediaFragment_to_audioplayerActivity)
+            (requireActivity() as RootActivity).binding.bottomNav.visibility = GONE
+            findNavController().navigate(R.id.action_mediaFragment_to_audioplayerFragment)
         }
-        binding.favouritesListRv.adapter = TrackAdapter(onTrackClicked)
+        binding.favoritesListRv.adapter = TrackAdapter(onTrackClicked)
     }
 }

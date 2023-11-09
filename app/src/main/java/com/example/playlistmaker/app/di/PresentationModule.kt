@@ -4,8 +4,10 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.ui.audioplayer.view_model.AudioplayerViewModel
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewModel
+import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
+import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
-import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
+import com.example.playlistmaker.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -16,10 +18,14 @@ val presentationModule = module {
 
     viewModel {
         AudioplayerViewModel(
-            getDataUseCase = get(named(GET_TRACK_USE_CASE)),
+            getItemUseCase = get(named(GET_TRACK_USE_CASE)),
             getItemByIdUseCase = get(named(GET_TRACK_BY_ID_USE_CASE)),
             deleteItemUseCase = get(named(DELETE_TRACK_USE_CASE)),
-            storeDataUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
+            storeItemUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
+            storePlaylist = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            getPlaylists = get(named(GET_PLAYLISTS_USE_CASE)),
+            storeTrackInPlaylistDb = get(named(STORE_TRACK_IN_PLAYLIST_DB)),
+            getTrackInPlaylistById = get(named(GET_TRACK_IN_PLAYLIST_BY_ID)),
             player = get()
         )
     }
@@ -49,6 +55,21 @@ val presentationModule = module {
         )
     }
 
+    viewModel {
+        PlaylistCreationViewModel(
+            storePhotoUseCaseImpl = get(named(STORE_PHOTO_USE_CASE)),
+            storePlaylistInDb = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
+            getPhotoIdUseCase = get(named(GET_PHOTO_ID_USE_CASE))
+        )
+    }
+
+    viewModel {
+        PlaylistsViewModel(
+            getPlaylistsUseCaseImpl = get(named(GET_PLAYLISTS_USE_CASE))
+        )
+    }
+
     factory {
         SingleLiveEvent<DarkThemeState>()
     }
@@ -60,6 +81,5 @@ val presentationModule = module {
     factory {
         MediaPlayer()
     }
-
 
 }

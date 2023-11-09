@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    tools:context=".ui.audioplayer.AudioplayerFragment">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorOnPrimary"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/ToolbarAppearance.WithIcon"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/zero" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <include
+                android:id="@+id/content"
+                layout="@layout/audioplayer_content_layout" />
+        </androidx.core.widget.NestedScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/shadow"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:background="@drawable/bottom_sheet_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:src="@drawable/line"
+            android:layout_marginTop="@dimen/small" />
+
+        <TextView
+            android:id="@+id/add_to_playlist_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="52dp"
+            android:layout_marginTop="@dimen/sub_medium"
+            android:textAppearance="@style/HeadTextStyle"
+            android:textSize="19sp"
+            android:textAlignment="center"
+            android:text="@string/add_to_playlist" />
+
+        <TextView
+            style="@style/TextButtonOnSearch"
+            android:id="@+id/create_playlist"
+            android:layout_marginTop="@dimen/medium"
+            android:text="@string/add_playlist" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/playlists_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/average"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:reverseLayout="true"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

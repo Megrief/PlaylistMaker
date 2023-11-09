@@ -4,27 +4,29 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
-import com.example.playlistmaker.ui.media.fragments.screen_states.FavoritesScreenState
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
+import com.example.playlistmaker.ui.media.fragments.screen_states.MediaScreenState
+import com.example.playlistmaker.utils.isEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    private val getFavouritesUseCase: GetDataUseCase<List<Track>>,
-    private val storeTrackUseCase: StoreDataUseCase<Track>
+    private val getFavouritesUseCase: GetItemUseCase<List<Track>>,
+    private val storeTrackUseCase: StoreItemUseCase<Track>
 ) : ViewModel() {
 
-    private val _screenState = MutableLiveData<FavoritesScreenState>(FavoritesScreenState.Loading)
-    val screenState: LiveData<FavoritesScreenState>
+    private val _screenState = MutableLiveData<MediaScreenState>(MediaScreenState.Loading)
+    val screenState: LiveData<MediaScreenState>
         get() = _screenState
 
     fun checkContent(list: List<Track>) {
         viewModelScope.launch(Dispatchers.IO) {
-            getFavouritesUseCase.get().collect { favourites ->
-                if (!isEquals(list, favourites) || favourites.isEmpty()) {
-                    _screenState.postValue(FavoritesScreenState.Content(favourites))
+            getFavouritesUseCase.get().collect { favorites ->
+                if (favorites != null && (!isEquals(list, favorites) || favorites.isEmpty())) {
+                    if (favorites.isEmpty()) _screenState.postValue(MediaScreenState.Empty)
+                    else _screenState.postValue(MediaScreenState.Content(favorites))
                 }
             }
         }
@@ -34,14 +36,4 @@ class FavoritesViewModel(
         storeTrackUseCase.store(track)
     }
 
-    private fun isEquals(oldList: List<Track>, newList: List<Track>): Boolean {
-        return if (oldList.size != newList.size) {
-            false
-        } else {
-            for (index in oldList.indices) {
-                if (oldList[index].trackId != newList[index].trackId) return false
-            }
-            true
-        }
-    }
 }

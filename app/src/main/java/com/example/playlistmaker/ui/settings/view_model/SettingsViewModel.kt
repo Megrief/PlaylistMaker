@@ -6,13 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
 import com.example.playlistmaker.domain.sharing.SharingRepository
-import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.ui.settings.utils.SingleLiveEvent
+import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
+import com.example.playlistmaker.utils.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(
-    getThemeFlagUseCase: GetDataUseCase<ThemeFlag?>,
+    getThemeFlagUseCase: GetItemUseCase<ThemeFlag?>,
     private val switchThemeUseCase: SwitchThemeUseCase,
     private val sharingRepository: SharingRepository,
     private val darkThemeState: SingleLiveEvent<DarkThemeState>

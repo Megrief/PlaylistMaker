@@ -5,25 +5,31 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.domain.db.use_cases.DeleteItemUseCase
-import com.example.playlistmaker.domain.db.use_cases.GetItemByIdUseCase
-import com.example.playlistmaker.domain.entity.Track
-import com.example.playlistmaker.domain.storage.use_cases.GetDataUseCase
-import com.example.playlistmaker.domain.storage.use_cases.StoreDataUseCase
+import com.example.playlistmaker.domain.entities.Playlist
+import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.storage.use_cases.DeleteItemUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetItemByIdUseCase
+import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
+import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
 class AudioplayerViewModel(
-    getDataUseCase: GetDataUseCase<Track?>,
+    getItemUseCase: GetItemUseCase<Track?>,
     private val getItemByIdUseCase: GetItemByIdUseCase<Track>,
-    private val deleteItemUseCase: DeleteItemUseCase,
-    private val storeDataUseCase: StoreDataUseCase<Track>,
+    private val deleteItemUseCase: DeleteItemUseCase<Track>,
+    private val storeItemUseCase: StoreItemUseCase<Track>,
+    private val storePlaylist: StoreItemUseCase<Playlist>,
+    private val getPlaylists: GetItemUseCase<List<Playlist>>,
+    private val storeTrackInPlaylistDb: StoreItemUseCase<Track>,
+    private val getTrackInPlaylistById: GetItemByIdUseCase<Track>,
     private val player: Player
 ) : ViewModel() {
 
@@ -35,6 +41,10 @@ class AudioplayerViewModel(
     val playerStatus: LiveData<PlayerStatus>
         get() = _playerStatus
 
+    private val _trackInPlaylist: MutableLiveData<Pair<String, Boolean>?> = MutableLiveData(null)
+    val trackInPlaylist: LiveData<Pair<String, Boolean>?>
+        get() = _trackInPlaylist
+
     private var playingTimeCounter: Job? = null
         set(value) {
             field?.cancel()
@@ -43,7 +53,7 @@ class AudioplayerViewModel(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            getDataUseCase.get().single().let { track ->
+            getItemUseCase.get().single().let { track ->
                 _screenState.postValue(
                     if (track != null) {
                         player.configurePlayer(
@@ -56,7 +66,7 @@ class AudioplayerViewModel(
                                 _playerStatus.value = PlayerStatus.Prepared(getLength())
                             }
                         )
-                        AudioplayerScreenState.Content(track, inFavourite(track.trackId))
+                        AudioplayerScreenState.Content(track, inFavourite(track.id), getPlaylists.get().single() ?: emptyList())
                     } else AudioplayerScreenState.Error
                 )
             }
@@ -85,25 +95,56 @@ class AudioplayerViewModel(
         }
     }
 
-    fun pause() {
-        _playerStatus.value = PlayerStatus.Paused
-        player.pause()
+    fun stop() {
+        if (playerStatus.value is PlayerStatus.Playing) {
+            playback()
+        }
     }
 
     fun likeback() {
         viewModelScope.launch(Dispatchers.IO) {
             with(_screenState.value as AudioplayerScreenState.Content) {
                 if (inFavourite)
-                    deleteItemUseCase.delete(track.trackId)
+                    deleteItemUseCase.delete(track)
                 else
-                    storeDataUseCase.store(track)
+                    storeItemUseCase.store(track)
                 withContext(Dispatchers.Main) {
                     _screenState.value = copy(inFavourite = !inFavourite)
                 }
             }
         }
     }
+
+    fun cleanState() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _trackInPlaylist.postValue(null)
+        }
+    }
+    fun addToPlaylist(playlist: Playlist) {
+        val content: AudioplayerScreenState.Content? = (screenState.value as? AudioplayerScreenState.Content)
+        val track = content?.track
+        track?.run {
+            if (playlist.trackIdsList.contains(id)) {
+                _trackInPlaylist.postValue(playlist.name to false)
+            } else {
+                playlist.trackIdsList.add(id)
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (getTrackInPlaylistById.get(id).single() == null )
+                        storeTrackInPlaylistDb.store(track)
+                    storePlaylist.store(playlist)
+                    _screenState.postValue(
+                        content.copy(playlists = getPlaylists.get().single() ?: emptyList())
+                    )
+                }
+                _trackInPlaylist.postValue(playlist.name to true)
+            }
+        }
+    }
+
+    suspend fun getPlaylists(): Flow<List<Playlist>?> = getPlaylists.get()
+
     private suspend fun inFavourite(id: Long): Boolean = getItemByIdUseCase.get(id).single() != null
+
     private fun getLength(time: Int = 0): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     private fun getPosition(): Job = viewModelScope.launch {

@@ -16,7 +16,7 @@ class AdapterVP(
     override fun createFragment(position: Int): Fragment {
        return when (position) {
            0 -> FavoritesFragment()
-           else -> PlaylistsFragment.newInstance()
+           else -> PlaylistsFragment()
        }
     }
 

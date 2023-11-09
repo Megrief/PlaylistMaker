@@ -17,4 +17,6 @@
     <color name="transparent">#00000000</color>
     <color name="transparent_black">#401A1B22</color>
     <color name="favorite">#F56B6C</color>
+    <color name="not_enabled">#BE6A64</color>
+    <color name="shadow">#68000000</color>
 </resources>
