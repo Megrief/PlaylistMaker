@@ -1,6 +1,7 @@
 package com.example.playlistmaker.data.settings
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import com.example.playlistmaker.app.App
 import com.example.playlistmaker.domain.settings.SettingsRepository
@@ -15,7 +16,8 @@ class SettingsRepoImpl(
     private val gson: Gson) : SettingsRepository {
 
     override fun switchTheme(checked: Boolean) {
-        (context as App).switchTheme(checked)
+        val intent = Intent(App.ACTION_SWITCH_THEME).putExtra(App.THEME_FLAG, checked)
+        context.sendBroadcast(intent)
     }
 
     override fun store(item: ThemeFlag?): Boolean =

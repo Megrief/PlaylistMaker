@@ -31,12 +31,15 @@ class SettingsViewModel(
     fun getScreenState(): LiveData<DarkThemeState> = darkThemeState
 
     fun switchTheme(checked: Boolean) {
-        switchThemeUseCase.switchTheme(checked)
+        viewModelScope.launch(Dispatchers.IO) {
+            switchThemeUseCase.switchTheme(checked)
+        }
     }
 
     fun shareApp() {
-        sharingRepository.shareApp()
+        sharingRepository.share(null)
     }
+
     fun openUserAgreement() {
         sharingRepository.openUserAgreement()
     }

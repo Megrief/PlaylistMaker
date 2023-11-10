@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -23,6 +24,7 @@ import com.example.playlistmaker.ui.search.adapter.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_COLLAPSED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -54,6 +56,7 @@ class PlaylistPageFragment : Fragment() {
         configureTrackList()
         setObserver()
         configureBottomSheetView()
+        configureShareButton()
     }
 
     override fun onResume() {
@@ -100,7 +103,22 @@ class PlaylistPageFragment : Fragment() {
     }
 
     private fun setTrackListContent(trackList: List<Track>) {
+        bottomSheetBehavior?.run {
+            isHideable = trackList.isEmpty()
+            state = if (trackList.isEmpty()) STATE_HIDDEN else STATE_COLLAPSED
+        }
         (binding.tracksList.adapter as? TrackAdapter)?.setTrackList(trackList)
+    }
+
+    private fun configureShareButton() {
+        binding.share.setOnClickListener {
+            if (bottomSheetBehavior?.state == STATE_HIDDEN) {
+                Toast.makeText(requireContext(),
+                    getString(R.string.no_content_to_share), Toast.LENGTH_LONG).show()
+            } else {
+                viewModel.sharePlaylist()
+            }
+        }
     }
 
     private fun configureTrackList() {
@@ -109,13 +127,7 @@ class PlaylistPageFragment : Fragment() {
             findNavController().navigate(R.id.action_playlistPageFragment_to_audioplayerFragment)
         }
         val onTrackLongClicked: (Track) -> Boolean = {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Удалить трек")
-                .setMessage("Хотите удалить трек?")
-                .setNegativeButton("Нет") { _, _ -> }
-                .setPositiveButton("Да") { _, _ ->
-                    viewModel.deleteTrack(it)
-                }.show()
+            showOnDeleteTrackDialog(it)
             true
         }
         binding.tracksList.adapter = TrackAdapter(
@@ -124,10 +136,19 @@ class PlaylistPageFragment : Fragment() {
         )
     }
 
+    private fun showOnDeleteTrackDialog(track: Track) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Удалить трек")
+            .setMessage("Хотите удалить трек?")
+            .setNegativeButton("Нет") { _, _ -> }
+            .setPositiveButton("Да") { _, _ ->
+                viewModel.deleteTrack(track)
+            }.show()
+    }
     private fun configureBottomSheetView() {
         val bottomSheetCallback = object : BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                binding.shadow.isGone = newState == STATE_COLLAPSED
+                binding.shadow.isGone = newState == STATE_COLLAPSED || newState == STATE_HIDDEN
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
@@ -141,8 +162,6 @@ class PlaylistPageFragment : Fragment() {
 
 // TODO("
 //  1. Add BottomSheet for menu
-//  2. Add feature for sharing the playlist info
-//  3. Add buttons below the playlist info
-//  4. Add new fragment for editing playlists info (use PlaylistCreation layout)
-//  5. ")
+//  2. Add new fragment for editing playlists info (use PlaylistCreation layout)
+//  ")
 }

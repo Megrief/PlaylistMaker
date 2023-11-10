@@ -13,6 +13,7 @@ import com.example.playlistmaker.domain.media.playlists.use_cases_impl.GetPlayli
 import com.example.playlistmaker.domain.media.playlists.use_cases_impl.GetPlaylistsUseCaseImpl
 import com.example.playlistmaker.domain.media.playlists.use_cases_impl.StorePhotoUseCaseImpl
 import com.example.playlistmaker.domain.media.playlists.use_cases_impl.StorePlaylistInDbUseCaseImpl
+import com.example.playlistmaker.domain.playlist_page.SharePlaylistUseCase
 import com.example.playlistmaker.domain.search.SearchUseCase
 import com.example.playlistmaker.domain.search.use_cases_impl.SearchUseCaseImpl
 import com.example.playlistmaker.domain.settings.SettingsRepository
@@ -20,6 +21,7 @@ import com.example.playlistmaker.domain.settings.entity.ThemeFlag
 import com.example.playlistmaker.domain.settings.use_cases_impl.GetThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.StoreThemeFlagUseCase
 import com.example.playlistmaker.domain.settings.use_cases_impl.SwitchThemeUseCase
+import com.example.playlistmaker.domain.sharing.use_cases.ShareStringUseCase
 import com.example.playlistmaker.domain.storage.repos.DbManagerRepoData
 import com.example.playlistmaker.domain.storage.repos.ExternalStorageManagerRepoData
 import com.example.playlistmaker.domain.storage.repos.StorageManagerRepo
@@ -58,9 +60,15 @@ const val GET_PHOTO_BY_ID_USE_CASE = "GetPhotoByIdUseCase"
 const val GET_ID_USE_CASE = "GetIdUseCase"
 const val STORE_ID_USE_CASE = "StoreIdUseCase"
 const val GET_PLAYLIST_BY_ID_USE_CASE = "GetPlaylistByIdUseCase"
+const val SHARE_PLAYLIST_USE_CASE = "SharePlaylistUseCase"
 
 val domainModule = module {
 
+    factory<ShareStringUseCase>(named(SHARE_PLAYLIST_USE_CASE)) {
+        SharePlaylistUseCase(
+            repository = get()
+        )
+    }
 
     factory<GetItemByIdUseCase<Uri>>(named(GET_PHOTO_BY_ID_USE_CASE)) {
         val repository: ExternalStorageManagerRepoData<Uri> = get(named(EXTERNAL_STORAGE_REPO_PHOTO))

@@ -105,6 +105,26 @@
                 app:layout_constraintBottom_toBottomOf="@id/playlists_total_length"
                 app:layout_constraintStart_toEndOf="@id/point"
                 app:layout_constraintEnd_toStartOf="@id/right_border" />
+
+            <ImageButton
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/share"
+                android:layout_marginTop="@dimen/medium"
+                app:layout_constraintTop_toBottomOf="@id/playlists_total_length"
+                app:layout_constraintStart_toEndOf="@id/left_border"
+                android:background="@android:color/transparent" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/menu"
+                app:layout_constraintTop_toBottomOf="@id/playlists_total_length"
+                app:layout_constraintStart_toEndOf="@id/share"
+                android:background="@android:color/transparent"
+                android:layout_marginTop="@dimen/medium"
+                android:layout_marginStart="@dimen/medium" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
@@ -124,7 +144,6 @@
         android:gravity="center_horizontal"
         app:behavior_peekHeight="150dp"
         app:behavior_fitToContents="true"
-
         app:behavior_hideable="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
 
@@ -142,5 +161,12 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:reverseLayout="true"
             android:orientation="vertical" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/menu_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -27,3 +27,5 @@ fun getCorrectTime(num: Long): String = buildString {
         }
     )
 }
+
+fun getLength(time: Long = 0L): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)

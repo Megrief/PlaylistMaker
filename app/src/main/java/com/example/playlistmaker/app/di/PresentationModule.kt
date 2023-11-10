@@ -11,6 +11,7 @@ import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
+import com.example.playlistmaker.utils.SwitchThemeReceiver
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -81,7 +82,8 @@ val presentationModule = module {
             getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
             deleteTrackUseCase = get(named(DELETE_TRACK_IN_PLAYLIST)),
             getPlaylistsUseCase = get(named(GET_PLAYLISTS_USE_CASE)),
-            storePlaylistUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE))
+            storePlaylistUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            sharePlaylistUseCase = get(named(SHARE_PLAYLIST_USE_CASE))
         )
     }
 
@@ -95,6 +97,10 @@ val presentationModule = module {
 
     factory {
         MediaPlayer()
+    }
+
+    single {
+        SwitchThemeReceiver()
     }
 
 }

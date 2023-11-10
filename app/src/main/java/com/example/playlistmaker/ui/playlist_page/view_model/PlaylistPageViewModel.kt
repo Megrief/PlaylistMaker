@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.domain.entities.Track
+import com.example.playlistmaker.domain.sharing.use_cases.ShareStringUseCase
 import com.example.playlistmaker.domain.storage.use_cases.DeleteItemUseCase
 import com.example.playlistmaker.domain.storage.use_cases.GetItemByIdUseCase
 import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
@@ -14,6 +15,7 @@ import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import com.example.playlistmaker.ui.playlist_page.screen_state.PlaylistPageScreenState
 import com.example.playlistmaker.utils.getCorrectTime
 import com.example.playlistmaker.utils.getCorrectTracks
+import com.example.playlistmaker.utils.getLength
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.singleOrNull
@@ -27,7 +29,8 @@ class PlaylistPageViewModel(
     private val getPhotoByIdUseCase: GetItemByIdUseCase<Uri>,
     private val deleteTrackUseCase: DeleteItemUseCase<Track>,
     private val getPlaylistsUseCase: GetItemUseCase<List<Playlist>>,
-    private val storePlaylistUseCase: StoreItemUseCase<Playlist>
+    private val storePlaylistUseCase: StoreItemUseCase<Playlist>,
+    private val sharePlaylistUseCase: ShareStringUseCase
 ) : ViewModel() {
 
     private val _screenState: MutableLiveData<PlaylistPageScreenState> = MutableLiveData()
@@ -57,9 +60,26 @@ class PlaylistPageViewModel(
         }
     }
 
+    fun sharePlaylist() {
+        viewModelScope.launch(Dispatchers.IO) {
+            sharePlaylistUseCase.share(buildPlaylistString())
+        }
+    }
+
     fun storeTrack(track: Track) {
         viewModelScope.launch(Dispatchers.IO) {
             storeTrackUseCase.store(track)
+        }
+    }
+
+    private fun buildPlaylistString(): String = buildString {
+        (screenState.value as? PlaylistPageScreenState.Content)?.run {
+            append("${ playlist.name }\n")
+            append("${ playlist.description }\n")
+            append("$totalTracks\n")
+            trackList.forEachIndexed { index, track ->
+                append("${ index + 1 }. ${ track.artistName } - ${ track.trackName } (${ getLength(track.trackTime) })\n")
+            }
         }
     }
 
