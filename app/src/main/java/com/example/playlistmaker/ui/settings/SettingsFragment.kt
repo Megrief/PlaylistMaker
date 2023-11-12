@@ -31,7 +31,7 @@ class SettingsFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        with((requireActivity() as RootActivity).binding.bottomNav) {
+        with((requireActivity() as RootActivity).binding.bottomGroup) {
             if (isGone) visibility = View.VISIBLE
         }
     }

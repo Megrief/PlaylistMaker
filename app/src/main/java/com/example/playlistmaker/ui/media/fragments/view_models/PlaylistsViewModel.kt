@@ -35,8 +35,7 @@ class PlaylistsViewModel(
                     list.size != playlists.size -> _screenState.postValue(MediaScreenState.Content(playlists))
                     else -> {
                         for (ind in playlists.indices) {
-                            if (playlists[ind].trackIdsList.size != list[ind].trackIdsList.size
-                                    || playlists[ind].id != list[ind].id) {
+                            if (playlists[ind] != list[ind]) {
                                 _screenState.postValue(MediaScreenState.Content(playlists))
                                 break
                             }

@@ -6,6 +6,7 @@ import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewModel
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
+import com.example.playlistmaker.ui.playlist_edit.view_model.PlaylistEditViewModel
 import com.example.playlistmaker.ui.playlist_page.view_model.PlaylistPageViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.utils.SingleLiveEvent
@@ -67,6 +68,17 @@ val presentationModule = module {
     }
 
     viewModel {
+        PlaylistEditViewModel(
+            storePhotoUseCase = get(named(STORE_PHOTO_USE_CASE)),
+            storePlaylistInDbUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
+            getIdUseCase = get(named(GET_ID_USE_CASE)),
+            getPlaylistByIdUseCase = get(named(GET_PLAYLIST_BY_ID_USE_CASE)),
+            storeIdUseCase = get(named(STORE_ID_USE_CASE))
+        )
+    }
+
+    viewModel {
         PlaylistsViewModel(
             getPlaylistsUseCase = get(named(GET_PLAYLISTS_USE_CASE)),
             storePlaylistsIdUseCase = get(named(STORE_ID_USE_CASE))
@@ -78,13 +90,14 @@ val presentationModule = module {
             getPlaylistsIdUseCase = get(named(GET_ID_USE_CASE)),
             getPlaylistByIdUseCase = get(named(GET_PLAYLIST_BY_ID_USE_CASE)),
             storeTrackUseCase = get(named(STORE_TRACK_USE_CASE)),
-            getTrackByIdUseCase = get(named(GET_TRACK_BY_ID_USE_CASE)),
+            getTrackByIdUseCase = get(named(GET_TRACK_IN_PLAYLIST_BY_ID)),
             getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
             deleteTrackUseCase = get(named(DELETE_TRACK_IN_PLAYLIST)),
             getPlaylistsUseCase = get(named(GET_PLAYLISTS_USE_CASE)),
             storePlaylistUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
             sharePlaylistUseCase = get(named(SHARE_PLAYLIST_USE_CASE)),
-            deletePlaylistUseCase = get(named(DELETE_PLAYLIST_USE_CASE))
+            deletePlaylistUseCase = get(named(DELETE_PLAYLIST_USE_CASE)),
+            storePlaylistIdUseCase = get(named(STORE_ID_USE_CASE))
         )
     }
 

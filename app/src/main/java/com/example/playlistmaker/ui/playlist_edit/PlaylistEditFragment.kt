@@ -1,7 +1,6 @@
-package com.example.playlistmaker.ui.playlist_creation
+package com.example.playlistmaker.ui.playlist_edit
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -10,11 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -23,35 +19,22 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentPlaylistCreationBinding
+import com.example.playlistmaker.databinding.FragmentPlaylistEditBinding
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.ui.main.RootActivity
-import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.example.playlistmaker.ui.playlist_edit.view_model.PlaylistEditViewModel
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.android.ext.android.inject
 
-class PlaylistCreationFragment : Fragment() {
+class PlaylistEditFragment : Fragment() {
 
-    private val viewModel: PlaylistCreationViewModel by viewModel()
-    private var _binding: FragmentPlaylistCreationBinding? = null
-    private val binding: FragmentPlaylistCreationBinding
+    private val viewModel: PlaylistEditViewModel by inject()
+    private var _binding: FragmentPlaylistEditBinding? = null
+    private val binding: FragmentPlaylistEditBinding
         get() = _binding!!
-
-    private var dialog: AlertDialog? = null
-    private var onBackPressedDispatcher: OnBackPressedDispatcher? = null
-    private val onBackPressedCallback: OnBackPressedCallback = object : OnBackPressedCallback(true) {
-
-        override fun handleOnBackPressed() {
-            if (notEmpty()) dialog?.show() else {
-                remove()
-                onBackPressedDispatcher?.onBackPressed()
-            }
-        }
-    }
 
     private val photoPicker = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -77,27 +60,22 @@ class PlaylistCreationFragment : Fragment() {
         }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPlaylistCreationBinding.inflate(inflater, container, false)
-        binding.createButton.isEnabled = false
-
+        _binding = FragmentPlaylistEditBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dialog = provideDialog()
         setObserver()
         configureNameInputField()
         configureDescriptionInputField()
-        setOnBackPressedDispatcher()
         configurePhotoImageView()
         configureCreateButton()
         binding.toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher?.onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
@@ -111,8 +89,6 @@ class PlaylistCreationFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        onBackPressedDispatcher = null
-        dialog = null
     }
 
     override fun onPause() {
@@ -140,8 +116,8 @@ class PlaylistCreationFragment : Fragment() {
 
         binding.photo.setOnClickListener {
             val permission =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) READ_MEDIA_IMAGES
-                else READ_EXTERNAL_STORAGE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+                else Manifest.permission.READ_EXTERNAL_STORAGE
             val permissionGranted = requireContext().checkSelfPermission(permission)
             if (permissionGranted == PackageManager.PERMISSION_GRANTED) {
                 pickImage()
@@ -174,32 +150,11 @@ class PlaylistCreationFragment : Fragment() {
                     description = savedDescription,
                     photoId = savedPhotoId
                 )
-                lifecycleScope.launch(Dispatchers.IO) {
-                    viewModel.storePlaylist(playlist)
-                }
+                viewModel.storePlaylist(playlist)
                 Toast.makeText(requireContext(), "Плейлист $savedName создан", Toast.LENGTH_SHORT).show()
-                onBackPressedCallback.remove()
-                onBackPressedDispatcher?.onBackPressed()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             }
         }
-    }
-
-    private fun notEmpty(): Boolean = savedName.isNotEmpty()
-                || savedDescription.isNotEmpty()
-                || savedPhotoId != 0L
-
-    private fun provideDialog(): AlertDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.dialog_title))
-            .setMessage(getString(R.string.dialog_message_data_will_lost))
-            .setNeutralButton(getString(R.string.cancel)) { _, _ -> }
-            .setPositiveButton(getString(R.string.close)) { _, _ ->
-                onBackPressedCallback.remove()
-                onBackPressedDispatcher?.onBackPressed()
-            }.create()
-
-    private fun setOnBackPressedDispatcher() {
-        onBackPressedDispatcher = requireActivity().onBackPressedDispatcher
-        onBackPressedDispatcher?.addCallback(viewLifecycleOwner, onBackPressedCallback)
     }
 
     private fun configureNameInputField() {
@@ -228,5 +183,4 @@ class PlaylistCreationFragment : Fragment() {
             textInputLayout.defaultHintTextColor = colorStateList
         }
     }
-
 }

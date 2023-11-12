@@ -25,8 +25,8 @@ import kotlinx.coroutines.flow.singleOrNull
 import kotlinx.coroutines.launch
 
 class PlaylistPageViewModel(
-    getPlaylistByIdUseCase: GetItemByIdUseCase<Playlist>,
-    getPlaylistsIdUseCase: GetItemUseCase<Long>,
+    private val getPlaylistByIdUseCase: GetItemByIdUseCase<Playlist>,
+    private val getPlaylistsIdUseCase: GetItemUseCase<Long>,
     private val getTrackByIdUseCase: GetItemByIdUseCase<Track>,
     private val storeTrackUseCase: StoreItemUseCase<Track>,
     private val getPhotoByIdUseCase: GetItemByIdUseCase<Uri>,
@@ -34,7 +34,8 @@ class PlaylistPageViewModel(
     private val getPlaylistsUseCase: GetItemUseCase<List<Playlist>>,
     private val storePlaylistUseCase: StoreItemUseCase<Playlist>,
     private val sharePlaylistUseCase: ShareStringUseCase,
-    private val deletePlaylistUseCase: DeleteItemUseCase<Playlist>
+    private val deletePlaylistUseCase: DeleteItemUseCase<Playlist>,
+    private val storePlaylistIdUseCase: StoreItemUseCase<Long>
 ) : ViewModel() {
 
     private val _screenState: MutableLiveData<PlaylistPageScreenState> = MutableLiveData()
@@ -46,6 +47,29 @@ class PlaylistPageViewModel(
             getPlaylistsIdUseCase.get().singleOrNull()?.also { playlistId ->
                 getPlaylistByIdUseCase.get(playlistId).singleOrNull()?.run {
                     getState(this)
+                }
+            }
+        }
+    }
+
+    fun storePlaylistId() {
+        viewModelScope.launch(Dispatchers.IO) {
+            (screenState.value as? PlaylistPageScreenState.Content)?.run {
+                storePlaylistIdUseCase.store(playlist?.id ?: 0L)
+                // Not finished
+            }
+        }
+    }
+
+    fun checkState() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = getPlaylistsIdUseCase.get().single()
+            val newPlaylist = getPlaylistByIdUseCase.get(id ?: 0L).single()
+            (screenState.value as? PlaylistPageScreenState.Content)?.run {
+                if (newPlaylist != playlist) {
+                    _screenState.postValue(
+                        copy(playlist = newPlaylist)
+                    )
                 }
             }
         }

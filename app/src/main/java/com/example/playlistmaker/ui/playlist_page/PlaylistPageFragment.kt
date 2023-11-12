@@ -64,7 +64,8 @@ class PlaylistPageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        with((requireActivity() as RootActivity).binding.bottomNav) {
+        viewModel.checkState()
+        with((requireActivity() as RootActivity).binding.bottomGroup) {
             if (isVisible) visibility = GONE
         }
     }
@@ -128,8 +129,9 @@ class PlaylistPageFragment : Fragment() {
                 onChangeMenuState?.invoke()
             }
             editPlaylist.setOnClickListener {
-                Toast.makeText(requireContext(), "Clicked!", Toast.LENGTH_SHORT).show()
                 onChangeMenuState?.invoke()
+                viewModel.storePlaylistId()
+                findNavController().navigate(R.id.action_playlistPageFragment_to_playlistEditFragment)
             }
             deletePlaylist.setOnClickListener {
                 viewModel.showOnDeletePlaylistDialog(requireContext())

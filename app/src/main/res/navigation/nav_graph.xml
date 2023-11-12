@@ -57,8 +57,13 @@
             android:id="@+id/action_playlistPageFragment_to_audioplayerFragment"
             app:destination="@id/audioplayerFragment" />
         <action
-            android:id="@+id/action_playlistPageFragment_to_playlistCreationFragment"
-            app:destination="@id/playlistCreationFragment" />
+            android:id="@+id/action_playlistPageFragment_to_playlistEditFragment"
+            app:destination="@id/playlistEditFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/playlistEditFragment"
+        android:name="com.example.playlistmaker.ui.playlist_edit.PlaylistEditFragment"
+        android:label="fragment_playlist_edit"
+        tools:layout="@layout/fragment_playlist_edit" />
 
 </navigation>
