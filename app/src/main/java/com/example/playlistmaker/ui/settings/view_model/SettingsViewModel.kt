@@ -15,8 +15,10 @@ class SettingsViewModel(
     getThemeFlagUseCase: GetItemUseCase<ThemeFlag?>,
     private val switchThemeUseCase: SwitchThemeUseCase,
     private val sharingRepository: SharingRepository,
-    private val darkThemeState: SingleLiveEvent<DarkThemeState>
+    darkThemeState: SingleLiveEvent<DarkThemeState>
 ) : ViewModel() {
+
+    val screenState: LiveData<DarkThemeState> = darkThemeState
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -28,8 +30,6 @@ class SettingsViewModel(
         }
     }
 
-    fun getScreenState(): LiveData<DarkThemeState> = darkThemeState
-
     fun switchTheme(checked: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             switchThemeUseCase.switchTheme(checked)
@@ -37,14 +37,20 @@ class SettingsViewModel(
     }
 
     fun shareApp() {
-        sharingRepository.share(null)
+        viewModelScope.launch(Dispatchers.IO) {
+            sharingRepository.share(null)
+        }
     }
 
     fun openUserAgreement() {
-        sharingRepository.openUserAgreement()
+        viewModelScope.launch(Dispatchers.IO) {
+            sharingRepository.openUserAgreement()
+        }
     }
 
     fun mailToSupport() {
-        sharingRepository.mailToSupport()
+        viewModelScope.launch(Dispatchers.IO) {
+            sharingRepository.mailToSupport()
+        }
     }
 }

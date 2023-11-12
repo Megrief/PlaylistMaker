@@ -7,7 +7,7 @@ sealed class PlaylistPageScreenState {
     object Loading : PlaylistPageScreenState()
     object Error : PlaylistPageScreenState()
     data class Content(
-        val playlist: Playlist,
+        val playlist: Playlist?,
         val trackList: List<Track>,
         val totalLength: String,
         val totalTracks: String

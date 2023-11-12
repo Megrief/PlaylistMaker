@@ -22,9 +22,9 @@ import kotlinx.coroutines.withContext
 
 class AudioplayerViewModel(
     getItemUseCase: GetItemUseCase<Track?>,
-    private val getItemByIdUseCase: GetItemByIdUseCase<Track>,
-    private val deleteItemUseCase: DeleteItemUseCase<Track>,
-    private val storeItemUseCase: StoreItemUseCase<Track>,
+    private val getTrackByIdUseCase: GetItemByIdUseCase<Track>,
+    private val deleteTrackUseCase: DeleteItemUseCase<Track>,
+    private val storeTrackUseCase: StoreItemUseCase<Track>,
     private val storePlaylist: StoreItemUseCase<Playlist>,
     private val getPlaylists: GetItemUseCase<List<Playlist>>,
     private val storeTrackInPlaylistDb: StoreItemUseCase<Track>,
@@ -104,9 +104,9 @@ class AudioplayerViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             with(_screenState.value as AudioplayerScreenState.Content) {
                 if (inFavourite)
-                    deleteItemUseCase.delete(track)
+                    deleteTrackUseCase.delete(track)
                 else
-                    storeItemUseCase.store(track)
+                    storeTrackUseCase.store(track)
                 withContext(Dispatchers.Main) {
                     _screenState.value = copy(inFavourite = !inFavourite)
                 }
@@ -142,7 +142,7 @@ class AudioplayerViewModel(
 
     suspend fun getPlaylists(): Flow<List<Playlist>?> = getPlaylists.get()
 
-    private suspend fun inFavourite(id: Long): Boolean = getItemByIdUseCase.get(id).single() != null
+    private suspend fun inFavourite(id: Long): Boolean = getTrackByIdUseCase.get(id).single() != null
 
 
     private fun getPosition(): Job = viewModelScope.launch {

@@ -13,11 +13,7 @@ class AdapterVP(
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun getItemCount() = 2
 
-    override fun createFragment(position: Int): Fragment {
-       return when (position) {
-           0 -> FavoritesFragment()
-           else -> PlaylistsFragment()
-       }
-    }
-
+    override fun createFragment(position: Int): Fragment =
+        if (position == 0) FavoritesFragment()
+        else PlaylistsFragment()
 }

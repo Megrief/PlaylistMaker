@@ -17,6 +17,8 @@
     <dimen name="image_button_on_audioplayer">51dp</dimen>
     <dimen name="menu_button_height">61dp</dimen>
     <dimen name="image_size">120dp</dimen>
+    <dimen name="track_list_peek_height">200dp</dimen>
+    <dimen name="menu_peek_height">350dp</dimen>
 
     <dimen name="sub_medium_text_size">12sp</dimen>
     <dimen name="almost_medium_text_size">14sp</dimen>

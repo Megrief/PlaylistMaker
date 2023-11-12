@@ -15,7 +15,9 @@ import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import com.example.playlistmaker.utils.SwitchThemeReceiver
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
@@ -41,12 +43,14 @@ class App : Application() {
     private fun getCurrentTheme() {
         coroutineScope.launch {
             getThemeFlagUseCase.get().collect { flag ->
-                AppCompatDelegate.setDefaultNightMode(
-                    if (flag != null) {
-                        if (flag.flag) AppCompatDelegate.MODE_NIGHT_YES
-                        else AppCompatDelegate.MODE_NIGHT_NO
-                    } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                )
+                withContext(Dispatchers.Main) {
+                    AppCompatDelegate.setDefaultNightMode(
+                        if (flag != null) {
+                            if (flag.flag) AppCompatDelegate.MODE_NIGHT_YES
+                            else AppCompatDelegate.MODE_NIGHT_NO
+                        } else AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    )
+                }
             }
         }
     }

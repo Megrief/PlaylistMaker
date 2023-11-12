@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
-    private val getPlaylistsUseCaseImpl: GetItemUseCase<List<Playlist>>,
+    private val getPlaylistsUseCase: GetItemUseCase<List<Playlist>>,
     private val storePlaylistsIdUseCase: StoreItemUseCase<Long>
 ) : ViewModel() {
 
@@ -28,7 +28,7 @@ class PlaylistsViewModel(
 
     fun checkContent(list: List<Playlist>) {
         viewModelScope.launch(Dispatchers.IO) {
-            getPlaylistsUseCaseImpl.get().collect { playlists ->
+            getPlaylistsUseCase.get().collect { playlists ->
                 when {
                     playlists == null -> { }
                     playlists.isEmpty() -> _screenState.postValue(MediaScreenState.Empty)

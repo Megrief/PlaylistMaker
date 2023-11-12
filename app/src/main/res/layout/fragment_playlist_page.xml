@@ -117,6 +117,7 @@
                 android:background="@android:color/transparent" />
 
             <ImageButton
+                android:id="@+id/menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/menu"
@@ -142,7 +143,6 @@
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        app:behavior_peekHeight="150dp"
         app:behavior_fitToContents="true"
         app:behavior_hideable="false"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior" >
@@ -153,6 +153,7 @@
             android:src="@drawable/line"
             android:layout_marginTop="@dimen/small" />
 
+        <!-- BottomSheet content -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tracks_list"
             android:layout_width="match_parent"
@@ -161,12 +162,27 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:reverseLayout="true"
             android:orientation="vertical" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/menu_fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
     </LinearLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/bottom_sheet_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bottom_sheet_background"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        app:behavior_fitToContents="true"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:src="@drawable/line"
+            android:layout_marginTop="@dimen/small"
+            android:layout_marginBottom="@dimen/sub_medium" />
+
+        <include android:id="@+id/menu_content"
+            layout="@layout/menu_content" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

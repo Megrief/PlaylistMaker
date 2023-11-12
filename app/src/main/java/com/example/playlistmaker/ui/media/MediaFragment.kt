@@ -50,9 +50,11 @@ class MediaFragment : Fragment() {
             if (isGone) visibility = View.VISIBLE
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         tabMediator.detach()
+        _tabMediator = null
         _binding = null
     }
 
