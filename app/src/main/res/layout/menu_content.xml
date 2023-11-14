@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/playlist_line"
+        layout="@layout/playlist_line" />
+    
+    <TextView
+        android:id="@+id/share_playlist"
+        style="@style/MenuTextStyle"
+        android:text="@string/share"
+    />
+
+    <TextView
+        android:id="@+id/edit_playlist"
+        style="@style/MenuTextStyle"
+        android:text="@string/edit_info"
+    />
+
+    <TextView
+        android:id="@+id/delete_playlist"
+        style="@style/MenuTextStyle"
+        android:text="@string/delete_playlist"
+    />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

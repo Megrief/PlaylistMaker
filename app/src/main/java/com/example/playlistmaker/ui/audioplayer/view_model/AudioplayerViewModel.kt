@@ -1,6 +1,5 @@
 package com.example.playlistmaker.ui.audioplayer.view_model
 
-import android.icu.text.SimpleDateFormat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -13,19 +12,19 @@ import com.example.playlistmaker.domain.storage.use_cases.GetItemUseCase
 import com.example.playlistmaker.domain.storage.use_cases.StoreItemUseCase
 import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.audioplayer.view_model.player.PlayerStatus
+import com.example.playlistmaker.utils.getLength
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 
 class AudioplayerViewModel(
     getItemUseCase: GetItemUseCase<Track?>,
-    private val getItemByIdUseCase: GetItemByIdUseCase<Track>,
-    private val deleteItemUseCase: DeleteItemUseCase<Track>,
-    private val storeItemUseCase: StoreItemUseCase<Track>,
+    private val getTrackByIdUseCase: GetItemByIdUseCase<Track>,
+    private val deleteTrackUseCase: DeleteItemUseCase<Track>,
+    private val storeTrackUseCase: StoreItemUseCase<Track>,
     private val storePlaylist: StoreItemUseCase<Playlist>,
     private val getPlaylists: GetItemUseCase<List<Playlist>>,
     private val storeTrackInPlaylistDb: StoreItemUseCase<Track>,
@@ -105,9 +104,9 @@ class AudioplayerViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             with(_screenState.value as AudioplayerScreenState.Content) {
                 if (inFavourite)
-                    deleteItemUseCase.delete(track)
+                    deleteTrackUseCase.delete(track)
                 else
-                    storeItemUseCase.store(track)
+                    storeTrackUseCase.store(track)
                 withContext(Dispatchers.Main) {
                     _screenState.value = copy(inFavourite = !inFavourite)
                 }
@@ -143,17 +142,16 @@ class AudioplayerViewModel(
 
     suspend fun getPlaylists(): Flow<List<Playlist>?> = getPlaylists.get()
 
-    private suspend fun inFavourite(id: Long): Boolean = getItemByIdUseCase.get(id).single() != null
+    private suspend fun inFavourite(id: Long): Boolean = getTrackByIdUseCase.get(id).single() != null
 
-    private fun getLength(time: Int = 0): String = SimpleDateFormat("mm:ss", Locale.getDefault()).format(time)
 
     private fun getPosition(): Job = viewModelScope.launch {
         player.getCurrentPosition().collect { position ->
             val value = playerStatus.value
             if (value is PlayerStatus.Playing)
-                _playerStatus.value = value.copy(getLength(position))
+                _playerStatus.value = value.copy(getLength(position.toLong()))
             else
-                _playerStatus.value = PlayerStatus.Playing(getLength(position))
+                _playerStatus.value = PlayerStatus.Playing(getLength(position.toLong()))
         }
     }
 }

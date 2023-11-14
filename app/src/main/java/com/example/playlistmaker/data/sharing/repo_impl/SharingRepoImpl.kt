@@ -11,8 +11,8 @@ class SharingRepoImpl(
     private val externalNavigator: ExternalNavigator
 ) : SharingRepository {
 
-    override fun shareApp() {
-        externalNavigator.shareApp(getShareLink())
+    override fun share(content: String?) {
+        externalNavigator.shareApp(content ?: getShareLink())
     }
 
     override fun openUserAgreement() {

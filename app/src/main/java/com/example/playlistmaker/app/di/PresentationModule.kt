@@ -6,10 +6,13 @@ import com.example.playlistmaker.ui.audioplayer.view_model.player.Player
 import com.example.playlistmaker.ui.media.fragments.view_models.FavoritesViewModel
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.playlist_creation.view_model.PlaylistCreationViewModel
+import com.example.playlistmaker.ui.playlist_edit.view_model.PlaylistEditViewModel
+import com.example.playlistmaker.ui.playlist_page.view_model.PlaylistPageViewModel
 import com.example.playlistmaker.ui.search.view_model.SearchViewModel
 import com.example.playlistmaker.utils.SingleLiveEvent
 import com.example.playlistmaker.ui.settings.view_model.DarkThemeState
 import com.example.playlistmaker.ui.settings.view_model.SettingsViewModel
+import com.example.playlistmaker.utils.SwitchThemeReceiver
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -19,9 +22,9 @@ val presentationModule = module {
     viewModel {
         AudioplayerViewModel(
             getItemUseCase = get(named(GET_TRACK_USE_CASE)),
-            getItemByIdUseCase = get(named(GET_TRACK_BY_ID_USE_CASE)),
-            deleteItemUseCase = get(named(DELETE_TRACK_USE_CASE)),
-            storeItemUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
+            getTrackByIdUseCase = get(named(GET_TRACK_BY_ID_USE_CASE)),
+            deleteTrackUseCase = get(named(DELETE_TRACK_USE_CASE)),
+            storeTrackUseCase = get(named(STORE_TRACK_IN_DB_USE_CASE)),
             storePlaylist = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
             getPlaylists = get(named(GET_PLAYLISTS_USE_CASE)),
             storeTrackInPlaylistDb = get(named(STORE_TRACK_IN_PLAYLIST_DB)),
@@ -57,16 +60,44 @@ val presentationModule = module {
 
     viewModel {
         PlaylistCreationViewModel(
-            storePhotoUseCaseImpl = get(named(STORE_PHOTO_USE_CASE)),
-            storePlaylistInDb = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            storePhotoUseCase = get(named(STORE_PHOTO_USE_CASE)),
+            storePlaylistInDbUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
             getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
-            getPhotoIdUseCase = get(named(GET_PHOTO_ID_USE_CASE))
+            getPhotoIdUseCase = get(named(GET_ID_USE_CASE))
+        )
+    }
+
+    viewModel {
+        PlaylistEditViewModel(
+            storePhotoUseCase = get(named(STORE_PHOTO_USE_CASE)),
+            storePlaylistInDbUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
+            getIdUseCase = get(named(GET_ID_USE_CASE)),
+            getPlaylistByIdUseCase = get(named(GET_PLAYLIST_BY_ID_USE_CASE)),
+            storeIdUseCase = get(named(STORE_ID_USE_CASE))
         )
     }
 
     viewModel {
         PlaylistsViewModel(
-            getPlaylistsUseCaseImpl = get(named(GET_PLAYLISTS_USE_CASE))
+            getPlaylistsUseCase = get(named(GET_PLAYLISTS_USE_CASE)),
+            storePlaylistsIdUseCase = get(named(STORE_ID_USE_CASE))
+        )
+    }
+
+    viewModel {
+        PlaylistPageViewModel(
+            getPlaylistsIdUseCase = get(named(GET_ID_USE_CASE)),
+            getPlaylistByIdUseCase = get(named(GET_PLAYLIST_BY_ID_USE_CASE)),
+            storeTrackUseCase = get(named(STORE_TRACK_USE_CASE)),
+            getTrackByIdUseCase = get(named(GET_TRACK_IN_PLAYLIST_BY_ID)),
+            getPhotoByIdUseCase = get(named(GET_PHOTO_BY_ID_USE_CASE)),
+            deleteTrackUseCase = get(named(DELETE_TRACK_IN_PLAYLIST)),
+            getPlaylistsUseCase = get(named(GET_PLAYLISTS_USE_CASE)),
+            storePlaylistUseCase = get(named(STORE_PLAYLIST_IN_DB_USE_CASE)),
+            sharePlaylistUseCase = get(named(SHARE_PLAYLIST_USE_CASE)),
+            deletePlaylistUseCase = get(named(DELETE_PLAYLIST_USE_CASE)),
+            storePlaylistIdUseCase = get(named(STORE_ID_USE_CASE))
         )
     }
 
@@ -80,6 +111,10 @@ val presentationModule = module {
 
     factory {
         MediaPlayer()
+    }
+
+    single {
+        SwitchThemeReceiver()
     }
 
 }

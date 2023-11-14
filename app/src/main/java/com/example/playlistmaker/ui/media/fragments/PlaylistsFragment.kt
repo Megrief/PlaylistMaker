@@ -6,7 +6,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +15,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.domain.entities.Playlist
 import com.example.playlistmaker.ui.main.RootActivity
-import com.example.playlistmaker.ui.media.adapters.PlaylistGridAdapter
+import com.example.playlistmaker.ui.media.adapter.PlaylistGridAdapter
 import com.example.playlistmaker.ui.media.fragments.screen_states.MediaScreenState
 import com.example.playlistmaker.ui.media.fragments.view_models.PlaylistsViewModel
 import com.example.playlistmaker.ui.search.SearchFragment
@@ -26,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class PlaylistsFragment : Fragment() {
 
     private val viewModel: PlaylistsViewModel by viewModel()
+
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding: FragmentPlaylistsBinding
         get() = _binding!!
@@ -35,7 +35,8 @@ class PlaylistsFragment : Fragment() {
         lifecycleScope,
         false
     ) { playlist ->
-        Toast.makeText(requireContext(), "Clicked!", Toast.LENGTH_SHORT).show()
+        viewModel.storePlaylistsId(playlist.id)
+        findNavController().navigate(R.id.action_mediaFragment_to_playlistPageFragment)
     }
 
     override fun onCreateView(

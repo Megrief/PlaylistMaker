@@ -18,6 +18,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/line" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/bottom_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="line, bottom_nav" />
     <View
         android:id="@+id/line"
         android:layout_width="match_parent"

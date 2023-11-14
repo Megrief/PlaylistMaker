@@ -6,6 +6,7 @@
     <dimen name="small">8dp</dimen>
     <dimen name="icon_pad">10dp</dimen>
     <dimen name="sub_medium">12dp</dimen>
+    <dimen name="thirteen">13dp</dimen>
     <dimen name="almost_medium">14dp</dimen>
     <dimen name="medium">16dp</dimen>
     <dimen name="padding_bottom">20dp</dimen>
@@ -16,9 +17,12 @@
     <dimen name="image_button_on_audioplayer">51dp</dimen>
     <dimen name="menu_button_height">61dp</dimen>
     <dimen name="image_size">120dp</dimen>
+    <dimen name="track_list_peek_height">200dp</dimen>
+    <dimen name="menu_peek_height">350dp</dimen>
 
     <dimen name="sub_medium_text_size">12sp</dimen>
     <dimen name="almost_medium_text_size">14sp</dimen>
     <dimen name="medium_text_size">16sp</dimen>
     <dimen name="head_text_size">22sp</dimen>
+    <dimen name="average_text_size">24sp</dimen>
 </resources>

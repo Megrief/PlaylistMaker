@@ -29,7 +29,7 @@
     <TextView
         style="@style/MenuTextStyle"
         android:id="@+id/share"
-        android:text="@string/share"
+        android:text="@string/share_app"
         app:drawableEndCompat="@drawable/share" />
 
     <!-- Support -->

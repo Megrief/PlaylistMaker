@@ -3,7 +3,7 @@ package com.example.playlistmaker.data.storage.shared_prefs.repo_impl
 import android.content.SharedPreferences
 import com.example.playlistmaker.data.storage.shared_prefs.dto.TrackListDto
 import com.example.playlistmaker.domain.entities.Track
-import com.example.playlistmaker.domain.storage.repos.StorageManagerRepo
+import com.example.playlistmaker.domain.storage.repos.StorageManager
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flow
 class SharedPrefsList(
     private val sharedPrefs: SharedPreferences,
     private val gson: Gson
-) : StorageManagerRepo<List<Track>> {
+) : StorageManager<List<Track>> {
 
     override fun store(item: List<Track>): Boolean =
         gson.toJson(TrackListDto(item)).let { trackListDtoJson ->
@@ -24,7 +24,6 @@ class SharedPrefsList(
                 emit(gson.fromJson(trackListDtoJson, TrackListDto::class.java).list)
             } ?: emit(emptyList())
         }
-
     }
 
     companion object {
