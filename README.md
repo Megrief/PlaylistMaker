@@ -31,3 +31,7 @@
 #### Минимальная версия Android:
 
 10 (Api level 29)
+
+#### Установка:
+
+Скачайте последнюю версию приложения можно [отсюда](https://github.com/Megrief/PlaylistMaker/releases/tag/1.0.0)
