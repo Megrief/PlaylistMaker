@@ -1,10 +1,9 @@
 package com.example.playlistmaker.app
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.content.IntentFilter
-import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import com.example.playlistmaker.app.di.GET_THEME_FLAG_USE_CASE
 import com.example.playlistmaker.app.di.STORE_THEME_FLAG_USE_CASE
 import com.example.playlistmaker.app.di.dataModule
@@ -37,6 +36,7 @@ class App : Application() {
             modules(dataModule, domainModule, presentationModule)
         }
         getCurrentTheme()
+
         registerReceiver()
     }
 
@@ -65,18 +65,20 @@ class App : Application() {
         )
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     private fun registerReceiver() {
         val intentFilter = IntentFilter().apply { addAction(ACTION_SWITCH_THEME) }
         switchThemeReceiver.onSwitchCallback = ::switchTheme
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-            registerReceiver(switchThemeReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
-        else registerReceiver(switchThemeReceiver, intentFilter)
+        ContextCompat.registerReceiver(
+            this@App,
+            switchThemeReceiver,
+            intentFilter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     companion object {
-        const val ACTION_SWITCH_THEME = "ActionSwitchTheme"
+        const val ACTION_SWITCH_THEME = ".app.App.actionswitchtheme"
         const val THEME_FLAG = "ThemeFlag"
     }
 }

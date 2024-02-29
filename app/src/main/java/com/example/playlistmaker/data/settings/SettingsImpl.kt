@@ -1,6 +1,5 @@
 package com.example.playlistmaker.data.settings
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import com.example.playlistmaker.app.App
@@ -12,12 +11,15 @@ import kotlinx.coroutines.flow.flow
 
 class SettingsImpl(
     private val sharedPrefs: SharedPreferences,
-    private val context: Context,
+    private val sendBroadcast: (Intent) -> Unit,
     private val gson: Gson) : SettingsRepository {
 
     override fun switchTheme(checked: Boolean) {
-        val intent = Intent(App.ACTION_SWITCH_THEME).putExtra(App.THEME_FLAG, checked)
-        context.sendBroadcast(intent)
+        val intent = Intent(App.ACTION_SWITCH_THEME).apply {
+            putExtra(App.THEME_FLAG, checked)
+        }
+
+        sendBroadcast(intent)
     }
 
     override fun store(item: ThemeFlag?): Boolean =

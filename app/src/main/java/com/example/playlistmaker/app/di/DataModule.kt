@@ -123,8 +123,9 @@ val dataModule = module {
     single<SettingsRepository> {
         SettingsImpl(
             sharedPrefs = get(),
-            context = androidContext(),
-            gson = get())
+            sendBroadcast = androidContext()::sendBroadcast,
+            gson = get()
+        )
     }
 
     single<SharedPreferences> {
